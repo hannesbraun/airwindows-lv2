@@ -1,0 +1,12 @@
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/leftomono>
+	a lv2:Plugin ;
+	lv2:binary <leftomono@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <leftomono.ttl> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/rightomono>
+	a lv2:Plugin ;
+	lv2:binary <rightomono@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <rightomono.ttl> .
