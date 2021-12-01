@@ -37,8 +37,8 @@ function(add_plugin PLUGIN_NAME)
   configure_file(src/${PLUGIN_NAME}/${PLUGIN_NAME}.ttl ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PLUGIN_NAME}.ttl)
 endfunction()
 
-add_plugin(leftomono)
-add_plugin(rightomono)
+add_plugin(LeftoMono)
+add_plugin(RightoMono)
 
 configure_file(src/manifest.ttl.in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/manifest.ttl)
 

@@ -30,29 +30,32 @@ static LV2_Handle instantiate(
 	return (LV2_Handle) leftoMono;
 }
 
-static void connect_port(LV2_Handle instance, uint32_t port, void* data) {
+static void connect_port(LV2_Handle instance, uint32_t port, void* data)
+{
 	LeftoMono* leftoMono = (LeftoMono*) instance;
 
 	switch ((PortIndex) port) {
-	case INPUT_L:
-		leftoMono->inputL = (const float*) data;
-		break;
-	case INPUT_R:
-		leftoMono->inputR = (const float*) data;
-		break;
-	case OUTPUT_L:
-		leftoMono->outputL = (float*) data;
-		break;
-	case OUTPUT_R:
-		leftoMono->outputR = (float*) data;
+		case INPUT_L:
+			leftoMono->inputL = (const float*) data;
+			break;
+		case INPUT_R:
+			leftoMono->inputR = (const float*) data;
+			break;
+		case OUTPUT_L:
+			leftoMono->outputL = (float*) data;
+			break;
+		case OUTPUT_R:
+			leftoMono->outputR = (float*) data;
 	}
 }
 
-static void activate(LV2_Handle instance) {
+static void activate(LV2_Handle instance)
+{
 	LeftoMono* leftoMono = (LeftoMono*) instance;
 }
 
-static void run(LV2_Handle instance, uint32_t nSampleFrames) {
+static void run(LV2_Handle instance, uint32_t nSampleFrames)
+{
 	LeftoMono* leftoMono = (LeftoMono*) instance;
 
 	const float* inputL = leftoMono->inputL;
@@ -64,20 +67,22 @@ static void run(LV2_Handle instance, uint32_t nSampleFrames) {
 		*outputL = *inputL;
 		*outputR = *inputL;
 
-		inputL += 1;
-		inputR += 1;
-		outputL += 1;
-		outputR += 1;
+		inputL++;
+		inputR++;
+		outputL++;
+		outputR++;
 	}
 }
 
 static void deactivate(LV2_Handle instance) {}
 
-static void cleanup(LV2_Handle instance) {
+static void cleanup(LV2_Handle instance)
+{
 	free(instance);
 }
 
-static const void* extension_data(const char* uri) {
+static const void* extension_data(const char* uri)
+{
 	return NULL;
 }
 
@@ -92,6 +97,7 @@ static const LV2_Descriptor descriptor = {
 	extension_data
 };
 
-LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index) {
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
+{
 	return index == 0 ? &descriptor : NULL;
 }

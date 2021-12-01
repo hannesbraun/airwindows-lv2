@@ -30,29 +30,32 @@ static LV2_Handle instantiate(
 	return (LV2_Handle) rightoMono;
 }
 
-static void connect_port(LV2_Handle instance, uint32_t port, void* data) {
+static void connect_port(LV2_Handle instance, uint32_t port, void* data)
+{
 	RightoMono* rightoMono = (RightoMono*) instance;
 
 	switch ((PortIndex) port) {
-	case INPUT_L:
-		rightoMono->inputL = (const float*) data;
-		break;
-	case INPUT_R:
-		rightoMono->inputR = (const float*) data;
-		break;
-	case OUTPUT_L:
-		rightoMono->outputL = (float*) data;
-		break;
-	case OUTPUT_R:
-		rightoMono->outputR = (float*) data;
+		case INPUT_L:
+			rightoMono->inputL = (const float*) data;
+			break;
+		case INPUT_R:
+			rightoMono->inputR = (const float*) data;
+			break;
+		case OUTPUT_L:
+			rightoMono->outputL = (float*) data;
+			break;
+		case OUTPUT_R:
+			rightoMono->outputR = (float*) data;
 	}
 }
 
-static void activate(LV2_Handle instance) {
+static void activate(LV2_Handle instance)
+{
 	RightoMono* rightoMono = (RightoMono*) instance;
 }
 
-static void run(LV2_Handle instance, uint32_t nSampleFrames) {
+static void run(LV2_Handle instance, uint32_t nSampleFrames)
+{
 	RightoMono* rightoMono = (RightoMono*) instance;
 
 	const float* inputL = rightoMono->inputL;
@@ -64,20 +67,22 @@ static void run(LV2_Handle instance, uint32_t nSampleFrames) {
 		*outputL = *inputR;
 		*outputR = *inputR;
 
-		inputL += 1;
-		inputR += 1;
-		outputL += 1;
-		outputR += 1;
+		inputL++;
+		inputR++;
+		outputL++;
+		outputR++;
 	}
 }
 
 static void deactivate(LV2_Handle instance) {}
 
-static void cleanup(LV2_Handle instance) {
+static void cleanup(LV2_Handle instance)
+{
 	free(instance);
 }
 
-static const void* extension_data(const char* uri) {
+static const void* extension_data(const char* uri)
+{
 	return NULL;
 }
 
@@ -92,6 +97,7 @@ static const LV2_Descriptor descriptor = {
 	extension_data
 };
 
-LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index) {
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
+{
 	return index == 0 ? &descriptor : NULL;
 }
