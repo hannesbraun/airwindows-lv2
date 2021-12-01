@@ -39,6 +39,7 @@ endfunction()
 
 add_plugin(LeftoMono)
 add_plugin(RightoMono)
+add_plugin(Ultrasonic)
 
 configure_file(src/manifest.ttl.in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/manifest.ttl)
 
