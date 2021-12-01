@@ -130,8 +130,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ultrasonic->biquadE[6] = (1.0 - K / ultrasonic->biquadE[1] + K * K) * norm;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = (long double) * in1;
-		long double inputSampleR = (long double) * in2;
+		long double inputSampleL = *in1;
+		long double inputSampleR = *in2;
 		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = ultrasonic->fpd * 1.18e-37;
 		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = ultrasonic->fpd * 1.18e-37;
 
