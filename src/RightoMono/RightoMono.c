@@ -49,10 +49,7 @@ static void connect_port(LV2_Handle instance, uint32_t port, void* data)
 	}
 }
 
-static void activate(LV2_Handle instance)
-{
-	RightoMono* rightoMono = (RightoMono*) instance;
-}
+static void activate(LV2_Handle instance) {}
 
 static void run(LV2_Handle instance, uint32_t nSampleFrames)
 {
