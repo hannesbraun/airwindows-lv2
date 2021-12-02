@@ -37,6 +37,7 @@ function(add_plugin PLUGIN_NAME)
   configure_file(src/${PLUGIN_NAME}/${PLUGIN_NAME}.ttl ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PLUGIN_NAME}.ttl)
 endfunction()
 
+add_plugin(ClipOnly)
 add_plugin(Galactic)
 add_plugin(Infrasonic)
 add_plugin(LeftoMono)
