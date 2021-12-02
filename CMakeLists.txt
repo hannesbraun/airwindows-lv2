@@ -41,6 +41,7 @@ add_plugin(Infrasonic)
 add_plugin(LeftoMono)
 add_plugin(RightoMono)
 add_plugin(Ultrasonic)
+add_plugin(UltrasonicLite)
 
 configure_file(src/manifest.ttl.in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/manifest.ttl)
 
