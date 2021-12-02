@@ -31,7 +31,7 @@ function(add_plugin PLUGIN_NAME)
   if(MSVC)
     target_compile_options(${PLUGIN_NAME} PRIVATE /Wall)
   else()
-    target_compile_options(${PLUGIN_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(${PLUGIN_NAME} PRIVATE -Wall -Wextra -Wpedantic -Wno-unused-parameter)
   endif()
 
   configure_file(src/${PLUGIN_NAME}/${PLUGIN_NAME}.ttl ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PLUGIN_NAME}.ttl)
