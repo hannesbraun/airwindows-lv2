@@ -89,8 +89,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ultrasonic->biquadD[1] = 1.10134463;
 	ultrasonic->biquadE[1] = 3.19622661; // tenth order Butterworth out of five biquads
 
-	double K = tan(M_PI * ultrasonic->biquadA[0]); //lowpass
-	double norm = 1.0 / (1.0 + K / ultrasonic->biquadA[1] + K * K);
+	long double K = tan(M_PI * ultrasonic->biquadA[0]); //lowpass
+	long double norm = 1.0 / (1.0 + K / ultrasonic->biquadA[1] + K * K);
 	ultrasonic->biquadA[2] = K * K * norm;
 	ultrasonic->biquadA[3] = 2.0 * ultrasonic->biquadA[2];
 	ultrasonic->biquadA[4] = ultrasonic->biquadA[2];

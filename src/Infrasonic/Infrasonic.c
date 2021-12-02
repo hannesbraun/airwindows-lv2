@@ -89,8 +89,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	infrasonic->biquadD[1] = 1.10134463;
 	infrasonic->biquadE[1] = 3.19622661; //tenth order Butterworth out of five biquads
 
-	double K = tan(M_PI * infrasonic->biquadA[0]); //lowpass
-	double norm = 1.0 / (1.0 + K / infrasonic->biquadA[1] + K * K);
+	long double K = tan(M_PI * infrasonic->biquadA[0]); //lowpass
+	long double norm = 1.0 / (1.0 + K / infrasonic->biquadA[1] + K * K);
 	infrasonic->biquadA[2] = norm;
 	infrasonic->biquadA[3] = -2.0 * infrasonic->biquadA[2];
 	infrasonic->biquadA[4] = infrasonic->biquadA[2];
@@ -219,8 +219,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		inputSampleR += (((double)(infrasonic->fpd) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
-		*out1 = inputSampleL;
-		*out2 = inputSampleR;
+		*out1 = (float) inputSampleL;
+		*out2 = (float) inputSampleR;
 
 		in1++;
 		in2++;
