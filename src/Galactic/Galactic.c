@@ -284,12 +284,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		galactic->cycle = cycleEnd - 1;
 	}
 
-	double regen = 0.0625 + ((1.0 - *(galactic->replace)) * 0.0625);
+	double regen = 0.0625 + ((1.0 - *galactic->replace) * 0.0625);
 	double attenuate = (1.0 - (regen / 0.125)) * 1.333;
-	double lowpass = pow(1.00001 - (1.0 - *(galactic->brightness)), 2.0) / sqrt(overallscale);
-	double drift = pow(*(galactic->detune), 3) * 0.001;
-	double size = (*(galactic->bigness) * 1.77) + 0.1;
-	double wet = 1.0 - (pow(1.0 - *(galactic->drywet), 3));
+	double lowpass = pow(1.00001 - (1.0 - *galactic->brightness), 2.0) / sqrt(overallscale);
+	double drift = pow(*galactic->detune, 3) * 0.001;
+	double size = (*galactic->bigness * 1.77) + 0.1;
+	double wet = 1.0 - (pow(1.0 - *galactic->drywet, 3));
 
 	galactic->delayI = 3407.0 * size;
 	galactic->delayJ = 1823.0 * size;
