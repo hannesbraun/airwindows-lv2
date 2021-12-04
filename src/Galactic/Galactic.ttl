@@ -55,7 +55,6 @@
 		lv2:default 0.5 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
-		units:unit units:coef ;
 		lv2:portProperty pprops:hasStrictBounds
 	] , [
 		a lv2:ControlPort ,
@@ -66,7 +65,6 @@
 		lv2:default 0.5 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
-		units:unit units:coef ;
 		lv2:portProperty pprops:hasStrictBounds
 	] , [
 		a lv2:ControlPort ,
@@ -77,7 +75,6 @@
 		lv2:default 0.5 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
-		units:unit units:coef ;
 		lv2:portProperty pprops:hasStrictBounds
 	] , [
 		a lv2:ControlPort ,
@@ -88,7 +85,6 @@
 		lv2:default 1.0 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
-		units:unit units:coef ;
 		lv2:portProperty pprops:hasStrictBounds
 	] , [
 		a lv2:ControlPort ,
@@ -99,6 +95,5 @@
 		lv2:default 1.0 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
-		units:unit units:coef ;
 		lv2:portProperty pprops:hasStrictBounds
 	] .
