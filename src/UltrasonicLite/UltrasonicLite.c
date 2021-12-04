@@ -57,7 +57,10 @@ static void activate(LV2_Handle instance)
 	for (int x = 0; x < 15; x++) {
 		ultrasoniclite->biquadA[x] = 0.0;
 	}
-	ultrasoniclite->fpd = 17;
+	ultrasoniclite->fpd = 1.0;
+	while (ultrasoniclite->fpd < 16386) {
+		ultrasoniclite->fpd = rand() * UINT32_MAX;
+	}
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
