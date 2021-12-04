@@ -38,6 +38,7 @@ function(add_plugin PLUGIN_NAME)
 endfunction()
 
 add_plugin(ClipOnly)
+add_plugin(DCVoltage)
 add_plugin(Galactic)
 add_plugin(Infrasonic)
 add_plugin(LeftoMono)
