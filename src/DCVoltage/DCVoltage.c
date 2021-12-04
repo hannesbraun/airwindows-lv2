@@ -64,7 +64,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	const float* in2 = dcvoltage->input[1];
 	float* out1 = dcvoltage->output[0];
 	float* out2 = dcvoltage->output[1];
-	const double voltage = *dcvoltage->voltage;
+	const float voltage = *dcvoltage->voltage;
 
 	while (sampleFrames-- > 0) {
 		*out1 = *in1 + voltage;
