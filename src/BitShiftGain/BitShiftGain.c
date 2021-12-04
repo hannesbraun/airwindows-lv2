@@ -64,7 +64,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	const float* in2 = bitshiftgain->input[1];
 	float* out1 = bitshiftgain->output[0];
 	float* out2 = bitshiftgain->output[1];
-	const int bitshift = (int) *bitshiftgain->bitshift;
+	const int bitshift = (int) * bitshiftgain->bitshift;
 
 	double gain = 1.0;
 	switch (bitshift) {
