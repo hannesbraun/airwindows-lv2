@@ -47,6 +47,7 @@ add_plugin(PurestGain)
 add_plugin(RightoMono)
 add_plugin(Ultrasonic)
 add_plugin(UltrasonicLite)
+add_plugin(UltrasonicMed)
 
 configure_file(src/manifest.ttl.in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/manifest.ttl)
 
