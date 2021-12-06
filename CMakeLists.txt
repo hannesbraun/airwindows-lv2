@@ -38,6 +38,7 @@ function(add_plugin PLUGIN_NAME)
 endfunction()
 
 add_plugin(Acceleration)
+add_plugin(Acceleration2)
 add_plugin(BitShiftGain)
 add_plugin(ClipOnly)
 add_plugin(DCVoltage)
