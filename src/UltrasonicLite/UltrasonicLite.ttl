@@ -9,6 +9,8 @@
 		lv2:LowpassPlugin ,
 		doap:Project ;
 	doap:name "UltrasonicLite" ;
+	rdfs:comment "Just one stage of supersonic filter, for using inside digital mixes" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

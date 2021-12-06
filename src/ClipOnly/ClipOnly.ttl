@@ -9,6 +9,8 @@
 		lv2:DynamicsPlugin ,
 		doap:Project ;
 	doap:name "ClipOnly" ;
+	rdfs:comment "Clipper plugin that supresses the brightness of digital clipping without affecting unclipped samples" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

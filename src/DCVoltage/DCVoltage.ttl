@@ -9,6 +9,8 @@
 		lv2:UtilityPlugin ,
 		doap:Project ;
 	doap:name "DCVoltage" ;
+	rdfs:comment "Literally a DC control voltage" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

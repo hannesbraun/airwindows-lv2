@@ -9,6 +9,8 @@
 		lv2:ConverterPlugin ,
 		doap:Project ;
 	doap:name "LeftoMono" ;
+	rdfs:comment "Copies the left channel to both channels" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

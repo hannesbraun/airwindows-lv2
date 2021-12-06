@@ -9,6 +9,8 @@
 	a lv2:Plugin ,
 		doap:Project ;
 	doap:name "Acceleration" ;
+	rdfs:comment "An acceleration limiter that tames edge, leaves brightness" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

@@ -8,6 +8,8 @@
 	a lv2:Plugin ,
 		doap:Project ;
 	doap:name "Interstage" ;
+	rdfs:comment "Subtle and sophisticated analogifier" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

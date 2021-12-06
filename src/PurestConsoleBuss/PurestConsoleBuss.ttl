@@ -8,6 +8,8 @@
 	a lv2:Plugin ,
 		doap:Project ;
 	doap:name "PurestConsoleBuss" ;
+	rdfs:comment "The most free from coloration Console system" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

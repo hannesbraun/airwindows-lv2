@@ -9,6 +9,8 @@
 		lv2:HighpassPlugin ,
 		doap:Project ;
 	doap:name "Infrasonic" ;
+	rdfs:comment "Very steep subsonic filter, built like Ultrasonic" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>

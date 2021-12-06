@@ -11,6 +11,8 @@
 		lv2:UtilityPlugin ,
 		doap:Project ;
 	doap:name "BitShiftGain" ;
+	rdfs:comment "The 'One Weird Trick' perfect boost/pad, but in 6db increments ONLY" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Airwindows" ;
 		foaf:homepage <https://www.airwindows.com>
