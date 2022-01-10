@@ -1,0 +1,93 @@
+@prefix doap:	<http://usefulinc.com/ns/doap#> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix lv2:	<http://lv2plug.in/ns/lv2core#> .
+@prefix pprops:	<http://lv2plug.in/ns/ext/port-props#> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units:	<http://lv2plug.in/ns/extensions/units#> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/channel8>
+	a lv2:Plugin ,
+		doap:Project ;
+	doap:name "Channel8" ;
+	rdfs:comment "Channel7 with updates from Capacitor2 and Slew3. More and better of what Channel is." ;
+	doap:license <https://opensource.org/licenses/MIT> ;
+	doap:maintainer [
+		foaf:name "Airwindows" ;
+		foaf:homepage <https://www.airwindows.com>
+	] , [
+		foaf:name "Hannes Braun" ;
+		foaf:homepage <https://hannesbraun.net/>
+	] ;
+
+	lv2:minorVersion 2 ;
+	lv2:microVersion 0 ;
+
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "inL" ;
+		lv2:name "In L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 1 ;
+		lv2:symbol "inR" ;
+		lv2:name "In R"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 2 ;
+		lv2:symbol "outL" ;
+		lv2:name "Out L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 3 ;
+		lv2:symbol "outR" ;
+		lv2:name "Out R"
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "consoletype" ;
+		lv2:name "Console Type" ;
+		lv2:default 0 ;
+		lv2:minimum 0 ;
+		lv2:maximum 3 ;
+		lv2:scalePoint [
+                        rdfs:label "Neve" ;
+                        rdf:value 0
+                ] , [
+                        rdfs:label "API" ;
+                        rdf:value 1
+                ] , [
+                        rdfs:label "SSL" ;
+                        rdf:value 2
+                ] ;
+		lv2:portProperty lv2:enumeration
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 5 ;
+		lv2:symbol "drive" ;
+		lv2:name "Drive" ;
+		lv2:default 0.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 200.0 ;
+		units:unit units:pc ;
+		lv2:portProperty pprops:hasStrictBounds
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 6 ;
+		lv2:symbol "output" ;
+		lv2:name "Output" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		units:unit units:coef ;
+		lv2:portProperty pprops:hasStrictBounds
+	] .
