@@ -17,7 +17,6 @@ typedef enum {
 } PortIndex;
 
 typedef struct {
-	double sampleRate;
 	const float* input[2];
 	float* output[2];
 	const float* lowpass;
@@ -75,7 +74,6 @@ static LV2_Handle instantiate(
 	const LV2_Feature* const* features)
 {
 	Capacitor* capacitor = (Capacitor*) calloc(1, sizeof(Capacitor));
-	capacitor->sampleRate = rate;
 	return (LV2_Handle) capacitor;
 }
 
