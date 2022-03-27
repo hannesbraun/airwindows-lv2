@@ -32,8 +32,8 @@ typedef struct {
 	double m1R;
 	double m2R;
 
-	long double biquadA[11];
-	long double biquadB[11]; //note that this stereo form doesn't require L and R forms!
+	double biquadA[11];
+	double biquadB[11]; //note that this stereo form doesn't require L and R forms!
 	//This is because so much of it is coefficients etc. that are the same on both channels.
 	//So the stored samples are in 7-8 and 9-10, and freq/res/coefficients serve both.
 
@@ -126,8 +126,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	acceleration2-> biquadA[1] = 0.7071;
 	acceleration2->biquadB[1] = 0.7071;
 
-	long double K = tan(M_PI * acceleration2->biquadA[0]);
-	long double norm = 1.0 / (1.0 + K / acceleration2->biquadA[1] + K * K);
+	double K = tan(M_PI * acceleration2->biquadA[0]);
+	double norm = 1.0 / (1.0 + K / acceleration2->biquadA[1] + K * K);
 	acceleration2->biquadA[2] = K * K * norm;
 	acceleration2->biquadA[3] = 2.0 * acceleration2->biquadA[2];
 	acceleration2->biquadA[4] = acceleration2->biquadA[2];
@@ -143,14 +143,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	acceleration2->biquadB[6] = (1.0 - K / acceleration2->biquadB[1] + K * K) * norm;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = acceleration2->fpdL * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = acceleration2->fpdR * 1.18e-37;
-		long double drySampleL = inputSampleL;
-		long double drySampleR = inputSampleR;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = acceleration2->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = acceleration2->fpdR * 1.18e-17;
+		double drySampleL = inputSampleL;
+		double drySampleR = inputSampleR;
 
-		long double tempSample = (inputSampleL * acceleration2->biquadA[2]) + acceleration2->biquadA[7];
+		double tempSample = (inputSampleL * acceleration2->biquadA[2]) + acceleration2->biquadA[7];
 		acceleration2->biquadA[7] = (inputSampleL * acceleration2->biquadA[3]) - (tempSample * acceleration2->biquadA[5]) + acceleration2->biquadA[8];
 		acceleration2->biquadA[8] = (inputSampleL * acceleration2->biquadA[4]) - (tempSample * acceleration2->biquadA[6]);
 		double smoothL = tempSample; //like mono AU, 7 and 8 store L channel
