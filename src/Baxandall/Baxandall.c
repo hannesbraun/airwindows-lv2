@@ -25,17 +25,18 @@ typedef struct {
 	const float* bass;
 	const float* outputGain;
 
-	uint32_t fpd;
+	uint32_t fpdL;
+	uint32_t fpdR;
 	//default stuff
-	long double trebleAL[9];
-	long double trebleBL[9];
-	long double bassAL[9];
-	long double bassBL[9];
+	double trebleAL[9];
+	double trebleBL[9];
+	double bassAL[9];
+	double bassBL[9];
 
-	long double trebleAR[9];
-	long double trebleBR[9];
-	long double bassAR[9];
-	long double bassBR[9];
+	double trebleAR[9];
+	double trebleBR[9];
+	double bassAR[9];
+	double bassBR[9];
 	bool flip;
 } Baxandall;
 
@@ -93,7 +94,10 @@ static void activate(LV2_Handle instance)
 		baxandall->bassBR[x] = 0.0;
 	}
 	baxandall->flip = false;
-	baxandall->fpd = 17;
+	baxandall->fpdL = 1.0;
+	while (baxandall->fpdL < 16386) baxandall->fpdL = rand() * UINT32_MAX;
+	baxandall->fpdR = 1.0;
+	while (baxandall->fpdR < 16386) baxandall->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -130,8 +134,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	baxandall->bassBR[1] = 0.2;
 	double output = pow(10.0, *baxandall->outputGain / 20.0);
 
-	long double K = tan(M_PI * baxandall->trebleAL[0]);
-	long double norm = 1.0 / (1.0 + K / baxandall->trebleAL[1] + K * K);
+	double K = tan(M_PI * baxandall->trebleAL[0]);
+	double norm = 1.0 / (1.0 + K / baxandall->trebleAL[1] + K * K);
 	baxandall->trebleBL[2] = K * K * norm;
 	baxandall->trebleAL[2] = baxandall->trebleBL[2];
 	baxandall->trebleBR[2] = baxandall->trebleBL[2];
@@ -177,10 +181,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	baxandall->bassAR[6] = baxandall->bassBL[6];
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = baxandall->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = baxandall->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = baxandall->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = baxandall->fpdR * 1.18e-17;
 
 		if (output != 1.0) {
 			inputSampleL *= output;
@@ -191,10 +195,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		inputSampleR = sin(inputSampleR);
 		//encode Console5: good cleanness
 
-		long double trebleSampleL;
-		long double bassSampleL;
-		long double trebleSampleR;
-		long double bassSampleR;
+		double trebleSampleL;
+		double bassSampleL;
+		double trebleSampleR;
+		double bassSampleR;
 
 		if (baxandall->flip) {
 			trebleSampleL = (inputSampleL * baxandall->trebleAL[2]) + baxandall->trebleAL[7];
@@ -256,16 +260,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		//begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
-		baxandall->fpd ^= baxandall->fpd << 13;
-		baxandall->fpd ^= baxandall->fpd >> 17;
-		baxandall->fpd ^= baxandall->fpd << 5;
-		inputSampleL += (((double)baxandall->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
-		baxandall->fpd ^= baxandall->fpd << 13;
-		baxandall->fpd ^= baxandall->fpd >> 17;
-		baxandall->fpd ^= baxandall->fpd << 5;
-		inputSampleR += (((double)baxandall->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleL, &expon);
+		baxandall->fpdL ^= baxandall->fpdL << 13;
+		baxandall->fpdL ^= baxandall->fpdL >> 17;
+		baxandall->fpdL ^= baxandall->fpdL << 5;
+		inputSampleL += (((double) baxandall->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
+		baxandall->fpdR ^= baxandall->fpdR << 13;
+		baxandall->fpdR ^= baxandall->fpdR >> 17;
+		baxandall->fpdR ^= baxandall->fpdR << 5;
+		inputSampleR += (((double) baxandall->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
