@@ -22,8 +22,8 @@ typedef struct {
 	const float* limit;
 	const float* drywet;
 
-	long double fpNShapeL;
-	long double fpNShapeR;
+	uint32_t fpdL;
+	uint32_t fpdR;
 	//default stuff
 	double ataLastOutL;
 	double s1L;
@@ -109,8 +109,10 @@ static void activate(LV2_Handle instance)
 	acceleration->m2R = 0.0;
 	acceleration->desR = 0.0;
 
-	acceleration->fpNShapeL = 0.0;
-	acceleration->fpNShapeR = 0.0;
+	acceleration->fpdL = 1.0;
+	while (acceleration->fpdL < 16386) acceleration->fpdL = rand() * UINT32_MAX;
+	acceleration->fpdR = 1.0;
+	while (acceleration->fpdR < 16386) acceleration->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -128,7 +130,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 	double intensity = pow(*acceleration->limit, 3) * (32 / overallscale);
 	double wet = *acceleration->drywet;
-	double dry = 1.0 - wet;
+	// removed extra dry variable
 
 	double senseL;
 	double smoothL;
@@ -137,60 +139,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double accumulatorSample;
 	double drySampleL;
 	double drySampleR;
-	long double inputSampleL;
-	long double inputSampleR;
+	double inputSampleL;
+	double inputSampleR;
 
 	while (sampleFrames-- > 0) {
 		inputSampleL = *in1;
 		inputSampleR = *in2;
-		if (inputSampleL < 1.2e-38 && -inputSampleL < 1.2e-38) {
-			static int noisesource = 0;
-			//this declares a variable before anything else is compiled. It won't keep assigning
-			//it to 0 for every sample, it's as if the declaration doesn't exist in this context,
-			//but it lets me add this denormalization fix in a single place rather than updating
-			//it in three different locations. The variable isn't thread-safe but this is only
-			//a random seed and we can share it with whatever.
-			noisesource = noisesource % 1700021;
-			noisesource++;
-			int residue = noisesource * noisesource;
-			residue = residue % 170003;
-			residue *= residue;
-			residue = residue % 17011;
-			residue *= residue;
-			residue = residue % 1709;
-			residue *= residue;
-			residue = residue % 173;
-			residue *= residue;
-			residue = residue % 17;
-			double applyresidue = residue;
-			applyresidue *= 0.00000001;
-			applyresidue *= 0.00000001;
-			inputSampleL = applyresidue;
-		}
-		if (inputSampleR < 1.2e-38 && -inputSampleR < 1.2e-38) {
-			static int noisesource = 0;
-			noisesource = noisesource % 1700021;
-			noisesource++;
-			int residue = noisesource * noisesource;
-			residue = residue % 170003;
-			residue *= residue;
-			residue = residue % 17011;
-			residue *= residue;
-			residue = residue % 1709;
-			residue *= residue;
-			residue = residue % 173;
-			residue *= residue;
-			residue = residue % 17;
-			double applyresidue = residue;
-			applyresidue *= 0.00000001;
-			applyresidue *= 0.00000001;
-			inputSampleR = applyresidue;
-			//this denormalization routine produces a white noise at -300 dB which the noise
-			//shaping will interact with to produce a bipolar output, but the noise is actually
-			//all positive. That should stop any variables from going denormal, and the routine
-			//only kicks in if digital black is input. As a final touch, if you save to 24-bit
-			//the silence will return to being digital black again.
-		}
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = acceleration->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = acceleration->fpdR * 1.18e-17;
 		drySampleL = inputSampleL;
 		drySampleR = inputSampleR;
 
@@ -245,21 +201,23 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		inputSampleR = accumulatorSample;
 
 		if (wet != 1.0) {
-			inputSampleL = (inputSampleL * wet) + (drySampleL * dry);
-			inputSampleR = (inputSampleR * wet) + (drySampleR * dry);
+			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
+			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//stereo 32 bit dither, made small and tidy.
+		//begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
-		long double dither = (rand() / (RAND_MAX * 7.737125245533627e+25)) * pow(2, expon + 62);
-		inputSampleL += (dither - acceleration->fpNShapeL);
-		acceleration->fpNShapeL = dither;
-		frexpf((float)inputSampleR, &expon);
-		dither = (rand() / (RAND_MAX * 7.737125245533627e+25)) * pow(2, expon + 62);
-		inputSampleR += (dither - acceleration->fpNShapeR);
-		acceleration->fpNShapeR = dither;
-		//end 32 bit dither
+		frexpf((float) inputSampleL, &expon);
+		acceleration->fpdL ^= acceleration->fpdL << 13;
+		acceleration->fpdL ^= acceleration->fpdL >> 17;
+		acceleration->fpdL ^= acceleration->fpdL << 5;
+		inputSampleL += (((double) acceleration->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
+		acceleration->fpdR ^= acceleration->fpdR << 13;
+		acceleration->fpdR ^= acceleration->fpdR >> 17;
+		acceleration->fpdR ^= acceleration->fpdR << 5;
+		inputSampleR += (((double) acceleration->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
