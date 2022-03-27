@@ -25,7 +25,8 @@ typedef struct {
 	const float* drive;
 	const float* outputGain;
 
-	uint32_t fpd;
+	uint32_t fpdL;
+	uint32_t fpdR;
 	//default stuff
 	double iirSampleLA;
 	double iirSampleRA;
@@ -86,7 +87,10 @@ static void activate(LV2_Handle instance)
 {
 	Channel8* channel8 = (Channel8*) instance;
 
-	channel8->fpd = 17;
+	channel8->fpdL = 1.0;
+	while (channel8->fpdL < 16386) channel8->fpdL = rand() * UINT32_MAX;
+	channel8->fpdR = 1.0;
+	while (channel8->fpdR < 16386) channel8->fpdR = rand() * UINT32_MAX;
 	channel8->iirSampleLA = 0.0;
 	channel8->iirSampleRA = 0.0;
 	channel8->iirSampleLB = 0.0;
@@ -144,13 +148,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = channel8->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = channel8->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = channel8->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = channel8->fpdR * 1.18e-17;
 
-		double dielectricScaleL = fabsl(2.0 - ((inputSampleL + nonLin) / nonLin));
-		double dielectricScaleR = fabsl(2.0 - ((inputSampleR + nonLin) / nonLin));
+		double dielectricScaleL = fabs(2.0 - ((inputSampleL + nonLin) / nonLin));
+		double dielectricScaleR = fabs(2.0 - ((inputSampleR + nonLin) / nonLin));
 
 		if (channel8->flip) {
 			channel8->iirSampleLA = (channel8->iirSampleLA * (1.0 - (localiirAmount * dielectricScaleL))) + (inputSampleL * localiirAmount * dielectricScaleL);
@@ -164,16 +168,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR = inputSampleR - channel8->iirSampleRB;
 		}
 		//highpass section
-		long double drySampleL = inputSampleL;
-		long double drySampleR = inputSampleR;
+		double drySampleL = inputSampleL;
+		double drySampleR = inputSampleR;
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
-		long double phatSampleL = sin(inputSampleL * 1.57079633);
+		double phatSampleL = sin(inputSampleL * 1.57079633);
 		inputSampleL *= 1.2533141373155;
 		//clip to 1.2533141373155 to reach maximum output, or 1.57079633 for pure sine 'phat' version
 
-		long double distSampleL = sin(inputSampleL * fabsl(inputSampleL)) / ((fabsl(inputSampleL) == 0.0) ? 1 : fabsl(inputSampleL));
+		double distSampleL = sin(inputSampleL * fabs(inputSampleL)) / ((fabs(inputSampleL) == 0.0) ? 1 : fabs(inputSampleL));
 
 		inputSampleL = distSampleL; //purest form is full Spiral
 		if (density < 1.0) inputSampleL = (drySampleL * (1 - density)) + (distSampleL * density); //fade Spiral aspect
@@ -181,11 +185,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		long double phatSampleR = sin(inputSampleR * 1.57079633);
+		double phatSampleR = sin(inputSampleR * 1.57079633);
 		inputSampleR *= 1.2533141373155;
 		//clip to 1.2533141373155 to reach maximum output, or 1.57079633 for pure sine 'phat' version
 
-		long double distSampleR = sin(inputSampleR * fabsl(inputSampleR)) / ((fabsl(inputSampleR) == 0.0) ? 1 : fabsl(inputSampleR));
+		double distSampleR = sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR));
 
 		inputSampleR = distSampleR; //purest form is full Spiral
 		if (density < 1.0) inputSampleR = (drySampleR * (1 - density)) + (distSampleR * density); //fade Spiral aspect
@@ -235,15 +239,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		channel8->fpd ^= channel8->fpd << 13;
-		channel8->fpd ^= channel8->fpd >> 17;
-		channel8->fpd ^= channel8->fpd << 5;
-		inputSampleL += (((double)channel8->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		channel8->fpdL ^= channel8->fpdL << 13;
+		channel8->fpdL ^= channel8->fpdL >> 17;
+		channel8->fpdL ^= channel8->fpdL << 5;
+		inputSampleL += (((double)channel8->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		channel8->fpd ^= channel8->fpd << 13;
-		channel8->fpd ^= channel8->fpd >> 17;
-		channel8->fpd ^= channel8->fpd << 5;
-		inputSampleR += (((double)channel8->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		channel8->fpdR ^= channel8->fpdR << 13;
+		channel8->fpdR ^= channel8->fpdR >> 17;
+		channel8->fpdR ^= channel8->fpdR << 5;
+		inputSampleR += (((double)channel8->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
