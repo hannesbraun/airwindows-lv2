@@ -63,8 +63,8 @@ typedef struct {
 	double lastHighpass;
 	double lastWet;
 
-	long double fpNShapeL;
-	long double fpNShapeR;
+	uint32_t fpdL;
+	uint32_t fpdR;
 } Capacitor;
 
 static LV2_Handle instantiate(
@@ -146,8 +146,10 @@ static void activate(LV2_Handle instance)
 	capacitor->lastHighpass = 1000.0;
 	capacitor->lastWet = 1000.0;
 
-	capacitor->fpNShapeL = 0.0;
-	capacitor->fpNShapeR = 0.0;
+	capacitor->fpdL = 1.0;
+	while (capacitor->fpdL < 16386) capacitor->fpdL = rand() * UINT32_MAX;
+	capacitor->fpdR = 1.0;
+	while (capacitor->fpdR < 16386) capacitor->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -176,62 +178,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double dry;
 
 
-	long double inputSampleL;
-	long double inputSampleR;
+	double inputSampleL;
+	double inputSampleR;
 	float drySampleL;
 	float drySampleR;
 
 	while (sampleFrames-- > 0) {
 		inputSampleL = *in1;
 		inputSampleR = *in2;
-		if (inputSampleL < 1.2e-38 && -inputSampleL < 1.2e-38) {
-			static int noisesource = 0;
-			//this declares a variable before anything else is compiled. It won't keep assigning
-			//it to 0 for every sample, it's as if the declaration doesn't exist in this context,
-			//but it lets me add this denormalization fix in a single place rather than updating
-			//it in three different locations. The variable isn't thread-safe but this is only
-			//a random seed and we can share it with whatever.
-			noisesource = noisesource % 1700021;
-			noisesource++;
-			int residue = noisesource * noisesource;
-			residue = residue % 170003;
-			residue *= residue;
-			residue = residue % 17011;
-			residue *= residue;
-			residue = residue % 1709;
-			residue *= residue;
-			residue = residue % 173;
-			residue *= residue;
-			residue = residue % 17;
-			double applyresidue = residue;
-			applyresidue *= 0.00000001;
-			applyresidue *= 0.00000001;
-			inputSampleL = applyresidue;
-		}
-		if (inputSampleR < 1.2e-38 && -inputSampleR < 1.2e-38) {
-			static int noisesource = 0;
-			noisesource = noisesource % 1700021;
-			noisesource++;
-			int residue = noisesource * noisesource;
-			residue = residue % 170003;
-			residue *= residue;
-			residue = residue % 17011;
-			residue *= residue;
-			residue = residue % 1709;
-			residue *= residue;
-			residue = residue % 173;
-			residue *= residue;
-			residue = residue % 17;
-			double applyresidue = residue;
-			applyresidue *= 0.00000001;
-			applyresidue *= 0.00000001;
-			inputSampleR = applyresidue;
-			//this denormalization routine produces a white noise at -300 dB which the noise
-			//shaping will interact with to produce a bipolar output, but the noise is actually
-			//all positive. That should stop any variables from going denormal, and the routine
-			//only kicks in if digital black is input. As a final touch, if you save to 24-bit
-			//the silence will return to being digital black again.
-		}
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = capacitor->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = capacitor->fpdR * 1.18e-17;
 		drySampleL = inputSampleL;
 		drySampleR = inputSampleR;
 
@@ -409,17 +365,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		inputSampleL = (drySampleL * dry) + (inputSampleL * capacitor->wet);
 		inputSampleR = (drySampleR * dry) + (inputSampleR * capacitor->wet);
 
-		//stereo 32 bit dither, made small and tidy.
+		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		long double dither = (rand() / (RAND_MAX * 7.737125245533627e+25)) * pow(2, expon + 62);
-		inputSampleL += (dither - capacitor->fpNShapeL);
-		capacitor->fpNShapeL = dither;
+		capacitor->fpdL ^= capacitor->fpdL << 13;
+		capacitor->fpdL ^= capacitor->fpdL >> 17;
+		capacitor->fpdL ^= capacitor->fpdL << 5;
+		inputSampleL += (((double)capacitor->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		dither = (rand() / (RAND_MAX * 7.737125245533627e+25)) * pow(2, expon + 62);
-		inputSampleR += (dither - capacitor->fpNShapeR);
-		capacitor->fpNShapeR = dither;
-		//end 32 bit dither
+		capacitor->fpdR ^= capacitor->fpdR << 13;
+		capacitor->fpdR ^= capacitor->fpdR >> 17;
+		capacitor->fpdR ^= capacitor->fpdR << 5;
+		inputSampleR += (((double)capacitor->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
