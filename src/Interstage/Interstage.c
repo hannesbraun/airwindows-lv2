@@ -25,15 +25,16 @@ typedef struct {
 	double iirSampleDL;
 	double iirSampleEL;
 	double iirSampleFL;
-	long double lastSampleL;
+	double lastSampleL;
 	double iirSampleAR;
 	double iirSampleBR;
 	double iirSampleCR;
 	double iirSampleDR;
 	double iirSampleER;
 	double iirSampleFR;
-	long double lastSampleR;
-	uint32_t fpd;
+	double lastSampleR;
+	uint32_t fpdL;
+	uint32_t fpdR;
 	bool flip;
 } Interstage;
 
@@ -85,7 +86,10 @@ static void activate(LV2_Handle instance)
 	interstage->iirSampleER = 0.0;
 	interstage->iirSampleFR = 0.0;
 	interstage->lastSampleR = 0.0;
-	interstage->fpd = 17;
+	interstage->fpdL = 1.0;
+	while (interstage->fpdL < 16386) interstage->fpdL = rand() * UINT32_MAX;
+	interstage->fpdR = 1.0;
+	while (interstage->fpdR < 16386) interstage->fpdR = rand() * UINT32_MAX;
 	interstage->flip = true;
 }
 
@@ -107,12 +111,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	const double threshold = 0.381966011250105;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = interstage->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = interstage->fpd * 1.18e-37;
-		long double drySampleL = inputSampleL;
-		long double drySampleR = inputSampleR;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = interstage->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = interstage->fpdR * 1.18e-17;
+		double drySampleL = inputSampleL;
+		double drySampleR = inputSampleR;
 
 		inputSampleL = (inputSampleL + interstage->lastSampleL) * 0.5;
 		inputSampleR = (inputSampleR + interstage->lastSampleR) * 0.5; //start the lowpassing with an average
@@ -173,15 +177,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		interstage->fpd ^= interstage->fpd << 13;
-		interstage->fpd ^= interstage->fpd >> 17;
-		interstage->fpd ^= interstage->fpd << 5;
-		inputSampleL += (((double)interstage->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		interstage->fpdL ^= interstage->fpdL << 13;
+		interstage->fpdL ^= interstage->fpdL >> 17;
+		interstage->fpdL ^= interstage->fpdL << 5;
+		inputSampleL += (((double)interstage->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		interstage->fpd ^= interstage->fpd << 13;
-		interstage->fpd ^= interstage->fpd >> 17;
-		interstage->fpd ^= interstage->fpd << 5;
-		inputSampleR += (((double)interstage->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		interstage->fpdR ^= interstage->fpdR << 13;
+		interstage->fpdR ^= interstage->fpdR >> 17;
+		interstage->fpdR ^= interstage->fpdR << 5;
+		inputSampleR += (((double)interstage->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
