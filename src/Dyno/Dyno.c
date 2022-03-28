@@ -19,7 +19,8 @@ typedef struct {
 	float* output[2];
 	const float* gain;
 
-	uint32_t fpd;
+	uint32_t fpdL;
+	uint32_t fpdR;
 } Dyno;
 
 static LV2_Handle instantiate(
@@ -58,7 +59,10 @@ static void connect_port(LV2_Handle instance, uint32_t port, void* data)
 static void activate(LV2_Handle instance)
 {
 	Dyno* dyno = (Dyno*) instance;
-	dyno->fpd = 17;
+	dyno->fpdL = 1.0;
+	while (dyno->fpdL < 16386) dyno->fpdL = rand() * UINT32_MAX;
+	dyno->fpdR = 1.0;
+	while (dyno->fpdR < 16386) dyno->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -73,17 +77,17 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double gain = pow(10.0, *dyno_instance->gain / 20.0);
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = dyno_instance->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = dyno_instance->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = dyno_instance->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = dyno_instance->fpdR * 1.18e-17;
 
 		if (gain != 1.0) {
 			inputSampleL *= gain;
 			inputSampleR *= gain;
 		}
 
-		long double dyno = pow(fabsl(inputSampleL), 4);
+		double dyno = pow(fabsl(inputSampleL), 4);
 		if (dyno > 0.0) inputSampleL = (sin(inputSampleL * dyno) / dyno) * 1.1654321;
 		//dyno is the one that tries to raise peak energy
 		dyno = pow(fabsl(inputSampleR), 4);
@@ -93,15 +97,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		dyno_instance->fpd ^= dyno_instance->fpd << 13;
-		dyno_instance->fpd ^= dyno_instance->fpd >> 17;
-		dyno_instance->fpd ^= dyno_instance->fpd << 5;
-		inputSampleL += (((double) dyno_instance->fpd - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		dyno_instance->fpdL ^= dyno_instance->fpdL << 13;
+		dyno_instance->fpdL ^= dyno_instance->fpdL >> 17;
+		dyno_instance->fpdL ^= dyno_instance->fpdL << 5;
+		inputSampleL += (((double)dyno_instance->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		dyno_instance->fpd ^= dyno_instance->fpd << 13;
-		dyno_instance->fpd ^= dyno_instance->fpd >> 17;
-		dyno_instance->fpd ^= dyno_instance->fpd << 5;
-		inputSampleR += (((double) dyno_instance->fpd - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		dyno_instance->fpdR ^= dyno_instance->fpdR << 13;
+		dyno_instance->fpdR ^= dyno_instance->fpdR >> 17;
+		dyno_instance->fpdR ^= dyno_instance->fpdR << 5;
+		inputSampleR += (((double)dyno_instance->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
