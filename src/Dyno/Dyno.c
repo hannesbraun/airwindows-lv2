@@ -87,10 +87,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR *= gain;
 		}
 
-		double dyno = pow(fabsl(inputSampleL), 4);
+		double dyno = pow(fabs(inputSampleL), 4);
 		if (dyno > 0.0) inputSampleL = (sin(inputSampleL * dyno) / dyno) * 1.1654321;
 		//dyno is the one that tries to raise peak energy
-		dyno = pow(fabsl(inputSampleR), 4);
+		dyno = pow(fabs(inputSampleR), 4);
 		if (dyno > 0.0) inputSampleR = (sin(inputSampleR * dyno) / dyno) * 1.1654321;
 		//dyno is the one that tries to raise peak energy
 
