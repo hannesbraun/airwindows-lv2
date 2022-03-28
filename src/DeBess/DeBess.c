@@ -29,13 +29,13 @@ typedef struct {
 	const float* filter;
 	const float* sense;
 
-	long double sL[41], mL[41]/*, cL[41]*/;
+	double sL[41], mL[41]/*, cL[41]*/;
 	double ratioAL;
 	double ratioBL;
 	double iirSampleAL;
 	double iirSampleBL;
 
-	long double sR[41], mR[41]/*, cR[41]*/;
+	double sR[41], mR[41]/*, cR[41]*/;
 	double ratioAR;
 	double ratioBR;
 	double iirSampleAR;
@@ -43,7 +43,8 @@ typedef struct {
 
 
 	bool flip;
-	uint32_t fpd;
+	uint32_t fpdL;
+	uint32_t fpdR;
 } DeBess;
 
 static LV2_Handle instantiate(
@@ -114,7 +115,10 @@ static void activate(LV2_Handle instance)
 	debess->iirSampleBR = 0.0;
 
 	debess->flip = false;
-	debess->fpd = 17;
+	debess->fpdL = 1.0;
+	while (debess->fpdL < 16386) debess->fpdL = rand() * UINT32_MAX;
+	debess->fpdR = 1.0;
+	while (debess->fpdR < 16386) debess->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -139,10 +143,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float monitoring = *debess->sense;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = debess->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = debess->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = debess->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = debess->fpdR * 1.18e-17;
 
 		debess->sL[0] = inputSampleL; //set up so both [0] and [1] will be input sample
 		debess->sR[0] = inputSampleR; //set up so both [0] and [1] will be input sample
@@ -159,12 +163,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			debess->mR[x] = (debess->sR[x] - debess->sR[x + 1]) * ((debess->sR[x - 1] - debess->sR[x]) / 1.3);
 		} //building up a set of slews of slews
 
-		double senseL = fabsl(debess->mL[1] - debess->mL[2]) * sharpness * sharpness;
-		double senseR = fabsl(debess->mR[1] - debess->mR[2]) * sharpness * sharpness;
+		double senseL = fabs(debess->mL[1] - debess->mL[2]) * sharpness * sharpness;
+		double senseR = fabs(debess->mR[1] - debess->mR[2]) * sharpness * sharpness;
 		for (int x = sharpness - 1; x > 0; x--) {
-			double multL = fabsl(debess->mL[x] - debess->mL[x + 1]) * sharpness * sharpness;
+			double multL = fabs(debess->mL[x] - debess->mL[x + 1]) * sharpness * sharpness;
 			if (multL < 1.0) senseL *= multL;
-			double multR = fabsl(debess->mR[x] - debess->mR[x + 1]) * sharpness * sharpness;
+			double multR = fabs(debess->mR[x] - debess->mR[x + 1]) * sharpness * sharpness;
 			if (multR < 1.0) senseR *= multR;
 		} //sense is slews of slews times each other
 
@@ -207,15 +211,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		debess->fpd ^= debess->fpd << 13;
-		debess->fpd ^= debess->fpd >> 17;
-		debess->fpd ^= debess->fpd << 5;
-		inputSampleL += (((double)debess->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		debess->fpdL ^= debess->fpdL << 13;
+		debess->fpdL ^= debess->fpdL >> 17;
+		debess->fpdL ^= debess->fpdL << 5;
+		inputSampleL += (((double)debess->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		debess->fpd ^= debess->fpd << 13;
-		debess->fpd ^= debess->fpd >> 17;
-		debess->fpd ^= debess->fpd << 5;
-		inputSampleR += (((double)debess->fpd - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		debess->fpdR ^= debess->fpdR << 13;
+		debess->fpdR ^= debess->fpdR >> 17;
+		debess->fpdR ^= debess->fpdR << 5;
+		inputSampleR += (((double)debess->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
