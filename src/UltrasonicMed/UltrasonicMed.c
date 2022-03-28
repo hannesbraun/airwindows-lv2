@@ -17,9 +17,10 @@ typedef struct {
 	double sampleRate;
 	const float* input[2];
 	float* output[2];
-	long double biquadA[15];
-	long double biquadB[15];
-	uint32_t fpd;
+	double biquadA[15];
+	double biquadB[15];
+	uint32_t fpdL;
+	uint32_t fpdR;
 } UltrasonicMed;
 
 static LV2_Handle instantiate(
@@ -60,10 +61,10 @@ static void activate(LV2_Handle instance)
 		ultrasonicMed->biquadA[x] = 0.0;
 		ultrasonicMed->biquadB[x] = 0.0;
 	}
-	ultrasonicMed->fpd = 1.0;
-	while (ultrasonicMed->fpd < 16386) {
-		ultrasonicMed->fpd = rand() * UINT32_MAX;
-	}
+	ultrasonicMed->fpdL = 1.0;
+	while (ultrasonicMed->fpdL < 16386) ultrasonicMed->fpdL = rand() * UINT32_MAX;
+	ultrasonicMed->fpdR = 1.0;
+	while (ultrasonicMed->fpdR < 16386) ultrasonicMed->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -85,8 +86,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ultrasonicMed->biquadA[1] = 0.70710678;
 	ultrasonicMed->biquadB[1] = 0.70710678;
 
-	long double K = tan(M_PI * ultrasonicMed->biquadA[0]); //lowpass
-	long double norm = 1.0 / (1.0 + K / ultrasonicMed->biquadA[1] + K * K);
+	double K = tan(M_PI * ultrasonicMed->biquadA[0]); //lowpass
+	double norm = 1.0 / (1.0 + K / ultrasonicMed->biquadA[1] + K * K);
 	ultrasonicMed->biquadA[2] = K * K * norm;
 	ultrasonicMed->biquadA[3] = 2.0 * ultrasonicMed->biquadA[2];
 	ultrasonicMed->biquadA[4] = ultrasonicMed->biquadA[2];
@@ -102,12 +103,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ultrasonicMed->biquadB[6] = (1.0 - K / ultrasonicMed->biquadB[1] + K * K) * norm;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = ultrasonicMed->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = ultrasonicMed->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = ultrasonicMed->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = ultrasonicMed->fpdR * 1.18e-17;
 
-		long double outSampleL = ultrasonicMed->biquadA[2] * inputSampleL + ultrasonicMed->biquadA[3] * ultrasonicMed->biquadA[7] + ultrasonicMed->biquadA[4] * ultrasonicMed->biquadA[8] - ultrasonicMed->biquadA[5] * ultrasonicMed->biquadA[9] - ultrasonicMed->biquadA[6] * ultrasonicMed->biquadA[10];
+		double outSampleL = ultrasonicMed->biquadA[2] * inputSampleL + ultrasonicMed->biquadA[3] * ultrasonicMed->biquadA[7] + ultrasonicMed->biquadA[4] * ultrasonicMed->biquadA[8] - ultrasonicMed->biquadA[5] * ultrasonicMed->biquadA[9] - ultrasonicMed->biquadA[6] * ultrasonicMed->biquadA[10];
 		ultrasonicMed->biquadA[8] = ultrasonicMed->biquadA[7];
 		ultrasonicMed->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
@@ -121,7 +122,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		ultrasonicMed->biquadB[10] = ultrasonicMed->biquadB[9];
 		ultrasonicMed->biquadB[9] = inputSampleL; //DF1 left
 
-		long double outSampleR = ultrasonicMed->biquadA[2] * inputSampleR + ultrasonicMed->biquadA[3] * ultrasonicMed->biquadA[11] + ultrasonicMed->biquadA[4] * ultrasonicMed->biquadA[12] - ultrasonicMed->biquadA[5] * ultrasonicMed->biquadA[13] - ultrasonicMed->biquadA[6] * ultrasonicMed->biquadA[14];
+		double outSampleR = ultrasonicMed->biquadA[2] * inputSampleR + ultrasonicMed->biquadA[3] * ultrasonicMed->biquadA[11] + ultrasonicMed->biquadA[4] * ultrasonicMed->biquadA[12] - ultrasonicMed->biquadA[5] * ultrasonicMed->biquadA[13] - ultrasonicMed->biquadA[6] * ultrasonicMed->biquadA[14];
 		ultrasonicMed->biquadA[12] = ultrasonicMed->biquadA[11];
 		ultrasonicMed->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
@@ -137,16 +138,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		//begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float) inputSampleL, &expon);
-		ultrasonicMed->fpd ^= ultrasonicMed->fpd << 13;
-		ultrasonicMed->fpd ^= ultrasonicMed->fpd >> 17;
-		ultrasonicMed->fpd ^= ultrasonicMed->fpd << 5;
-		inputSampleL += (((double) ultrasonicMed->fpd - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float) inputSampleR, &expon);
-		ultrasonicMed->fpd ^= ultrasonicMed->fpd << 13;
-		ultrasonicMed->fpd ^= ultrasonicMed->fpd >> 17;
-		ultrasonicMed->fpd ^= ultrasonicMed->fpd << 5;
-		inputSampleR += (((double) ultrasonicMed->fpd - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float)inputSampleL, &expon);
+		ultrasonicMed->fpdL ^= ultrasonicMed->fpdL << 13;
+		ultrasonicMed->fpdL ^= ultrasonicMed->fpdL >> 17;
+		ultrasonicMed->fpdL ^= ultrasonicMed->fpdL << 5;
+		inputSampleL += (((double)ultrasonicMed->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float)inputSampleR, &expon);
+		ultrasonicMed->fpdR ^= ultrasonicMed->fpdR << 13;
+		ultrasonicMed->fpdR ^= ultrasonicMed->fpdR >> 17;
+		ultrasonicMed->fpdR ^= ultrasonicMed->fpdR << 5;
+		inputSampleR += (((double)ultrasonicMed->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
