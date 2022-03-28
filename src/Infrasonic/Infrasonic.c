@@ -17,12 +17,13 @@ typedef struct {
 	double sampleRate;
 	const float* input[2];
 	float* output[2];
-	long double biquadA[15];
-	long double biquadB[15];
-	long double biquadC[15];
-	long double biquadD[15];
-	long double biquadE[15];
-	uint32_t fpd;
+	double biquadA[15];
+	double biquadB[15];
+	double biquadC[15];
+	double biquadD[15];
+	double biquadE[15];
+	uint32_t fpdL;
+	uint32_t fpdR;
 } Infrasonic;
 
 static LV2_Handle instantiate(
@@ -65,7 +66,10 @@ static void activate(LV2_Handle instance)
 		infrasonic->biquadD[x] = 0.0;
 		infrasonic->biquadE[x] = 0.0;
 	}
-	infrasonic->fpd = 17;
+	infrasonic->fpdL = 1.0;
+	while (infrasonic->fpdL < 16386) infrasonic->fpdL = rand() * UINT32_MAX;
+	infrasonic->fpdR = 1.0;
+	while (infrasonic->fpdR < 16386) infrasonic->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -77,7 +81,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out1 = infrasonic->output[0];
 	float* out2 = infrasonic->output[1];
 
-	const long double init = 20.0 / infrasonic->sampleRate;
+	const double init = 20.0 / infrasonic->sampleRate;
 	infrasonic->biquadA[0] = init;
 	infrasonic->biquadB[0] = init;
 	infrasonic->biquadC[0] = init;
@@ -89,8 +93,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	infrasonic->biquadD[1] = 1.10134463;
 	infrasonic->biquadE[1] = 3.19622661; //tenth order Butterworth out of five biquads
 
-	long double K = tan(M_PI * infrasonic->biquadA[0]); //lowpass
-	long double norm = 1.0 / (1.0 + K / infrasonic->biquadA[1] + K * K);
+	double K = tan(M_PI * infrasonic->biquadA[0]); //lowpass
+	double norm = 1.0 / (1.0 + K / infrasonic->biquadA[1] + K * K);
 	infrasonic->biquadA[2] = norm;
 	infrasonic->biquadA[3] = -2.0 * infrasonic->biquadA[2];
 	infrasonic->biquadA[4] = infrasonic->biquadA[2];
@@ -130,12 +134,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	infrasonic->biquadE[6] = (1.0 - K / infrasonic->biquadE[1] + K * K) * norm;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = infrasonic->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = infrasonic->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = infrasonic->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = infrasonic->fpdR * 1.18e-17;
 
-		long double outSampleL = infrasonic->biquadA[2] * inputSampleL + infrasonic->biquadA[3] * infrasonic->biquadA[7] + infrasonic->biquadA[4] * infrasonic->biquadA[8] - infrasonic->biquadA[5] * infrasonic->biquadA[9] - infrasonic->biquadA[6] * infrasonic->biquadA[10];
+		double outSampleL = infrasonic->biquadA[2] * inputSampleL + infrasonic->biquadA[3] * infrasonic->biquadA[7] + infrasonic->biquadA[4] * infrasonic->biquadA[8] - infrasonic->biquadA[5] * infrasonic->biquadA[9] - infrasonic->biquadA[6] * infrasonic->biquadA[10];
 		infrasonic->biquadA[8] = infrasonic->biquadA[7];
 		infrasonic->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
@@ -170,7 +174,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		infrasonic->biquadE[10] = infrasonic->biquadE[9];
 		infrasonic->biquadE[9] = inputSampleL; //DF1 left
 
-		long double outSampleR = infrasonic->biquadA[2] * inputSampleR + infrasonic->biquadA[3] * infrasonic->biquadA[11] + infrasonic->biquadA[4] * infrasonic->biquadA[12] - infrasonic->biquadA[5] * infrasonic->biquadA[13] - infrasonic->biquadA[6] * infrasonic->biquadA[14];
+		double outSampleR = infrasonic->biquadA[2] * inputSampleR + infrasonic->biquadA[3] * infrasonic->biquadA[11] + infrasonic->biquadA[4] * infrasonic->biquadA[12] - infrasonic->biquadA[5] * infrasonic->biquadA[13] - infrasonic->biquadA[6] * infrasonic->biquadA[14];
 		infrasonic->biquadA[12] = infrasonic->biquadA[11];
 		infrasonic->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
@@ -208,15 +212,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		infrasonic->fpd ^= infrasonic->fpd << 13;
-		infrasonic->fpd ^= infrasonic->fpd >> 17;
-		infrasonic->fpd ^= infrasonic->fpd << 5;
-		inputSampleL += (((double)(infrasonic->fpd) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		infrasonic->fpdL ^= infrasonic->fpdL << 13;
+		infrasonic->fpdL ^= infrasonic->fpdL >> 17;
+		infrasonic->fpdL ^= infrasonic->fpdL << 5;
+		inputSampleL += (((double)infrasonic->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		infrasonic->fpd ^= infrasonic->fpd << 13;
-		infrasonic->fpd ^= infrasonic->fpd >> 17;
-		infrasonic->fpd ^= infrasonic->fpd << 5;
-		inputSampleR += (((double)(infrasonic->fpd) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		infrasonic->fpdR ^= infrasonic->fpdR << 13;
+		infrasonic->fpdR ^= infrasonic->fpdR >> 17;
+		infrasonic->fpdR ^= infrasonic->fpdR << 5;
+		inputSampleR += (((double)infrasonic->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
