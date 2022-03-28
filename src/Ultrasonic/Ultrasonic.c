@@ -17,12 +17,13 @@ typedef struct {
 	double sampleRate;
 	const float* input[2];
 	float* output[2];
-	long double biquadA[15];
-	long double biquadB[15];
-	long double biquadC[15];
-	long double biquadD[15];
-	long double biquadE[15];
-	uint32_t fpd;
+	double biquadA[15];
+	double biquadB[15];
+	double biquadC[15];
+	double biquadD[15];
+	double biquadE[15];
+	uint32_t fpdL;
+	uint32_t fpdR;
 } Ultrasonic;
 
 static LV2_Handle instantiate(
@@ -65,7 +66,10 @@ static void activate(LV2_Handle instance)
 		ultrasonic->biquadD[x] = 0.0;
 		ultrasonic->biquadE[x] = 0.0;
 	}
-	ultrasonic->fpd = 17;
+	ultrasonic->fpdL = 1.0;
+	while (ultrasonic->fpdL < 16386) ultrasonic->fpdL = rand() * UINT32_MAX;
+	ultrasonic->fpdR = 1.0;
+	while (ultrasonic->fpdR < 16386) ultrasonic->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -130,12 +134,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ultrasonic->biquadE[6] = (1.0 - K / ultrasonic->biquadE[1] + K * K) * norm;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = ultrasonic->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = ultrasonic->fpd * 1.18e-37;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = ultrasonic->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = ultrasonic->fpdR * 1.18e-17;
 
-		long double outSampleL = ultrasonic->biquadA[2] * inputSampleL + ultrasonic->biquadA[3] * ultrasonic->biquadA[7] + ultrasonic->biquadA[4] * ultrasonic->biquadA[8] - ultrasonic->biquadA[5] * ultrasonic->biquadA[9] - ultrasonic->biquadA[6] * ultrasonic->biquadA[10];
+		double outSampleL = ultrasonic->biquadA[2] * inputSampleL + ultrasonic->biquadA[3] * ultrasonic->biquadA[7] + ultrasonic->biquadA[4] * ultrasonic->biquadA[8] - ultrasonic->biquadA[5] * ultrasonic->biquadA[9] - ultrasonic->biquadA[6] * ultrasonic->biquadA[10];
 		ultrasonic->biquadA[8] = ultrasonic->biquadA[7];
 		ultrasonic->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
@@ -170,7 +174,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		ultrasonic->biquadE[10] = ultrasonic->biquadE[9];
 		ultrasonic->biquadE[9] = inputSampleL; // DF1 left
 
-		long double outSampleR = ultrasonic->biquadA[2] * inputSampleR + ultrasonic->biquadA[3] * ultrasonic->biquadA[11] + ultrasonic->biquadA[4] * ultrasonic->biquadA[12] - ultrasonic->biquadA[5] * ultrasonic->biquadA[13] - ultrasonic->biquadA[6] * ultrasonic->biquadA[14];
+		double outSampleR = ultrasonic->biquadA[2] * inputSampleR + ultrasonic->biquadA[3] * ultrasonic->biquadA[11] + ultrasonic->biquadA[4] * ultrasonic->biquadA[12] - ultrasonic->biquadA[5] * ultrasonic->biquadA[13] - ultrasonic->biquadA[6] * ultrasonic->biquadA[14];
 		ultrasonic->biquadA[12] = ultrasonic->biquadA[11];
 		ultrasonic->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
@@ -208,15 +212,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		ultrasonic->fpd ^= ultrasonic->fpd << 13;
-		ultrasonic->fpd ^= ultrasonic->fpd >> 17;
-		ultrasonic->fpd ^= ultrasonic->fpd << 5;
-		inputSampleL += (((double)(ultrasonic->fpd) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		ultrasonic->fpdL ^= ultrasonic->fpdL << 13;
+		ultrasonic->fpdL ^= ultrasonic->fpdL >> 17;
+		ultrasonic->fpdL ^= ultrasonic->fpdL << 5;
+		inputSampleL += (((double)ultrasonic->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		ultrasonic->fpd ^= ultrasonic->fpd << 13;
-		ultrasonic->fpd ^= ultrasonic->fpd >> 17;
-		ultrasonic->fpd ^= ultrasonic->fpd << 5;
-		inputSampleR += (((double)(ultrasonic->fpd) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		ultrasonic->fpdR ^= ultrasonic->fpdR << 13;
+		ultrasonic->fpdR ^= ultrasonic->fpdR >> 17;
+		ultrasonic->fpdR ^= ultrasonic->fpdR << 5;
+		inputSampleR += (((double)ultrasonic->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
