@@ -17,7 +17,8 @@ typedef struct {
 	const float* input[2];
 	float* output[2];
 
-	uint32_t fpd;
+	uint32_t fpdL;
+	uint32_t fpdR;
 } Spiral;
 
 static LV2_Handle instantiate(
@@ -53,7 +54,10 @@ static void connect_port(LV2_Handle instance, uint32_t port, void* data)
 static void activate(LV2_Handle instance)
 {
 	Spiral* spiral = (Spiral*) instance;
-	spiral->fpd = 17;
+	spiral->fpdL = 1.0;
+	while (spiral->fpdL < 16386) spiral->fpdL = rand() * UINT32_MAX;
+	spiral->fpdR = 1.0;
+	while (spiral->fpdR < 16386) spiral->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -66,29 +70,29 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out2 = spiral->output[1];
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
 
-		if (fabsl(inputSampleL) < 1.18e-37) inputSampleL = spiral->fpd * 1.18e-37;
-		if (fabsl(inputSampleR) < 1.18e-37) inputSampleR = spiral->fpd * 1.18e-37;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = spiral->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = spiral->fpdR * 1.18e-17;
 
 
 		//clip to 1.2533141373155 to reach maximum output
-		inputSampleL = sin(inputSampleL * fabsl(inputSampleL)) / ((fabsl(inputSampleL) == 0.0) ? 1 : fabsl(inputSampleL));
-		inputSampleR = sin(inputSampleR * fabsl(inputSampleR)) / ((fabsl(inputSampleR) == 0.0) ? 1 : fabsl(inputSampleR));
+		inputSampleL = sin(inputSampleL * fabs(inputSampleL)) / ((fabs(inputSampleL) == 0.0) ? 1 : fabs(inputSampleL));
+		inputSampleR = sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR));
 
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		spiral->fpd ^= spiral->fpd << 13;
-		spiral->fpd ^= spiral->fpd >> 17;
-		spiral->fpd ^= spiral->fpd << 5;
-		inputSampleL += (int32_t)spiral->fpd * 5.960464655174751e-36L * pow(2, expon + 62);
+		spiral->fpdL ^= spiral->fpdL << 13;
+		spiral->fpdL ^= spiral->fpdL >> 17;
+		spiral->fpdL ^= spiral->fpdL << 5;
+		inputSampleL += (((double)spiral->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		spiral->fpd ^= spiral->fpd << 13;
-		spiral->fpd ^= spiral->fpd >> 17;
-		spiral->fpd ^= spiral->fpd << 5;
-		inputSampleR += (int32_t)spiral->fpd * 5.960464655174751e-36L * pow(2, expon + 62);
+		spiral->fpdR ^= spiral->fpdR << 13;
+		spiral->fpdR ^= spiral->fpdR >> 17;
+		spiral->fpdR ^= spiral->fpdR << 5;
+		inputSampleR += (((double)spiral->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
