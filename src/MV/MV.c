@@ -27,7 +27,8 @@ typedef struct {
 	const float* gain;
 	const float* drywet;
 
-	uint32_t fpd;
+	uint32_t fpdL;
+	uint32_t fpdR;
 
 	double aAL[15150];
 	double aBL[14618];
@@ -433,7 +434,10 @@ static void activate(LV2_Handle instance)
 	mv->feedbackL = 0.0;
 	mv->feedbackR = 0.0;
 
-	mv->fpd = 17;
+	mv->fpdL = 1.0;
+	while (mv->fpdL < 16386) mv->fpdL = rand() * UINT32_MAX;
+	mv->fpdR = 1.0;
+	while (mv->fpdR < 16386) mv->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -461,55 +465,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	const double wet = *mv->drywet;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
 
-		static int noisesourceL = 0;
-		static int noisesourceR = 850010;
-		int residue;
-		double applyresidue;
-
-		noisesourceL = noisesourceL % 1700021;
-		noisesourceL++;
-		residue = noisesourceL * noisesourceL;
-		residue = residue % 170003;
-		residue *= residue;
-		residue = residue % 17011;
-		residue *= residue;
-		residue = residue % 1709;
-		residue *= residue;
-		residue = residue % 173;
-		residue *= residue;
-		residue = residue % 17;
-		applyresidue = residue;
-		applyresidue *= 0.00000001;
-		applyresidue *= 0.00000001;
-		inputSampleL += applyresidue;
-		if (inputSampleL < 1.2e-38 && -inputSampleL < 1.2e-38) {
-			inputSampleL -= applyresidue;
-		}
-
-		noisesourceR = noisesourceR % 1700021;
-		noisesourceR++;
-		residue = noisesourceR * noisesourceR;
-		residue = residue % 170003;
-		residue *= residue;
-		residue = residue % 17011;
-		residue *= residue;
-		residue = residue % 1709;
-		residue *= residue;
-		residue = residue % 173;
-		residue *= residue;
-		residue = residue % 17;
-		applyresidue = residue;
-		applyresidue *= 0.00000001;
-		applyresidue *= 0.00000001;
-		inputSampleR += applyresidue;
-		if (inputSampleR < 1.2e-38 && -inputSampleR < 1.2e-38) {
-			inputSampleR -= applyresidue;
-		}
-		//for live air, we always apply the dither noise. Then, if our result is
-		//effectively digital black, we'll subtract it again. We want a 'air' hiss
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = mv->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = mv->fpdR * 1.18e-17;
 		double drySampleL = inputSampleL;
 		double drySampleR = inputSampleR;
 
@@ -1357,15 +1317,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		//begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float)inputSampleL, &expon);
-		mv->fpd ^= mv->fpd << 13;
-		mv->fpd ^= mv->fpd >> 17;
-		mv->fpd ^= mv->fpd << 5;
-		inputSampleL += (int32_t)mv->fpd * 5.960464655174751e-36L * pow(2, expon + 62);
+		mv->fpdL ^= mv->fpdL << 13;
+		mv->fpdL ^= mv->fpdL >> 17;
+		mv->fpdL ^= mv->fpdL << 5;
+		inputSampleL += (((double)mv->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		frexpf((float)inputSampleR, &expon);
-		mv->fpd ^= mv->fpd << 13;
-		mv->fpd ^= mv->fpd >> 17;
-		mv->fpd ^= mv->fpd << 5;
-		inputSampleR += (int32_t)mv->fpd * 5.960464655174751e-36L * pow(2, expon + 62);
+		mv->fpdR ^= mv->fpdR << 13;
+		mv->fpdR ^= mv->fpdR >> 17;
+		mv->fpdR ^= mv->fpdR << 5;
+		inputSampleR += (((double)mv->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
 		//end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
