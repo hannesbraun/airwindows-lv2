@@ -306,12 +306,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	galactic->delayM = 256;
 
 	while (sampleFrames-- > 0) {
-		long double inputSampleL = *in1;
-		long double inputSampleR = *in2;
-		if (fabsl(inputSampleL) < 1.18e-23) inputSampleL = galactic->fpdL * 1.18e-17;
-		if (fabsl(inputSampleR) < 1.18e-23) inputSampleR = galactic->fpdR * 1.18e-17;
-		long double drySampleL = inputSampleL;
-		long double drySampleR = inputSampleR;
+		double inputSampleL = *in1;
+		double inputSampleR = *in2;
+		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = galactic->fpdL * 1.18e-17;
+		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = galactic->fpdR * 1.18e-17;
+		double drySampleL = inputSampleL;
+		double drySampleR = inputSampleR;
 
 		galactic->vibM += (galactic->oldfpd * drift);
 		if (galactic->vibM > (3.141592653589793238 * 2.0)) {
