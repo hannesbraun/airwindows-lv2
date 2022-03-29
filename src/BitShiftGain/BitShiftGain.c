@@ -14,7 +14,6 @@ typedef enum {
 } PortIndex;
 
 typedef struct {
-	double sampleRate;
 	const float* input[2];
 	float* output[2];
 	const float* bitshift;
@@ -27,7 +26,6 @@ static LV2_Handle instantiate(
 	const LV2_Feature* const* features)
 {
 	BitShiftGain* bitshiftgain = (BitShiftGain*) calloc(1, sizeof(BitShiftGain));
-	bitshiftgain->sampleRate = rate;
 	return (LV2_Handle) bitshiftgain;
 }
 

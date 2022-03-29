@@ -14,7 +14,6 @@ typedef enum {
 } PortIndex;
 
 typedef struct {
-	double sampleRate;
 	const float* input[2];
 	float* output[2];
 
@@ -29,7 +28,6 @@ static LV2_Handle instantiate(
 	const LV2_Feature* const* features)
 {
 	PurestConsoleChannel* purestConsoleChannel = (PurestConsoleChannel*) calloc(1, sizeof(PurestConsoleChannel));
-	purestConsoleChannel->sampleRate = rate;
 	return (LV2_Handle) purestConsoleChannel;
 }
 

@@ -14,7 +14,6 @@ typedef enum {
 } PortIndex;
 
 typedef struct {
-	double sampleRate;
 	const float* input[2];
 	float* output[2];
 	const float* voltage;
@@ -27,7 +26,6 @@ static LV2_Handle instantiate(
 	const LV2_Feature* const* features)
 {
 	DCVoltage* dcvoltage = (DCVoltage*) calloc(1, sizeof(DCVoltage));
-	dcvoltage->sampleRate = rate;
 	return (LV2_Handle) dcvoltage;
 }
 
