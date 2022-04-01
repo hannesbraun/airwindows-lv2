@@ -66,6 +66,11 @@
 	lv2:binary <Galactic@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Galactic.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/hypersonic>
+	a lv2:Plugin ;
+	lv2:binary <Hypersonic@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Hypersonic.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/infrasonic>
 	a lv2:Plugin ;
 	lv2:binary <Infrasonic@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
