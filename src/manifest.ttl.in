@@ -106,6 +106,11 @@
 	lv2:binary <Nikola@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Nikola.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/pocketverbs>
+	a lv2:Plugin ;
+	lv2:binary <PocketVerbs@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <PocketVerbs.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/purestconsolebuss>
 	a lv2:Plugin ;
 	lv2:binary <PurestConsoleBuss@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
