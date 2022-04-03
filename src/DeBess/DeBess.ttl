@@ -97,11 +97,11 @@
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
 		lv2:scalePoint [
-                        rdfs:label "Ess" ;
-                        rdf:value 0
-                ] , [
-                        rdfs:label "Vox" ;
-                        rdf:value 0.5
-                ] ;
+			rdfs:label "Ess" ;
+			rdf:value 0
+		] , [
+			rdfs:label "Vox" ;
+			rdf:value 0.5
+		] ;
 		lv2:portProperty lv2:enumeration
 	] .
