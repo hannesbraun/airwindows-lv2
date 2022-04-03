@@ -39,6 +39,7 @@ endfunction()
 
 add_plugin(Acceleration)
 add_plugin(Acceleration2)
+add_plugin(ADClip7)
 add_plugin(Baxandall)
 add_plugin(BitShiftGain)
 add_plugin(Capacitor)
