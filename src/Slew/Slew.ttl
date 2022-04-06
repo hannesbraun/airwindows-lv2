@@ -11,9 +11,6 @@
 	rdfs:comment "Slew clipper, which darkens treble in an unusual way" ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
-		foaf:name "Airwindows" ;
-		foaf:homepage <https://www.airwindows.com>
-	] , [
 		foaf:name "Hannes Braun" ;
 		foaf:homepage <https://hannesbraun.net/>
 	] ;

@@ -13,9 +13,6 @@
 	rdfs:comment "Channel7 with updates from Capacitor2 and Slew3. More and better of what Channel is." ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
-		foaf:name "Airwindows" ;
-		foaf:homepage <https://www.airwindows.com>
-	] , [
 		foaf:name "Hannes Braun" ;
 		foaf:homepage <https://hannesbraun.net/>
 	] ;

@@ -12,9 +12,6 @@
 	rdfs:comment "Acceleration, better! Updated for high sample rate and more extreme effect." ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
-		foaf:name "Airwindows" ;
-		foaf:homepage <https://www.airwindows.com>
-	] , [
 		foaf:name "Hannes Braun" ;
 		foaf:homepage <https://hannesbraun.net/>
 	] ;

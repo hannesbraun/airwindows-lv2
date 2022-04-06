@@ -13,9 +13,6 @@
 	rdfs:comment "Dual-mono reverb based on BitShiftGain and the old Midiverbs" ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
-		foaf:name "Airwindows" ;
-		foaf:homepage <https://www.airwindows.com>
-	] , [
 		foaf:name "Hannes Braun" ;
 		foaf:homepage <https://hannesbraun.net/>
 	] ;

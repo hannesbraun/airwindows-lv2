@@ -13,9 +13,6 @@
 	rdfs:comment "Super-reverb designed specially for pads and space ambient" ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
-		foaf:name "Airwindows" ;
-		foaf:homepage <https://www.airwindows.com>
-	] , [
 		foaf:name "Hannes Braun" ;
 		foaf:homepage <https://hannesbraun.net/>
 	] ;
