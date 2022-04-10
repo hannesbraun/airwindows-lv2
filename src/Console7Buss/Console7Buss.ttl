@@ -1,0 +1,56 @@
+@prefix doap:	<http://usefulinc.com/ns/doap#> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix lv2:	<http://lv2plug.in/ns/lv2core#> .
+@prefix pprops:	<http://lv2plug.in/ns/ext/port-props#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/console7buss>
+	a lv2:Plugin ,
+		doap:Project ;
+	doap:name "Console7Buss" ;
+	rdfs:comment "The best Console yet, with anti-alias filtering and special saturation curves" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
+	doap:maintainer [
+		foaf:name "Hannes Braun" ;
+		foaf:homepage <https://hannesbraun.net/>
+	] ;
+
+	lv2:minorVersion 2 ;
+	lv2:microVersion 0 ;
+
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "inL" ;
+		lv2:name "In L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 1 ;
+		lv2:symbol "inR" ;
+		lv2:name "In R"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 2 ;
+		lv2:symbol "outL" ;
+		lv2:name "Out L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 3 ;
+		lv2:symbol "outR" ;
+		lv2:name "Out R"
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "master" ;
+		lv2:name "Master" ;
+		lv2:default 1.0 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		lv2:portProperty pprops:hasStrictBounds
+	] .
