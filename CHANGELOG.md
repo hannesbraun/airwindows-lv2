@@ -13,6 +13,7 @@
 - ClipOnly 2.0
 - ClipOnly2 2.0
 - Console7Buss 2.0
+- Console7Cascade 2.0
 - Console7Channel 2.0
 - DCVoltage 2.0
 - DeBess 2.0
