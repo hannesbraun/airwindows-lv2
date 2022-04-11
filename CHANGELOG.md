@@ -15,6 +15,7 @@
 - Console7Buss 2.0
 - Console7Cascade 2.0
 - Console7Channel 2.0
+- Console7Crunch 2.0
 - DCVoltage 2.0
 - DeBess 2.0
 - Dyno 2.0
