@@ -33,6 +33,7 @@
 - MV 2.0
 - Nikola 2.0
 - PocketVerbs 2.0
+- Pressure5 2.0
 - PurestConsoleBuss 2.0
 - PurestConsoleChannel 2.0
 - PurestGain 2.0

@@ -151,6 +151,11 @@
 	lv2:binary <PocketVerbs@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <PocketVerbs.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/pressure5>
+	a lv2:Plugin ;
+	lv2:binary <Pressure5@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Pressure5.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/purestconsolebuss>
 	a lv2:Plugin ;
 	lv2:binary <PurestConsoleBuss@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
