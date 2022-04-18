@@ -9,6 +9,7 @@
 - Baxandall 2.0
 - BitShiftGain 2.0
 - Capacitor 2.0
+- Capacitor2 2.0
 - Channel8 2.0
 - ClipOnly 2.0
 - ClipOnly2 2.0
