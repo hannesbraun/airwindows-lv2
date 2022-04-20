@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ master, dev ]
 
-env:
-  BUILD_TYPE: Release
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,7 +16,7 @@ jobs:
     - name: Install dependencies
       run:  sudo apt-get install -y astyle lilv-utils lv2-dev
     - name: Validate Turtle files
-      run: ./validate.sh
+      run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
     - name: Build
       run: mkdir build && cd build && cmake .. && make
     - name: Install
