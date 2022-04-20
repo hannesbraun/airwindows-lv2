@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run:  sudo apt-get install -y astyle lilv-utils lv2-dev
+    - name: Validate Turtle files
+      run: ./validate.sh
+    - name: Build
+      run: mkdir build && cd build && cmake .. && make
+    - name: Install
+      run: cd build && sudo make install
+    - name: Test with lv2bench
+      run: lv2bench
