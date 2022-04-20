@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+## [1.0] - 2022-04-20
 ### Added
 - Acceleration 2.0
 - Acceleration2 2.0
@@ -48,3 +49,6 @@
 - Ultrasonic 2.0
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
+
+[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...HEAD
+[1.0]: https://github.com/hannesbraun/airwindows-lv2/releases/tag/v1.0
