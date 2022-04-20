@@ -15,8 +15,6 @@ jobs:
       uses: actions/checkout@v2
     - name: Install dependencies
       run:  sudo apt-get install -y astyle lilv-utils lv2-dev
-    - name: Validate Turtle files
-      run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
     - name: Build
       run: mkdir build && cd build && cmake .. && make
     - name: Install
