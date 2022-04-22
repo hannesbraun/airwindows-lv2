@@ -2,17 +2,23 @@ cmake_minimum_required(VERSION 3.2)
 
 project(airwindows-lv2 LANGUAGES C)
 
+include(GNUInstallDirs)
+
 # Default to release builds
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  if(APPLE)
-    set(CMAKE_INSTALL_PREFIX $ENV{HOME}/Library/Audio/Plug-Ins/LV2)
-  elseif(UNIX)
-    set(CMAKE_INSTALL_PREFIX /usr/local/lib/lv2)
+if(APPLE)
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(INSTALL_DIR $ENV{HOME}/Library/Audio/Plug-Ins/LV2)
+  else()
+    set(INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
   endif()
+endif()
+
+if(UNIX)
+  set(INSTALL_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/lv2)
 endif()
 
 include(FindPkgConfig)
@@ -89,5 +95,5 @@ add_plugin(UltrasonicMed)
 configure_file(src/manifest.ttl.in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/manifest.ttl)
 
 if(APPLE OR UNIX)
-  install(DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} DESTINATION ${CMAKE_INSTALL_PREFIX})
+  install(DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} DESTINATION ${INSTALL_DIR})
 endif()
