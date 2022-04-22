@@ -28,6 +28,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Airwindows.lv2)
 function(add_plugin PLUGIN_NAME)
   add_library(${PLUGIN_NAME} SHARED src/${PLUGIN_NAME}/${PLUGIN_NAME}.c)
   target_include_directories(${PLUGIN_NAME} PRIVATE ${LV2_INCLUDE_DIRS})
+  target_link_libraries(${PLUGIN_NAME} m)
   set_target_properties(${PLUGIN_NAME} PROPERTIES PREFIX "")
 
   if(MSVC)
