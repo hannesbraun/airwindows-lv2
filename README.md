@@ -2,7 +2,7 @@
 
 *This is an LV2 port of the Airwindows plugins made by Chris Johnson.*
 
-Have a look at https://www.airwindows.com for a detailed description of all the plugins.
+Have a look at https://www.airwindows.com for a detailed description of all the plugins. Find the original source code at https://github.com/airwindows/airwindows.
 
 ## Building
 
