@@ -90,6 +90,7 @@ add_plugin(SubsOnly)
 add_plugin(Ultrasonic)
 add_plugin(UltrasonicLite)
 add_plugin(UltrasonicMed)
+add_plugin(Vibrato)
 
 configure_file(src/manifest.ttl.in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/manifest.ttl)
 

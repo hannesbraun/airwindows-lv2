@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - MoNoam 2.0
+- Vibrato 2.0
 
 ## [1.0] - 2022-04-20
 ### Added
