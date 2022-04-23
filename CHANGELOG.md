@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - MoNoam 2.0
+- PurestConsole2Buss 2.0
 - PurestConsole2Channel 2.0
 - Vibrato 2.0
 
