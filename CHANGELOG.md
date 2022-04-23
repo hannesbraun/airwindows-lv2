@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- Channel9 2.0
 - MoNoam 2.0
 - PurestConsole2Buss 2.0
 - PurestConsole2Channel 2.0
