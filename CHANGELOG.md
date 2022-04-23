@@ -56,5 +56,5 @@
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
 
-[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...HEAD
+[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...dev
 [1.0]: https://github.com/hannesbraun/airwindows-lv2/releases/tag/v1.0
