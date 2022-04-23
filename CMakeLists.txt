@@ -15,9 +15,7 @@ if(APPLE)
   else()
     set(INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
   endif()
-endif()
-
-if(UNIX)
+elseif(UNIX)
   set(INSTALL_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/lv2)
 endif()
 
