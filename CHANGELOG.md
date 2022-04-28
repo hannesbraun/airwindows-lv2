@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [3.0] - 2022-04-29
 ### Added
 - Channel9 2.0
 - MoNoam 2.0
@@ -56,5 +58,6 @@
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
 
-[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...dev
+[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v3.0...dev
+[3.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...v3.0
 [1.0]: https://github.com/hannesbraun/airwindows-lv2/releases/tag/v1.0
