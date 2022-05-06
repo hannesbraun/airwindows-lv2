@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Focus 2.0
 
 ## [3.0] - 2022-04-29
 ### Added
