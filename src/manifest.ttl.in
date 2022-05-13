@@ -61,6 +61,11 @@
 	lv2:binary <Console6Buss@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Console6Buss.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/console6channel>
+	a lv2:Plugin ;
+	lv2:binary <Console6Channel@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Console6Channel.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/console7buss>
 	a lv2:Plugin ;
 	lv2:binary <Console7Buss@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Console6Buss 2.0
+- Console6Channel 2.0
 - Focus 2.0
 - Tube 2.0
 
