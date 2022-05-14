@@ -4,6 +4,7 @@
 ### Added
 - Console6Buss 2.0
 - Console6Channel 2.0
+- Desk 2.0
 - Focus 2.0
 - PurestDrive 2.0
 - Srsly2 2.0
