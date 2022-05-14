@@ -59,6 +59,10 @@ static void connect_port(LV2_Handle instance, uint32_t port, void* data)
 static void activate(LV2_Handle instance)
 {
 	Console6Channel* console6Channel = (Console6Channel*) instance;
+	console6Channel->fpdL = 1.0;
+	while (console6Channel->fpdL < 16386) console6Channel->fpdL = rand() * UINT32_MAX;
+	console6Channel->fpdR = 1.0;
+	while (console6Channel->fpdR < 16386) console6Channel->fpdR = rand() * UINT32_MAX;
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
