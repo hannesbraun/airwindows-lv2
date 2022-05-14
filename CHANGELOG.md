@@ -8,6 +8,7 @@
 - PurestDrive 2.0
 - Srsly2 2.0
 - Tube 2.0
+- Tube2 2.0
 
 ## [3.0] - 2022-04-29
 ### Added
