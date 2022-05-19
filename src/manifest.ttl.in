@@ -261,6 +261,11 @@
 	lv2:binary <SubsOnly@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <SubsOnly.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/totape6>
+	a lv2:Plugin ;
+	lv2:binary <ToTape6@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <ToTape6.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/transdesk>
 	a lv2:Plugin ;
 	lv2:binary <TransDesk@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

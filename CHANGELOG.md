@@ -8,6 +8,7 @@
 - Focus 2.0
 - PurestDrive 2.0
 - Srsly2 2.0
+- ToTape6 2.0
 - TransDesk 2.0
 - Tube 2.0
 - Tube2 2.0
