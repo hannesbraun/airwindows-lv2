@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [5.0] - 2022-05-28
 ### Added
 - Console6Buss 2.0
 - Console6Channel 2.0
@@ -70,6 +72,7 @@
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
 
-[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v3.0...dev
+[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v5.0...dev
+[5.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v3.0...v5.0
 [3.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...v3.0
 [1.0]: https://github.com/hannesbraun/airwindows-lv2/releases/tag/v1.0
