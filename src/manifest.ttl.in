@@ -146,6 +146,11 @@
 	lv2:binary <Interstage@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Interstage.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/ironoxideclassic2>
+	a lv2:Plugin ;
+	lv2:binary <IronOxideClassic2@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <IronOxideClassic2.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/leftomono>
 	a lv2:Plugin ;
 	lv2:binary <LeftoMono@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

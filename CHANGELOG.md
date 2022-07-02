@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- IronOxideClassic2 2.0
 
 ## [5.0] - 2022-05-28
 ### Added
