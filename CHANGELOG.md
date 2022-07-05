@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [7.0] - 2022-05-28
+## [7.0] - 2022-07-02
 ### Added
 - IronOxideClassic2 2.0
 
