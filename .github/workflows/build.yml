@@ -2,22 +2,26 @@ name: Build
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: *
   pull_request:
-    branches: [ master, dev ]
+    branches: *
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Install dependencies
-      run:  sudo apt-get install -y astyle lilv-utils lv2-dev
-    - name: Build
-      run: mkdir build && cd build && cmake .. && make
+      run: sudo apt-get install -y astyle lilv-utils lv2-dev
+    - name: Validate Turtle files
+      run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
+    - name: Setup build directory
+      run: meson setup build
+    - name: Compile
+      run: meson compile -C build
     - name: Install
-      run: cd build && sudo make install
+      run: meson install -C build
     - name: Test with lv2bench
       run: lv2bench
