@@ -1,4 +1,15 @@
-project('airwindows-lv2', 'c', default_options : ['default_library=static', 'buildtype=release', 'optimization=3'], license : 'MIT', version : '7.0')
+project(
+  'airwindows-lv2',
+  'c',
+  default_options : [
+    'c_std=gnu99',
+    'default_library=static',
+    'buildtype=release',
+    'optimization=3'
+  ],
+  license : 'MIT',
+  version : '7.0'
+)
 bundle_name = 'Airwindows.lv2'
 
 cc = meson.get_compiler('c')

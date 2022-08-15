@@ -7,14 +7,14 @@ on:
     branches: '*'
 
 jobs:
-  build:
+  build-ubuntu:
     runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Install dependencies
-      run: sudo apt-get install -y astyle lilv-utils lv2-dev meson sordi
+      run: sudo apt-get install -y lilv-utils lv2-dev meson sordi
     - name: Validate Turtle files
       run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
     - name: Setup build directory
@@ -25,6 +25,64 @@ jobs:
       run: sudo meson install -C build
     - name: Test with lv2bench
       run: lv2bench
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux
+        path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+
+  build-macos:
+    runs-on: macos-12
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install dependencies
+      run: brew install lilv lv2 meson
+    - name: Validate Turtle files
+      run: lv2_validate src/manifest.ttl.in src/*/*.ttl
+    - name: Setup build directory
+      run: meson setup build
+    - name: Compile
+      run: meson compile -C build
+    - name: Install
+      run: sudo meson install -C build
+    - name: Test with lv2bench
+      run: lv2bench
+    - uses: actions/upload-artifact@v3
+      with:
+        name: macos
+        path: /usr/local/lib/lv2/Airwindows.lv2
+
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-meson
+          mingw-w64-x86_64-lv2
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-pkg-config
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup build directory
+      env:
+        CC: x86_64-w64-mingw32-gcc
+      run: meson setup build
+    - name: Compile
+      run: meson compile -C build
+    - name: Install
+      run: meson install -C build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: win64
+        path: D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2
 
   formatting-check:
     name: Formatting Check
