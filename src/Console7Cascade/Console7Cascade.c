@@ -101,13 +101,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	if (console7Cascade->gainchase < 0.0) console7Cascade->gainchase = inputgain;
 
 	console7Cascade->biquadE[0] = console7Cascade->biquadD[0] = console7Cascade->biquadC[0] = console7Cascade->biquadB[0] = console7Cascade->biquadA[0] = 20000.0 / console7Cascade->sampleRate;
-	console7Cascade->biquadA[1] = 3.19622661; //tenth order Butterworth out of five biquads
+	console7Cascade->biquadA[1] = 3.19622661; // tenth order Butterworth out of five biquads
 	console7Cascade->biquadB[1] = 1.10134463;
 	console7Cascade->biquadC[1] = 0.70710678;
 	console7Cascade->biquadD[1] = 0.56116312;
 	console7Cascade->biquadE[1] = 0.50623256;
 
-	double K = tan(M_PI * console7Cascade->biquadA[0]); //lowpass
+	double K = tan(M_PI * console7Cascade->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / console7Cascade->biquadA[1] + K * K);
 	console7Cascade->biquadA[2] = K * K * norm;
 	console7Cascade->biquadA[3] = 2.0 * console7Cascade->biquadA[2];
@@ -158,20 +158,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		console7Cascade->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Cascade->biquadA[10] = console7Cascade->biquadA[9];
-		console7Cascade->biquadA[9] = inputSampleL; //DF1 left
+		console7Cascade->biquadA[9] = inputSampleL; // DF1 left
 		double outSampleR = console7Cascade->biquadA[2] * inputSampleR + console7Cascade->biquadA[3] * console7Cascade->biquadA[11] + console7Cascade->biquadA[4] * console7Cascade->biquadA[12] - console7Cascade->biquadA[5] * console7Cascade->biquadA[13] - console7Cascade->biquadA[6] * console7Cascade->biquadA[14];
 		console7Cascade->biquadA[12] = console7Cascade->biquadA[11];
 		console7Cascade->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Cascade->biquadA[14] = console7Cascade->biquadA[13];
-		console7Cascade->biquadA[13] = inputSampleR; //DF1 right
+		console7Cascade->biquadA[13] = inputSampleR; // DF1 right
 
 		console7Cascade->chasespeed *= 0.9999;
 		console7Cascade->chasespeed -= 0.01;
 		if (console7Cascade->chasespeed < 64.0) console7Cascade->chasespeed = 64.0;
-		//we have our chase speed compensated for recent fader activity
+		// we have our chase speed compensated for recent fader activity
 		console7Cascade->gainchase = (((console7Cascade->gainchase * console7Cascade->chasespeed) + inputgain) / (console7Cascade->chasespeed + 1.0));
-		//gainchase is chasing the target, as a simple multiply gain factor
+		// gainchase is chasing the target, as a simple multiply gain factor
 		double cascade = console7Cascade->gainchase + (console7Cascade->gainchase * 0.62);
 
 		if (1.0 != cascade) {
@@ -184,20 +184,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Cascade->biquadB[2] * inputSampleL + console7Cascade->biquadB[3] * console7Cascade->biquadB[7] + console7Cascade->biquadB[4] * console7Cascade->biquadB[8] - console7Cascade->biquadB[5] * console7Cascade->biquadB[9] - console7Cascade->biquadB[6] * console7Cascade->biquadB[10];
 		console7Cascade->biquadB[8] = console7Cascade->biquadB[7];
 		console7Cascade->biquadB[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Cascade->biquadB[10] = console7Cascade->biquadB[9];
-		console7Cascade->biquadB[9] = inputSampleL; //DF1 left
+		console7Cascade->biquadB[9] = inputSampleL; // DF1 left
 		outSampleR = console7Cascade->biquadB[2] * inputSampleR + console7Cascade->biquadB[3] * console7Cascade->biquadB[11] + console7Cascade->biquadB[4] * console7Cascade->biquadB[12] - console7Cascade->biquadB[5] * console7Cascade->biquadB[13] - console7Cascade->biquadB[6] * console7Cascade->biquadB[14];
 		console7Cascade->biquadB[12] = console7Cascade->biquadB[11];
 		console7Cascade->biquadB[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Cascade->biquadB[14] = console7Cascade->biquadB[13];
-		console7Cascade->biquadB[13] = inputSampleR; //DF1 right
+		console7Cascade->biquadB[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -209,20 +209,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Cascade->biquadC[2] * inputSampleL + console7Cascade->biquadC[3] * console7Cascade->biquadC[7] + console7Cascade->biquadC[4] * console7Cascade->biquadC[8] - console7Cascade->biquadC[5] * console7Cascade->biquadC[9] - console7Cascade->biquadC[6] * console7Cascade->biquadC[10];
 		console7Cascade->biquadC[8] = console7Cascade->biquadC[7];
 		console7Cascade->biquadC[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Cascade->biquadC[10] = console7Cascade->biquadC[9];
-		console7Cascade->biquadC[9] = inputSampleL; //DF1 left
+		console7Cascade->biquadC[9] = inputSampleL; // DF1 left
 		outSampleR = console7Cascade->biquadC[2] * inputSampleR + console7Cascade->biquadC[3] * console7Cascade->biquadC[11] + console7Cascade->biquadC[4] * console7Cascade->biquadC[12] - console7Cascade->biquadC[5] * console7Cascade->biquadC[13] - console7Cascade->biquadC[6] * console7Cascade->biquadC[14];
 		console7Cascade->biquadC[12] = console7Cascade->biquadC[11];
 		console7Cascade->biquadC[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Cascade->biquadC[14] = console7Cascade->biquadC[13];
-		console7Cascade->biquadC[13] = inputSampleR; //DF1 right
+		console7Cascade->biquadC[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -234,20 +234,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Cascade->biquadD[2] * inputSampleL + console7Cascade->biquadD[3] * console7Cascade->biquadD[7] + console7Cascade->biquadD[4] * console7Cascade->biquadD[8] - console7Cascade->biquadD[5] * console7Cascade->biquadD[9] - console7Cascade->biquadD[6] * console7Cascade->biquadD[10];
 		console7Cascade->biquadD[8] = console7Cascade->biquadD[7];
 		console7Cascade->biquadD[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Cascade->biquadD[10] = console7Cascade->biquadD[9];
-		console7Cascade->biquadD[9] = inputSampleL; //DF1 left
+		console7Cascade->biquadD[9] = inputSampleL; // DF1 left
 		outSampleR = console7Cascade->biquadD[2] * inputSampleR + console7Cascade->biquadD[3] * console7Cascade->biquadD[11] + console7Cascade->biquadD[4] * console7Cascade->biquadD[12] - console7Cascade->biquadD[5] * console7Cascade->biquadD[13] - console7Cascade->biquadD[6] * console7Cascade->biquadD[14];
 		console7Cascade->biquadD[12] = console7Cascade->biquadD[11];
 		console7Cascade->biquadD[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Cascade->biquadD[14] = console7Cascade->biquadD[13];
-		console7Cascade->biquadD[13] = inputSampleR; //DF1 right
+		console7Cascade->biquadD[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -259,20 +259,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Cascade->biquadE[2] * inputSampleL + console7Cascade->biquadE[3] * console7Cascade->biquadE[7] + console7Cascade->biquadE[4] * console7Cascade->biquadE[8] - console7Cascade->biquadE[5] * console7Cascade->biquadE[9] - console7Cascade->biquadE[6] * console7Cascade->biquadE[10];
 		console7Cascade->biquadE[8] = console7Cascade->biquadE[7];
 		console7Cascade->biquadE[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Cascade->biquadE[10] = console7Cascade->biquadE[9];
-		console7Cascade->biquadE[9] = inputSampleL; //DF1 left
+		console7Cascade->biquadE[9] = inputSampleL; // DF1 left
 		outSampleR = console7Cascade->biquadE[2] * inputSampleR + console7Cascade->biquadE[3] * console7Cascade->biquadE[11] + console7Cascade->biquadE[4] * console7Cascade->biquadE[12] - console7Cascade->biquadE[5] * console7Cascade->biquadE[13] - console7Cascade->biquadE[6] * console7Cascade->biquadE[14];
 		console7Cascade->biquadE[12] = console7Cascade->biquadE[11];
 		console7Cascade->biquadE[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Cascade->biquadE[14] = console7Cascade->biquadE[13];
-		console7Cascade->biquadE[13] = inputSampleR; //DF1 right
+		console7Cascade->biquadE[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -284,27 +284,27 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		if (cascade > 1.0) {
 			inputSampleL /= cascade;
 			inputSampleR /= cascade;
 		}
-		//we re-amplify after the distortion relative to how much we cut back previously.
+		// we re-amplify after the distortion relative to how much we cut back previously.
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		console7Cascade->fpdL ^= console7Cascade->fpdL << 13;
 		console7Cascade->fpdL ^= console7Cascade->fpdL >> 17;
 		console7Cascade->fpdL ^= console7Cascade->fpdL << 5;
-		inputSampleL += (((double)console7Cascade->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) console7Cascade->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		console7Cascade->fpdR ^= console7Cascade->fpdR << 13;
 		console7Cascade->fpdR ^= console7Cascade->fpdR >> 17;
 		console7Cascade->fpdR ^= console7Cascade->fpdR << 5;
-		inputSampleR += (((double)console7Cascade->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) console7Cascade->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -336,8 +336,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -106,11 +106,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	//[0] is frequency: 0.000001 to 0.499999 is near-zero to near-Nyquist
 	//[1] is resonance, 0.7071 is Butterworth. Also can't be zero
 	double boost = pow(10.0, *focus->boost / 20.0);
-	focus->figureL[0] = 3515.775 / focus->sampleRate; //fixed frequency, 3.515775k
+	focus->figureL[0] = 3515.775 / focus->sampleRate; // fixed frequency, 3.515775k
 	focus->figureR[0] = focus->figureL[0];
-	focus->figureL[1] = pow(pow(*focus->focus, 3) * 2, 2) + 0.0001; //resonance
+	focus->figureL[1] = pow(pow(*focus->focus, 3) * 2, 2) + 0.0001; // resonance
 	focus->figureR[1] = focus->figureL[1];
-	int mode = (int) * focus->mode;
+	int mode = (int) *focus->mode;
 	double output = *focus->outGain;
 	double wet = *focus->dryWet;
 
@@ -135,7 +135,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		inputSampleL = sin(inputSampleL);
 		inputSampleR = sin(inputSampleR);
-		//encode Console5: good cleanness
+		// encode Console5: good cleanness
 
 		double tempSample = (inputSampleL * focus->figureL[2]) + focus->figureL[7];
 		focus->figureL[7] = -(tempSample * focus->figureL[5]) + focus->figureL[8];
@@ -151,18 +151,18 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		//without this, you can get a NaN condition where it spits out DC offset at full blast!
+		// without this, you can get a NaN condition where it spits out DC offset at full blast!
 		inputSampleL = asin(inputSampleL);
 		inputSampleR = asin(inputSampleR);
-		//decode Console5
+		// decode Console5
 
-		double groundSampleL = drySampleL - inputSampleL; //set up UnBox
-		double groundSampleR = drySampleR - inputSampleR; //set up UnBox
-		inputSampleL *= boost; //now, focussed area gets cranked before distort
-		inputSampleR *= boost; //now, focussed area gets cranked before distort
+		double groundSampleL = drySampleL - inputSampleL; // set up UnBox
+		double groundSampleR = drySampleR - inputSampleR; // set up UnBox
+		inputSampleL *= boost; // now, focussed area gets cranked before distort
+		inputSampleR *= boost; // now, focussed area gets cranked before distort
 
 		switch (mode) {
-			case 1: //Drive
+			case 1: // Drive
 				if (inputSampleL > 1.0) inputSampleL = 1.0;
 				if (inputSampleL < -1.0) inputSampleL = -1.0;
 				if (inputSampleR > 1.0) inputSampleR = 1.0;
@@ -172,41 +172,41 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				inputSampleL *= 1.6;
 				inputSampleR *= 1.6;
 				break;
-			case 2: //Spiral
+			case 2: // Spiral
 				if (inputSampleL > 1.2533141373155) inputSampleL = 1.2533141373155;
 				if (inputSampleL < -1.2533141373155) inputSampleL = -1.2533141373155;
 				if (inputSampleR > 1.2533141373155) inputSampleR = 1.2533141373155;
 				if (inputSampleR < -1.2533141373155) inputSampleR = -1.2533141373155;
-				//clip to 1.2533141373155 to reach maximum output
+				// clip to 1.2533141373155 to reach maximum output
 				inputSampleL = sin(inputSampleL * fabs(inputSampleL)) / ((fabs(inputSampleL) == 0.0) ? 1 : fabs(inputSampleL));
 				inputSampleR = sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR));
 				break;
-			case 3: { //Mojo
+			case 3: { // Mojo
 				double mojo;
 				mojo = pow(fabs(inputSampleL), 0.25);
 				if (mojo > 0.0) inputSampleL = (sin(inputSampleL * mojo * M_PI * 0.5) / mojo) * 0.987654321;
 				mojo = pow(fabs(inputSampleR), 0.25);
 				if (mojo > 0.0) inputSampleR = (sin(inputSampleR * mojo * M_PI * 0.5) / mojo) * 0.987654321;
-				//mojo is the one that flattens WAAAAY out very softly before wavefolding
+				// mojo is the one that flattens WAAAAY out very softly before wavefolding
 				break;
 			}
-			case 4: //Dyno
+			case 4: // Dyno
 			case 5: {
 				double dyno;
 				dyno = pow(fabs(inputSampleL), 4);
 				if (dyno > 0.0) inputSampleL = (sin(inputSampleL * dyno) / dyno) * 1.1654321;
 				dyno = pow(fabs(inputSampleR), 4);
 				if (dyno > 0.0) inputSampleR = (sin(inputSampleR * dyno) / dyno) * 1.1654321;
-				//dyno is the one that tries to raise peak energy
+				// dyno is the one that tries to raise peak energy
 				break;
 			}
-			case 0: //Density
+			case 0: // Density
 			default:
 				if (inputSampleL > 1.570796326794897) inputSampleL = 1.570796326794897;
 				if (inputSampleL < -1.570796326794897) inputSampleL = -1.570796326794897;
 				if (inputSampleR > 1.570796326794897) inputSampleR = 1.570796326794897;
 				if (inputSampleR < -1.570796326794897) inputSampleR = -1.570796326794897;
-				//clip to 1.570796326794897 to reach maximum output
+				// clip to 1.570796326794897 to reach maximum output
 				inputSampleL = sin(inputSampleL);
 				inputSampleR = sin(inputSampleR);
 				break;
@@ -217,27 +217,27 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR *= output;
 		}
 
-		inputSampleL += groundSampleL; //effectively UnBox
-		inputSampleR += groundSampleR; //effectively UnBox
+		inputSampleL += groundSampleL; // effectively UnBox
+		inputSampleR += groundSampleR; // effectively UnBox
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		focus->fpdL ^= focus->fpdL << 13;
 		focus->fpdL ^= focus->fpdL >> 17;
 		focus->fpdL ^= focus->fpdL << 5;
-		inputSampleL += (((double)focus->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) focus->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		focus->fpdR ^= focus->fpdR << 13;
 		focus->fpdR ^= focus->fpdR >> 17;
 		focus->fpdR ^= focus->fpdR << 5;
-		inputSampleR += (((double)focus->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) focus->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -269,8 +269,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

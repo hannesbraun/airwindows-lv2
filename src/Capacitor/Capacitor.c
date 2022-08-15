@@ -164,8 +164,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	capacitor->lowpassChase = pow(*capacitor->lowpass, 2);
 	capacitor->highpassChase = pow(*capacitor->highpass, 2);
 	capacitor->wetChase = *capacitor->drywet;
-	//should not scale with sample rate, because values reaching 1 are important
-	//to its ability to bypass when set to max
+	// should not scale with sample rate, because values reaching 1 are important
+	// to its ability to bypass when set to max
 	double lowpassSpeed = 300 / (fabs(capacitor->lastLowpass - capacitor->lowpassChase) + 1.0);
 	double highpassSpeed = 300 / (fabs(capacitor->lastHighpass - capacitor->highpassChase) + 1.0);
 	double wetSpeed = 300 / (fabs(capacitor->lastWet - capacitor->wetChase) + 1.0);
@@ -176,7 +176,6 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double invLowpass;
 	double invHighpass;
 	double dry;
-
 
 	double inputSampleL;
 	double inputSampleR;
@@ -190,7 +189,6 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = capacitor->fpdR * 1.18e-17;
 		drySampleL = inputSampleL;
 		drySampleR = inputSampleR;
-
 
 		capacitor->lowpassAmount = (((capacitor->lowpassAmount * lowpassSpeed) + capacitor->lowpassChase) / (lowpassSpeed + 1.0));
 		invLowpass = 1.0 - capacitor->lowpassAmount;
@@ -359,25 +357,25 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				inputSampleR = capacitor->iirLowpassFR;
 				break;
 		}
-		//Highpass Filter chunk. This is three poles of IIR highpass, with a 'gearbox' that progressively
-		//steepens the filter after minimizing artifacts.
+		// Highpass Filter chunk. This is three poles of IIR highpass, with a 'gearbox' that progressively
+		// steepens the filter after minimizing artifacts.
 
 		inputSampleL = (drySampleL * dry) + (inputSampleL * capacitor->wet);
 		inputSampleR = (drySampleR * dry) + (inputSampleR * capacitor->wet);
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		capacitor->fpdL ^= capacitor->fpdL << 13;
 		capacitor->fpdL ^= capacitor->fpdL >> 17;
 		capacitor->fpdL ^= capacitor->fpdL << 5;
-		inputSampleL += (((double)capacitor->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) capacitor->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		capacitor->fpdR ^= capacitor->fpdR << 13;
 		capacitor->fpdR ^= capacitor->fpdR >> 17;
 		capacitor->fpdR ^= capacitor->fpdR << 5;
-		inputSampleR += (((double)capacitor->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) capacitor->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -409,8 +407,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -94,21 +94,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		mid = (inputSampleL + inputSampleR) / 2.0;
 		side = (inputSampleL - inputSampleR) / 2.0;
 
-		//begin 32 bit floating point dither
+		// begin 32 bit floating point dither
 		int expon;
-		frexpf((float)mid, &expon);
+		frexpf((float) mid, &expon);
 		edisdim->fpdL ^= edisdim->fpdL << 13;
 		edisdim->fpdL ^= edisdim->fpdL >> 17;
 		edisdim->fpdL ^= edisdim->fpdL << 5;
-		mid += (((double)edisdim->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit floating point dither
-		//begin 32 bit floating point dither
-		frexpf((float)side, &expon);
+		mid += (((double) edisdim->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit floating point dither
+		// begin 32 bit floating point dither
+		frexpf((float) side, &expon);
 		edisdim->fpdR ^= edisdim->fpdR << 13;
 		edisdim->fpdR ^= edisdim->fpdR >> 17;
 		edisdim->fpdR ^= edisdim->fpdR << 5;
-		side += (((double)edisdim->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit floating point dither
+		side += (((double) edisdim->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit floating point dither
 
 		*out1 = (float) mid;
 		*out2 = (float) side;
@@ -140,8 +140,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

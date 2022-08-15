@@ -119,7 +119,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		double drySampleR = inputSampleR;
 
 		inputSampleL = (inputSampleL + interstage->lastSampleL) * 0.5;
-		inputSampleR = (inputSampleR + interstage->lastSampleR) * 0.5; //start the lowpassing with an average
+		inputSampleR = (inputSampleR + interstage->lastSampleR) * 0.5; // start the lowpassing with an average
 
 		if (interstage->flip) {
 			interstage->iirSampleAL = (interstage->iirSampleAL * (1 - firstStage)) + (inputSampleL * firstStage);
@@ -129,10 +129,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			interstage->iirSampleEL = (interstage->iirSampleEL * (1 - iirAmount)) + (inputSampleL * iirAmount);
 			inputSampleL = interstage->iirSampleEL;
 			inputSampleL = drySampleL - inputSampleL;
-			//make highpass
+			// make highpass
 			if (inputSampleL - interstage->iirSampleAL > threshold) inputSampleL = interstage->iirSampleAL + threshold;
 			if (inputSampleL - interstage->iirSampleAL < -threshold) inputSampleL = interstage->iirSampleAL - threshold;
-			//slew limit against lowpassed reference point
+			// slew limit against lowpassed reference point
 
 			interstage->iirSampleAR = (interstage->iirSampleAR * (1 - firstStage)) + (inputSampleR * firstStage);
 			inputSampleR = interstage->iirSampleAR;
@@ -141,10 +141,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			interstage->iirSampleER = (interstage->iirSampleER * (1 - iirAmount)) + (inputSampleR * iirAmount);
 			inputSampleR = interstage->iirSampleER;
 			inputSampleR = drySampleR - inputSampleR;
-			//make highpass
+			// make highpass
 			if (inputSampleR - interstage->iirSampleAR > threshold) inputSampleR = interstage->iirSampleAR + threshold;
 			if (inputSampleR - interstage->iirSampleAR < -threshold) inputSampleR = interstage->iirSampleAR - threshold;
-			//slew limit against lowpassed reference point
+			// slew limit against lowpassed reference point
 		} else {
 			interstage->iirSampleBL = (interstage->iirSampleBL * (1 - firstStage)) + (inputSampleL * firstStage);
 			inputSampleL = interstage->iirSampleBL;
@@ -153,10 +153,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			interstage->iirSampleFL = (interstage->iirSampleFL * (1 - iirAmount)) + (inputSampleL * iirAmount);
 			inputSampleL = interstage->iirSampleFL;
 			inputSampleL = drySampleL - inputSampleL;
-			//make highpass
+			// make highpass
 			if (inputSampleL - interstage->iirSampleBL > threshold) inputSampleL = interstage->iirSampleBL + threshold;
 			if (inputSampleL - interstage->iirSampleBL < -threshold) inputSampleL = interstage->iirSampleBL - threshold;
-			//slew limit against lowpassed reference point
+			// slew limit against lowpassed reference point
 
 			interstage->iirSampleBR = (interstage->iirSampleBR * (1 - firstStage)) + (inputSampleR * firstStage);
 			inputSampleR = interstage->iirSampleBR;
@@ -165,28 +165,28 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			interstage->iirSampleFR = (interstage->iirSampleFR * (1 - iirAmount)) + (inputSampleR * iirAmount);
 			inputSampleR = interstage->iirSampleFR;
 			inputSampleR = drySampleR - inputSampleR;
-			//make highpass
+			// make highpass
 			if (inputSampleR - interstage->iirSampleBR > threshold) inputSampleR = interstage->iirSampleBR + threshold;
 			if (inputSampleR - interstage->iirSampleBR < -threshold) inputSampleR = interstage->iirSampleBR - threshold;
-			//slew limit against lowpassed reference point
+			// slew limit against lowpassed reference point
 		}
 		interstage->flip = !interstage->flip;
 		interstage->lastSampleL = inputSampleL;
 		interstage->lastSampleR = inputSampleR;
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		interstage->fpdL ^= interstage->fpdL << 13;
 		interstage->fpdL ^= interstage->fpdL >> 17;
 		interstage->fpdL ^= interstage->fpdL << 5;
-		inputSampleL += (((double)interstage->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) interstage->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		interstage->fpdR ^= interstage->fpdR << 13;
 		interstage->fpdR ^= interstage->fpdR >> 17;
 		interstage->fpdR ^= interstage->fpdR << 5;
-		inputSampleR += (((double)interstage->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) interstage->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -218,8 +218,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

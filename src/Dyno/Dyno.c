@@ -89,24 +89,24 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		double dyno = pow(fabs(inputSampleL), 4);
 		if (dyno > 0.0) inputSampleL = (sin(inputSampleL * dyno) / dyno) * 1.1654321;
-		//dyno is the one that tries to raise peak energy
+		// dyno is the one that tries to raise peak energy
 		dyno = pow(fabs(inputSampleR), 4);
 		if (dyno > 0.0) inputSampleR = (sin(inputSampleR * dyno) / dyno) * 1.1654321;
-		//dyno is the one that tries to raise peak energy
+		// dyno is the one that tries to raise peak energy
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		dyno_instance->fpdL ^= dyno_instance->fpdL << 13;
 		dyno_instance->fpdL ^= dyno_instance->fpdL >> 17;
 		dyno_instance->fpdL ^= dyno_instance->fpdL << 5;
-		inputSampleL += (((double)dyno_instance->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) dyno_instance->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		dyno_instance->fpdR ^= dyno_instance->fpdR << 13;
 		dyno_instance->fpdR ^= dyno_instance->fpdR >> 17;
 		dyno_instance->fpdR ^= dyno_instance->fpdR << 5;
-		inputSampleR += (((double)dyno_instance->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) dyno_instance->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -138,8 +138,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

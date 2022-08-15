@@ -99,7 +99,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	console7Buss->biquadA[1] = 0.618033988749894848204586;
 	console7Buss->biquadB[1] = 0.5;
 
-	double K = tan(M_PI * console7Buss->biquadA[0]); //lowpass
+	double K = tan(M_PI * console7Buss->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / console7Buss->biquadA[1] + K * K);
 	console7Buss->biquadA[2] = K * K * norm;
 	console7Buss->biquadA[3] = 2.0 * console7Buss->biquadA[2];
@@ -126,26 +126,26 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		console7Buss->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Buss->biquadA[10] = console7Buss->biquadA[9];
-		console7Buss->biquadA[9] = inputSampleL; //DF1 left
+		console7Buss->biquadA[9] = inputSampleL; // DF1 left
 
 		double outSampleR = console7Buss->biquadA[2] * inputSampleR + console7Buss->biquadA[3] * console7Buss->biquadA[11] + console7Buss->biquadA[4] * console7Buss->biquadA[12] - console7Buss->biquadA[5] * console7Buss->biquadA[13] - console7Buss->biquadA[6] * console7Buss->biquadA[14];
 		console7Buss->biquadA[12] = console7Buss->biquadA[11];
 		console7Buss->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Buss->biquadA[14] = console7Buss->biquadA[13];
-		console7Buss->biquadA[13] = inputSampleR; //DF1 right
+		console7Buss->biquadA[13] = inputSampleR; // DF1 right
 
 		console7Buss->chasespeed *= 0.9999;
 		console7Buss->chasespeed -= 0.01;
 		if (console7Buss->chasespeed < 64.0) console7Buss->chasespeed = 64.0;
-		//we have our chase speed compensated for recent fader activity
+		// we have our chase speed compensated for recent fader activity
 		console7Buss->gainchase = (((console7Buss->gainchase * console7Buss->chasespeed) + inputgain) / (console7Buss->chasespeed + 1.0));
-		//gainchase is chasing the target, as a simple multiply gain factor
+		// gainchase is chasing the target, as a simple multiply gain factor
 		if (1.0 != console7Buss->gainchase) {
 			inputSampleL *= sqrt(console7Buss->gainchase);
 			inputSampleR *= sqrt(console7Buss->gainchase);
 		}
-		//done with trim control
+		// done with trim control
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
@@ -153,42 +153,42 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
 		inputSampleR = ((asin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.618033988749894848204586) + (asin(inputSampleR) * 0.381966011250105);
-		//this is an asin version of Spiral blended with regular asin ConsoleBuss.
-		//It's blending between two different harmonics in the overtones of the algorithm
+		// this is an asin version of Spiral blended with regular asin ConsoleBuss.
+		// It's blending between two different harmonics in the overtones of the algorithm
 
 		outSampleL = console7Buss->biquadB[2] * inputSampleL + console7Buss->biquadB[3] * console7Buss->biquadB[7] + console7Buss->biquadB[4] * console7Buss->biquadB[8] - console7Buss->biquadB[5] * console7Buss->biquadB[9] - console7Buss->biquadB[6] * console7Buss->biquadB[10];
 		console7Buss->biquadB[8] = console7Buss->biquadB[7];
 		console7Buss->biquadB[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Buss->biquadB[10] = console7Buss->biquadB[9];
-		console7Buss->biquadB[9] = inputSampleL; //DF1 left
+		console7Buss->biquadB[9] = inputSampleL; // DF1 left
 
 		outSampleR = console7Buss->biquadB[2] * inputSampleR + console7Buss->biquadB[3] * console7Buss->biquadB[11] + console7Buss->biquadB[4] * console7Buss->biquadB[12] - console7Buss->biquadB[5] * console7Buss->biquadB[13] - console7Buss->biquadB[6] * console7Buss->biquadB[14];
 		console7Buss->biquadB[12] = console7Buss->biquadB[11];
 		console7Buss->biquadB[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Buss->biquadB[14] = console7Buss->biquadB[13];
-		console7Buss->biquadB[13] = inputSampleR; //DF1 right
+		console7Buss->biquadB[13] = inputSampleR; // DF1 right
 
 		if (1.0 != console7Buss->gainchase) {
 			inputSampleL *= sqrt(console7Buss->gainchase);
 			inputSampleR *= sqrt(console7Buss->gainchase);
 		}
-		//we re-amplify after the distortion relative to how much we cut back previously.
+		// we re-amplify after the distortion relative to how much we cut back previously.
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		console7Buss->fpdL ^= console7Buss->fpdL << 13;
 		console7Buss->fpdL ^= console7Buss->fpdL >> 17;
 		console7Buss->fpdL ^= console7Buss->fpdL << 5;
-		inputSampleL += (((double)console7Buss->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) console7Buss->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		console7Buss->fpdR ^= console7Buss->fpdR << 13;
 		console7Buss->fpdR ^= console7Buss->fpdR >> 17;
 		console7Buss->fpdR ^= console7Buss->fpdR << 5;
-		inputSampleR += (((double)console7Buss->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) console7Buss->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -220,8 +220,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

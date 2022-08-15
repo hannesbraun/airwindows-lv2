@@ -1,7 +1,7 @@
 #include <lv2/core/lv2.h>
 
-#include <stdbool.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -55,10 +55,10 @@ typedef struct {
 	double muSpeedB;
 	double muCoefficientA;
 	double muCoefficientB;
-	bool flip; //Pressure
+	bool flip; // Pressure
 
 	double fixA[fix_total];
-	double fixB[fix_total]; //fixed frequency biquad filter for ultrasonics, stereo
+	double fixB[fix_total]; // fixed frequency biquad filter for ultrasonics, stereo
 
 	double lastSampleL;
 	double intermediateL[16];
@@ -67,9 +67,9 @@ typedef struct {
 	double lastSampleR;
 	double intermediateR[16];
 	bool wasPosClipR;
-	bool wasNegClipR; //Stereo ClipOnly2
+	bool wasNegClipR; // Stereo ClipOnly2
 
-	double slewMax; //to adust mewiness
+	double slewMax; // to adust mewiness
 
 	uint32_t fpdL;
 	uint32_t fpdR;
@@ -168,26 +168,26 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double overallscale = 1.0;
 	overallscale /= 44100.0;
 	overallscale *= pressure5->sampleRate;
-	int spacing = floor(overallscale); //should give us working basic scaling, usually 2 or 4
+	int spacing = floor(overallscale); // should give us working basic scaling, usually 2 or 4
 	if (spacing < 1) spacing = 1;
 	if (spacing > 16) spacing = 16;
 
 	double threshold = 1.0 - (*pressure5->pressure * 0.95);
 	double muMakeupGain = 1.0 / threshold;
-	//gain settings around threshold
+	// gain settings around threshold
 	double release = pow((1.28 - *pressure5->speed), 5) * 32768.0;
 	double fastest = sqrt(release);
 	release /= overallscale;
 	fastest /= overallscale;
-	//speed settings around release
+	// speed settings around release
 	double mewinessRef = *pressure5->mewiness;
 	double pawsClaws = -(*pressure5->pawclaw - 0.5) * 1.618033988749894848204586;
 	// µ µ µ µ µ µ µ µ µ µ µ µ is the kitten song o/~
-	double outputGain = pow(*pressure5->outputGain * 2.0, 2); //max 4.0 gain
+	double outputGain = pow(*pressure5->outputGain * 2.0, 2); // max 4.0 gain
 	double wet = *pressure5->drywet;
 
 	pressure5->fixA[fix_freq] = 24000.0 / pressure5->sampleRate;
-	pressure5->fixA[fix_reso] = 0.7071; //butterworth Q
+	pressure5->fixA[fix_reso] = 0.7071; // butterworth Q
 	double K = tan(M_PI * pressure5->fixA[fix_freq]);
 	double norm = 1.0 / (1.0 + K / pressure5->fixA[fix_reso] + K * K);
 	pressure5->fixA[fix_a0] = K * K * norm;
@@ -195,9 +195,9 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	pressure5->fixA[fix_a2] = pressure5->fixA[fix_a0];
 	pressure5->fixA[fix_b1] = 2.0 * (K * K - 1.0) * norm;
 	pressure5->fixA[fix_b2] = (1.0 - K / pressure5->fixA[fix_reso] + K * K) * norm;
-	//for the fixed-position biquad filter
+	// for the fixed-position biquad filter
 	for (int x = 0; x < fix_sL1; x++) pressure5->fixB[x] = pressure5->fixA[x];
-	//make the second filter same as the first, don't use sample slots
+	// make the second filter same as the first, don't use sample slots
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -218,14 +218,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			temp = (inputSampleR * pressure5->fixA[fix_a0]) + pressure5->fixA[fix_sR1];
 			pressure5->fixA[fix_sR1] = (inputSampleR * pressure5->fixA[fix_a1]) - (temp * pressure5->fixA[fix_b1]) + pressure5->fixA[fix_sR2];
 			pressure5->fixA[fix_sR2] = (inputSampleR * pressure5->fixA[fix_a2]) - (temp * pressure5->fixA[fix_b2]);
-			inputSampleR = temp; //fixed biquad filtering ultrasonics before Pressure
+			inputSampleR = temp; // fixed biquad filtering ultrasonics before Pressure
 		}
 
 		double inputSense = fabs(inputSampleL);
 		if (fabs(inputSampleR) > inputSense)
 			inputSense = fabs(inputSampleR);
-		//we will take the greater of either channel and just use that, then apply the result
-		//to both stereo channels.
+		// we will take the greater of either channel and just use that, then apply the result
+		// to both stereo channels.
 
 		double mewiness = sin(mewinessRef + (pressure5->slewMax * pawsClaws));
 		bool positivemu = true;
@@ -273,7 +273,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			pressure5->muNewSpeed = pressure5->muNewSpeed + fabs(inputSense * release) + fastest;
 			pressure5->muSpeedB = pressure5->muNewSpeed / pressure5->muSpeedB;
 		}
-		//got coefficients, adjusted speeds
+		// got coefficients, adjusted speeds
 
 		double coefficient;
 		if (pressure5->flip) {
@@ -289,8 +289,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleL *= coefficient;
 			inputSampleR *= coefficient;
 		}
-		//applied compression with vari-vari-µ-µ-µ-µ-µ-µ-is-the-kitten-song o/~
-		//applied gain correction to control output level- tends to constrain sound rather than inflate it
+		// applied compression with vari-vari-µ-µ-µ-µ-µ-µ-is-the-kitten-song o/~
+		// applied gain correction to control output level- tends to constrain sound rather than inflate it
 
 		if (outputGain != 1.0) {
 			inputSampleL *= outputGain;
@@ -307,23 +307,23 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			temp = (inputSampleR * pressure5->fixB[fix_a0]) + pressure5->fixB[fix_sR1];
 			pressure5->fixB[fix_sR1] = (inputSampleR * pressure5->fixB[fix_a1]) - (temp * pressure5->fixB[fix_b1]) + pressure5->fixB[fix_sR2];
 			pressure5->fixB[fix_sR2] = (inputSampleR * pressure5->fixB[fix_a2]) - (temp * pressure5->fixB[fix_b2]);
-			inputSampleR = temp; //fixed biquad filtering ultrasonics between Pressure and ClipOnly
+			inputSampleR = temp; // fixed biquad filtering ultrasonics between Pressure and ClipOnly
 		}
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
-		//Dry/Wet control, BEFORE ClipOnly
+		// Dry/Wet control, BEFORE ClipOnly
 
 		pressure5->slewMax = fabs(inputSampleL - pressure5->lastSampleL);
 		if (pressure5->slewMax < fabs(inputSampleR - pressure5->lastSampleR)) pressure5->slewMax = fabs(inputSampleR - pressure5->lastSampleR);
-		//set up for fiddling with mewiness. Largest amount of slew in any direction
+		// set up for fiddling with mewiness. Largest amount of slew in any direction
 
-		//begin ClipOnly2 stereo as a little, compressed chunk that can be dropped into code
+		// begin ClipOnly2 stereo as a little, compressed chunk that can be dropped into code
 		if (inputSampleL > 4.0) inputSampleL = 4.0;
 		if (inputSampleL < -4.0) inputSampleL = -4.0;
-		if (pressure5->wasPosClipL == true) { //current will be over
+		if (pressure5->wasPosClipL == true) { // current will be over
 			if (inputSampleL < pressure5->lastSampleL) pressure5->lastSampleL = 0.7058208 + (inputSampleL * 0.2609148);
 			else pressure5->lastSampleL = 0.2491717 + (pressure5->lastSampleL * 0.7390851);
 		}
@@ -332,7 +332,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			pressure5->wasPosClipL = true;
 			inputSampleL = 0.7058208 + (pressure5->lastSampleL * 0.2609148);
 		}
-		if (pressure5->wasNegClipL == true) { //current will be -over
+		if (pressure5->wasNegClipL == true) { // current will be -over
 			if (inputSampleL > pressure5->lastSampleL) pressure5->lastSampleL = -0.7058208 + (inputSampleL * 0.2609148);
 			else pressure5->lastSampleL = -0.2491717 + (pressure5->lastSampleL * 0.7390851);
 		}
@@ -342,13 +342,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleL = -0.7058208 + (pressure5->lastSampleL * 0.2609148);
 		}
 		pressure5->intermediateL[spacing] = inputSampleL;
-		inputSampleL = pressure5->lastSampleL; //Latency is however many samples equals one 44.1k sample
+		inputSampleL = pressure5->lastSampleL; // Latency is however many samples equals one 44.1k sample
 		for (int x = spacing; x > 0; x--) pressure5->intermediateL[x - 1] = pressure5->intermediateL[x];
-		pressure5->lastSampleL = pressure5->intermediateL[0]; //run a little buffer to handle this
+		pressure5->lastSampleL = pressure5->intermediateL[0]; // run a little buffer to handle this
 
 		if (inputSampleR > 4.0) inputSampleR = 4.0;
 		if (inputSampleR < -4.0) inputSampleR = -4.0;
-		if (pressure5->wasPosClipR == true) { //current will be over
+		if (pressure5->wasPosClipR == true) { // current will be over
 			if (inputSampleR < pressure5->lastSampleR) pressure5->lastSampleR = 0.7058208 + (inputSampleR * 0.2609148);
 			else pressure5->lastSampleR = 0.2491717 + (pressure5->lastSampleR * 0.7390851);
 		}
@@ -357,7 +357,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			pressure5->wasPosClipR = true;
 			inputSampleR = 0.7058208 + (pressure5->lastSampleR * 0.2609148);
 		}
-		if (pressure5->wasNegClipR == true) { //current will be -over
+		if (pressure5->wasNegClipR == true) { // current will be -over
 			if (inputSampleR > pressure5->lastSampleR) pressure5->lastSampleR = -0.7058208 + (inputSampleR * 0.2609148);
 			else pressure5->lastSampleR = -0.2491717 + (pressure5->lastSampleR * 0.7390851);
 		}
@@ -367,25 +367,25 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR = -0.7058208 + (pressure5->lastSampleR * 0.2609148);
 		}
 		pressure5->intermediateR[spacing] = inputSampleR;
-		inputSampleR = pressure5->lastSampleR; //Latency is however many samples equals one 44.1k sample
+		inputSampleR = pressure5->lastSampleR; // Latency is however many samples equals one 44.1k sample
 		for (int x = spacing; x > 0; x--) pressure5->intermediateR[x - 1] = pressure5->intermediateR[x];
-		pressure5->lastSampleR = pressure5->intermediateR[0]; //run a little buffer to handle this
-		//end ClipOnly2 stereo as a little, compressed chunk that can be dropped into code
-		//final clip runs AFTER the Dry/Wet. It serves as a safety clip even if you're not full wet
+		pressure5->lastSampleR = pressure5->intermediateR[0]; // run a little buffer to handle this
+		// end ClipOnly2 stereo as a little, compressed chunk that can be dropped into code
+		// final clip runs AFTER the Dry/Wet. It serves as a safety clip even if you're not full wet
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		pressure5->fpdL ^= pressure5->fpdL << 13;
 		pressure5->fpdL ^= pressure5->fpdL >> 17;
 		pressure5->fpdL ^= pressure5->fpdL << 5;
-		inputSampleL += (((double)pressure5->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) pressure5->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		pressure5->fpdR ^= pressure5->fpdR << 13;
 		pressure5->fpdR ^= pressure5->fpdR >> 17;
 		pressure5->fpdR ^= pressure5->fpdR << 5;
-		inputSampleR += (((double)pressure5->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) pressure5->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -417,8 +417,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

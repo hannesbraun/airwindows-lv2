@@ -33,9 +33,9 @@ typedef struct {
 	double m2R;
 
 	double biquadA[11];
-	double biquadB[11]; //note that this stereo form doesn't require L and R forms!
-	//This is because so much of it is coefficients etc. that are the same on both channels.
-	//So the stored samples are in 7-8 and 9-10, and freq/res/coefficients serve both.
+	double biquadB[11]; // note that this stereo form doesn't require L and R forms!
+	// This is because so much of it is coefficients etc. that are the same on both channels.
+	// So the stored samples are in 7-8 and 9-10, and freq/res/coefficients serve both.
 
 	uint32_t fpdL;
 	uint32_t fpdR;
@@ -118,12 +118,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 	double intensity = pow(limit, 3) * 32;
 	float wet = *acceleration2->drywet;
-	int spacing = (int)(1.73 * overallscale) + 1;
+	int spacing = (int) (1.73 * overallscale) + 1;
 	if (spacing > 16) spacing = 16;
 
 	acceleration2->biquadA[0] = (20000.0 * (1.0 - (limit * 0.618033988749894848204586))) / acceleration2->sampleRate;
 	acceleration2->biquadB[0] = 20000.0 / acceleration2->sampleRate;
-	acceleration2-> biquadA[1] = 0.7071;
+	acceleration2->biquadA[1] = 0.7071;
 	acceleration2->biquadB[1] = 0.7071;
 
 	double K = tan(M_PI * acceleration2->biquadA[0]);
@@ -153,12 +153,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		double tempSample = (inputSampleL * acceleration2->biquadA[2]) + acceleration2->biquadA[7];
 		acceleration2->biquadA[7] = (inputSampleL * acceleration2->biquadA[3]) - (tempSample * acceleration2->biquadA[5]) + acceleration2->biquadA[8];
 		acceleration2->biquadA[8] = (inputSampleL * acceleration2->biquadA[4]) - (tempSample * acceleration2->biquadA[6]);
-		double smoothL = tempSample; //like mono AU, 7 and 8 store L channel
+		double smoothL = tempSample; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (inputSampleR * acceleration2->biquadA[2]) + acceleration2->biquadA[9];
 		acceleration2->biquadA[9] = (inputSampleR * acceleration2->biquadA[3]) - (tempSample * acceleration2->biquadA[5]) + acceleration2->biquadA[10];
 		acceleration2->biquadA[10] = (inputSampleR * acceleration2->biquadA[4]) - (tempSample * acceleration2->biquadA[6]);
-		double smoothR = tempSample; //note: 9 and 10 store the R channel
+		double smoothR = tempSample; // note: 9 and 10 store the R channel
 
 		for (int count = spacing * 2; count >= 0; count--) {
 			acceleration2->sL[count + 1] = acceleration2->sL[count];
@@ -182,31 +182,31 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		tempSample = (inputSampleL * acceleration2->biquadB[2]) + acceleration2->biquadB[7];
 		acceleration2->biquadB[7] = (inputSampleL * acceleration2->biquadB[3]) - (tempSample * acceleration2->biquadB[5]) + acceleration2->biquadB[8];
 		acceleration2->biquadB[8] = (inputSampleL * acceleration2->biquadB[4]) - (tempSample * acceleration2->biquadB[6]);
-		inputSampleL = tempSample; //like mono AU, 7 and 8 store L channel
+		inputSampleL = tempSample; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (inputSampleR * acceleration2->biquadB[2]) + acceleration2->biquadB[9];
 		acceleration2->biquadB[9] = (inputSampleR * acceleration2->biquadB[3]) - (tempSample * acceleration2->biquadB[5]) + acceleration2->biquadB[10];
 		acceleration2->biquadB[10] = (inputSampleR * acceleration2->biquadB[4]) - (tempSample * acceleration2->biquadB[6]);
-		inputSampleR = tempSample; //note: 9 and 10 store the R channel
+		inputSampleR = tempSample; // note: 9 and 10 store the R channel
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		acceleration2->fpdL ^= acceleration2->fpdL << 13;
 		acceleration2->fpdL ^= acceleration2->fpdL >> 17;
 		acceleration2->fpdL ^= acceleration2->fpdL << 5;
-		inputSampleL += (((double)acceleration2->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) acceleration2->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		acceleration2->fpdR ^= acceleration2->fpdR << 13;
 		acceleration2->fpdR ^= acceleration2->fpdR >> 17;
 		acceleration2->fpdR ^= acceleration2->fpdR << 5;
-		inputSampleR += (((double)acceleration2->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) acceleration2->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -238,8 +238,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

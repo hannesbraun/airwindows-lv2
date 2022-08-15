@@ -26,7 +26,7 @@ typedef struct {
 	double lastSampleR;
 	double intermediateR[16];
 	bool wasPosClipR;
-	bool wasNegClipR; //Stereo ClipOnly2
+	bool wasNegClipR; // Stereo ClipOnly2
 } ClipOnly2;
 
 static LV2_Handle instantiate(
@@ -88,7 +88,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	overallscale /= 44100.0;
 	overallscale *= clipOnly2->sampleRate;
 
-	int spacing = floor(overallscale); //should give us working basic scaling, usually 2 or 4
+	int spacing = floor(overallscale); // should give us working basic scaling, usually 2 or 4
 	if (spacing < 1) spacing = 1;
 	if (spacing > 16) spacing = 16;
 
@@ -96,10 +96,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		float inputSampleL = *in1;
 		float inputSampleR = *in2;
 
-		//begin ClipOnly2 stereo as a little, compressed chunk that can be dropped into code
+		// begin ClipOnly2 stereo as a little, compressed chunk that can be dropped into code
 		if (inputSampleL > 4.0) inputSampleL = 4.0;
 		if (inputSampleL < -4.0) inputSampleL = -4.0;
-		if (clipOnly2->wasPosClipL == true) { //current will be over
+		if (clipOnly2->wasPosClipL == true) { // current will be over
 			if (inputSampleL < clipOnly2->lastSampleL) clipOnly2->lastSampleL = 0.7058208 + (inputSampleL * 0.2609148);
 			else clipOnly2->lastSampleL = 0.2491717 + (clipOnly2->lastSampleL * 0.7390851);
 		}
@@ -108,7 +108,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			clipOnly2->wasPosClipL = true;
 			inputSampleL = 0.7058208 + (clipOnly2->lastSampleL * 0.2609148);
 		}
-		if (clipOnly2->wasNegClipL == true) { //current will be -over
+		if (clipOnly2->wasNegClipL == true) { // current will be -over
 			if (inputSampleL > clipOnly2->lastSampleL) clipOnly2->lastSampleL = -0.7058208 + (inputSampleL * 0.2609148);
 			else clipOnly2->lastSampleL = -0.2491717 + (clipOnly2->lastSampleL * 0.7390851);
 		}
@@ -118,13 +118,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleL = -0.7058208 + (clipOnly2->lastSampleL * 0.2609148);
 		}
 		clipOnly2->intermediateL[spacing] = inputSampleL;
-		inputSampleL = clipOnly2->lastSampleL; //Latency is however many samples equals one 44.1k sample
+		inputSampleL = clipOnly2->lastSampleL; // Latency is however many samples equals one 44.1k sample
 		for (int x = spacing; x > 0; x--) clipOnly2->intermediateL[x - 1] = clipOnly2->intermediateL[x];
-		clipOnly2->lastSampleL = clipOnly2->intermediateL[0]; //run a little buffer to handle this
+		clipOnly2->lastSampleL = clipOnly2->intermediateL[0]; // run a little buffer to handle this
 
 		if (inputSampleR > 4.0) inputSampleR = 4.0;
 		if (inputSampleR < -4.0) inputSampleR = -4.0;
-		if (clipOnly2->wasPosClipR == true) { //current will be over
+		if (clipOnly2->wasPosClipR == true) { // current will be over
 			if (inputSampleR < clipOnly2->lastSampleR) clipOnly2->lastSampleR = 0.7058208 + (inputSampleR * 0.2609148);
 			else clipOnly2->lastSampleR = 0.2491717 + (clipOnly2->lastSampleR * 0.7390851);
 		}
@@ -133,7 +133,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			clipOnly2->wasPosClipR = true;
 			inputSampleR = 0.7058208 + (clipOnly2->lastSampleR * 0.2609148);
 		}
-		if (clipOnly2->wasNegClipR == true) { //current will be -over
+		if (clipOnly2->wasNegClipR == true) { // current will be -over
 			if (inputSampleR > clipOnly2->lastSampleR) clipOnly2->lastSampleR = -0.7058208 + (inputSampleR * 0.2609148);
 			else clipOnly2->lastSampleR = -0.2491717 + (clipOnly2->lastSampleR * 0.7390851);
 		}
@@ -143,9 +143,9 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR = -0.7058208 + (clipOnly2->lastSampleR * 0.2609148);
 		}
 		clipOnly2->intermediateR[spacing] = inputSampleR;
-		inputSampleR = clipOnly2->lastSampleR; //Latency is however many samples equals one 44.1k sample
+		inputSampleR = clipOnly2->lastSampleR; // Latency is however many samples equals one 44.1k sample
 		for (int x = spacing; x > 0; x--) clipOnly2->intermediateR[x - 1] = clipOnly2->intermediateR[x];
-		clipOnly2->lastSampleR = clipOnly2->intermediateR[0]; //run a little buffer to handle this
+		clipOnly2->lastSampleR = clipOnly2->intermediateR[0]; // run a little buffer to handle this
 
 		*out1 = inputSampleL;
 		*out2 = inputSampleR;
@@ -177,8 +177,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

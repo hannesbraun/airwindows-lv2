@@ -24,7 +24,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 	double gainchase;
 	double settingchase;
 	double gainBchase;
@@ -98,48 +98,47 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	if (purestGain->settingchase != inputgain) {
 		purestGain->chasespeed *= 2.0;
 		purestGain->settingchase = inputgain;
-		//increment the slowness for each fader movement
-		//continuous alteration makes it react smoother
-		//sudden jump to setting, not so much
+		// increment the slowness for each fader movement
+		// continuous alteration makes it react smoother
+		// sudden jump to setting, not so much
 	}
 	if (purestGain->chasespeed > 2500.0) purestGain->chasespeed = 2500.0;
-	//bail out if it's too extreme
+	// bail out if it's too extreme
 	if (purestGain->gainchase < -60.0) {
 		purestGain->gainchase = pow(10.0, inputgain / 20.0);
-		//shouldn't even be a negative number
-		//this is about starting at whatever's set, when
-		//plugin is instantiated.
-		//Otherwise it's the target, in dB.
+		// shouldn't even be a negative number
+		// this is about starting at whatever's set, when
+		// plugin is instantiated.
+		// Otherwise it's the target, in dB.
 	}
 	double targetgain;
-	//done with top controller
+	// done with top controller
 	double targetBgain = *purestGain->slowfade;
 	if (purestGain->gainBchase < 0.0) purestGain->gainBchase = targetBgain;
-	//this one is not a dB value, but straight multiplication
-	//done with slow fade controller
+	// this one is not a dB value, but straight multiplication
+	// done with slow fade controller
 	double outputgain;
-
 
 	double inputSampleL;
 	double inputSampleR;
 
 	while (sampleFrames-- > 0) {
 		targetgain = pow(10.0, purestGain->settingchase / 20.0);
-		//now we have the target in our temp variable
+		// now we have the target in our temp variable
 
 		purestGain->chasespeed *= 0.9999;
 		purestGain->chasespeed -= 0.01;
 		if (purestGain->chasespeed < 350.0) purestGain->chasespeed = 350.0;
-		//we have our chase speed compensated for recent fader activity
+		// we have our chase speed compensated for recent fader activity
 
 		purestGain->gainchase = (((purestGain->gainchase * purestGain->chasespeed) + targetgain) / (purestGain->chasespeed + 1.0));
-		//gainchase is chasing the target, as a simple multiply gain factor
+		// gainchase is chasing the target, as a simple multiply gain factor
 
 		purestGain->gainBchase = (((purestGain->gainBchase * 4000) + targetBgain) / 4001);
-		//gainchase is chasing the target, as a simple multiply gain factor
+		// gainchase is chasing the target, as a simple multiply gain factor
 
 		outputgain = purestGain->gainchase * purestGain->gainBchase;
-		//directly multiply the dB gain by the straight multiply gain
+		// directly multiply the dB gain by the straight multiply gain
 
 		inputSampleL = *in1;
 		inputSampleR = *in2;
@@ -152,19 +151,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		} else {
 			inputSampleL *= outputgain;
 			inputSampleR *= outputgain;
-			//begin 32 bit stereo floating point dither
+			// begin 32 bit stereo floating point dither
 			int expon;
-			frexpf((float)inputSampleL, &expon);
+			frexpf((float) inputSampleL, &expon);
 			purestGain->fpdL ^= purestGain->fpdL << 13;
 			purestGain->fpdL ^= purestGain->fpdL >> 17;
 			purestGain->fpdL ^= purestGain->fpdL << 5;
-			inputSampleL += (((double)purestGain->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-			frexpf((float)inputSampleR, &expon);
+			inputSampleL += (((double) purestGain->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+			frexpf((float) inputSampleR, &expon);
 			purestGain->fpdR ^= purestGain->fpdR << 13;
 			purestGain->fpdR ^= purestGain->fpdR >> 17;
 			purestGain->fpdR ^= purestGain->fpdR << 5;
-			inputSampleR += (((double)purestGain->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-			//end 32 bit stereo floating point dither
+			inputSampleR += (((double) purestGain->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+			// end 32 bit stereo floating point dither
 			*out1 = (float) inputSampleL;
 			*out2 = (float) inputSampleR;
 		}
@@ -196,8 +195,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

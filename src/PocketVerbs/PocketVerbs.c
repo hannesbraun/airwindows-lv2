@@ -827,7 +827,7 @@ static void activate(LV2_Handle instance)
 	pocketverbs->delayZ = 4;
 	pocketverbs->maxdelayZ = 2088;
 
-	pocketverbs->savedRoomsize = -1.0; //force update to begin
+	pocketverbs->savedRoomsize = -1.0; // force update to begin
 	pocketverbs->countdown = -1;
 	pocketverbs->peakL = 1.0;
 	pocketverbs->peakR = 1.0;
@@ -846,7 +846,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out1 = pocketverbs->output[0];
 	float* out2 = pocketverbs->output[1];
 
-	int verbtype = ((int) * pocketverbs->type) + 1;
+	int verbtype = ((int) *pocketverbs->type) + 1;
 	if (verbtype > 6) {
 		verbtype = 6;
 	}
@@ -860,37 +860,37 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	}
 	double wetnesstarget = *pocketverbs->drywet;
 	double dryness = (1.0 - wetnesstarget);
-	//verbs use base wetness value internally
+	// verbs use base wetness value internally
 	double wetness = wetnesstarget;
-	double constallpass = 0.618033988749894848204586; //golden ratio!
+	double constallpass = 0.618033988749894848204586; // golden ratio!
 	int allpasstemp;
 	int count;
-	int max = 70; //biggest divisor to test primes against
+	int max = 70; // biggest divisor to test primes against
 	double bridgerectifier;
-	double gain = 0.5 + (wetnesstarget * 0.5); //dryer for less verb drive
-	//used as an aux, saturates when fed high levels
+	double gain = 0.5 + (wetnesstarget * 0.5); // dryer for less verb drive
+	// used as an aux, saturates when fed high levels
 
-	//remap values to primes input number in question is 'i'
-	//max is the largest prime we care about- HF interactions more interesting than the big numbers
-	//pushing values larger and larger until we have a result
-	//for (primetest=2; primetest <= max; primetest++) {if ( i!=primetest && i % primetest == 0 ) {i += 1; primetest=2;}}
+	// remap values to primes input number in question is 'i'
+	// max is the largest prime we care about- HF interactions more interesting than the big numbers
+	// pushing values larger and larger until we have a result
+	// for (primetest=2; primetest <= max; primetest++) {if ( i!=primetest && i % primetest == 0 ) {i += 1; primetest=2;}}
 
 	if (pocketverbs->savedRoomsize != roomsize) {
-		pocketverbs->savedRoomsize = roomsize;        //kick off the adjustment which will take 26 zippernoise refreshes to complete
+		pocketverbs->savedRoomsize = roomsize; // kick off the adjustment which will take 26 zippernoise refreshes to complete
 		pocketverbs->countdown = 26;
 	}
 
 	if (pocketverbs->countdown > 0) {
 		switch (pocketverbs->countdown) {
 			case 1:
-				pocketverbs->delayA = ((int)pocketverbs->maxdelayA * roomsize);
+				pocketverbs->delayA = ((int) pocketverbs->maxdelayA * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayA != count && pocketverbs->delayA % count == 0) {
-						pocketverbs->delayA += 1;        //try for primeish As
+						pocketverbs->delayA += 1; // try for primeish As
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayA > pocketverbs->maxdelayA) pocketverbs->delayA = pocketverbs->maxdelayA; //insanitycheck
+				if (pocketverbs->delayA > pocketverbs->maxdelayA) pocketverbs->delayA = pocketverbs->maxdelayA; // insanitycheck
 				for (count = pocketverbs->alpAL; count < 15149; count++) {
 					pocketverbs->aAL[count] = 0.0;
 				}
@@ -900,14 +900,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 2:
-				pocketverbs->delayB = ((int)pocketverbs->maxdelayB * roomsize);
+				pocketverbs->delayB = ((int) pocketverbs->maxdelayB * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayB != count && pocketverbs->delayB % count == 0) {
-						pocketverbs->delayB += 1;        //try for primeish Bs
+						pocketverbs->delayB += 1; // try for primeish Bs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayB > pocketverbs->maxdelayB) pocketverbs->delayB = pocketverbs->maxdelayB; //insanitycheck
+				if (pocketverbs->delayB > pocketverbs->maxdelayB) pocketverbs->delayB = pocketverbs->maxdelayB; // insanitycheck
 				for (count = pocketverbs->alpBL; count < 14617; count++) {
 					pocketverbs->aBL[count] = 0.0;
 				}
@@ -917,14 +917,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 3:
-				pocketverbs->delayC = ((int)pocketverbs->maxdelayC * roomsize);
+				pocketverbs->delayC = ((int) pocketverbs->maxdelayC * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayC != count && pocketverbs->delayC % count == 0) {
-						pocketverbs->delayC += 1;        //try for primeish Cs
+						pocketverbs->delayC += 1; // try for primeish Cs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayC > pocketverbs->maxdelayC) pocketverbs->delayC = pocketverbs->maxdelayC; //insanitycheck
+				if (pocketverbs->delayC > pocketverbs->maxdelayC) pocketverbs->delayC = pocketverbs->maxdelayC; // insanitycheck
 				for (count = pocketverbs->alpCL; count < 14357; count++) {
 					pocketverbs->aCL[count] = 0.0;
 				}
@@ -934,14 +934,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 4:
-				pocketverbs->delayD = ((int)pocketverbs->maxdelayD * roomsize);
+				pocketverbs->delayD = ((int) pocketverbs->maxdelayD * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayD != count && pocketverbs->delayD % count == 0) {
-						pocketverbs->delayD += 1;        //try for primeish Ds
+						pocketverbs->delayD += 1; // try for primeish Ds
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayD > pocketverbs->maxdelayD) pocketverbs->delayD = pocketverbs->maxdelayD; //insanitycheck
+				if (pocketverbs->delayD > pocketverbs->maxdelayD) pocketverbs->delayD = pocketverbs->maxdelayD; // insanitycheck
 				for (count = pocketverbs->alpDL; count < 13817; count++) {
 					pocketverbs->aDL[count] = 0.0;
 				}
@@ -951,14 +951,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 5:
-				pocketverbs->delayE = ((int)pocketverbs->maxdelayE * roomsize);
+				pocketverbs->delayE = ((int) pocketverbs->maxdelayE * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayE != count && pocketverbs->delayE % count == 0) {
-						pocketverbs->delayE += 1;        //try for primeish Es
+						pocketverbs->delayE += 1; // try for primeish Es
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayE > pocketverbs->maxdelayE) pocketverbs->delayE = pocketverbs->maxdelayE; //insanitycheck
+				if (pocketverbs->delayE > pocketverbs->maxdelayE) pocketverbs->delayE = pocketverbs->maxdelayE; // insanitycheck
 				for (count = pocketverbs->alpEL; count < 13561; count++) {
 					pocketverbs->aEL[count] = 0.0;
 				}
@@ -968,14 +968,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 6:
-				pocketverbs->delayF = ((int)pocketverbs->maxdelayF * roomsize);
+				pocketverbs->delayF = ((int) pocketverbs->maxdelayF * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayF != count && pocketverbs->delayF % count == 0) {
-						pocketverbs->delayF += 1;        //try for primeish Fs
+						pocketverbs->delayF += 1; // try for primeish Fs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayF > pocketverbs->maxdelayF) pocketverbs->delayF = pocketverbs->maxdelayF; //insanitycheck
+				if (pocketverbs->delayF > pocketverbs->maxdelayF) pocketverbs->delayF = pocketverbs->maxdelayF; // insanitycheck
 				for (count = pocketverbs->alpFL; count < 13045; count++) {
 					pocketverbs->aFL[count] = 0.0;
 				}
@@ -985,14 +985,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 7:
-				pocketverbs->delayG = ((int)pocketverbs->maxdelayG * roomsize);
+				pocketverbs->delayG = ((int) pocketverbs->maxdelayG * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayG != count && pocketverbs->delayG % count == 0) {
-						pocketverbs->delayG += 1;        //try for primeish Gs
+						pocketverbs->delayG += 1; // try for primeish Gs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayG > pocketverbs->maxdelayG) pocketverbs->delayG = pocketverbs->maxdelayG; //insanitycheck
+				if (pocketverbs->delayG > pocketverbs->maxdelayG) pocketverbs->delayG = pocketverbs->maxdelayG; // insanitycheck
 				for (count = pocketverbs->alpGL; count < 11965; count++) {
 					pocketverbs->aGL[count] = 0.0;
 				}
@@ -1002,14 +1002,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 8:
-				pocketverbs->delayH = ((int)pocketverbs->maxdelayH * roomsize);
+				pocketverbs->delayH = ((int) pocketverbs->maxdelayH * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayH != count && pocketverbs->delayH % count == 0) {
-						pocketverbs->delayH += 1;        //try for primeish Hs
+						pocketverbs->delayH += 1; // try for primeish Hs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayH > pocketverbs->maxdelayH) pocketverbs->delayH = pocketverbs->maxdelayH; //insanitycheck
+				if (pocketverbs->delayH > pocketverbs->maxdelayH) pocketverbs->delayH = pocketverbs->maxdelayH; // insanitycheck
 				for (count = pocketverbs->alpHL; count < 11129; count++) {
 					pocketverbs->aHL[count] = 0.0;
 				}
@@ -1019,14 +1019,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 9:
-				pocketverbs->delayI = ((int)pocketverbs->maxdelayI * roomsize);
+				pocketverbs->delayI = ((int) pocketverbs->maxdelayI * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayI != count && pocketverbs->delayI % count == 0) {
-						pocketverbs->delayI += 1;        //try for primeish Is
+						pocketverbs->delayI += 1; // try for primeish Is
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayI > pocketverbs->maxdelayI) pocketverbs->delayI = pocketverbs->maxdelayI; //insanitycheck
+				if (pocketverbs->delayI > pocketverbs->maxdelayI) pocketverbs->delayI = pocketverbs->maxdelayI; // insanitycheck
 				for (count = pocketverbs->alpIL; count < 10597; count++) {
 					pocketverbs->aIL[count] = 0.0;
 				}
@@ -1036,14 +1036,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 10:
-				pocketverbs->delayJ = ((int)pocketverbs->maxdelayJ * roomsize);
+				pocketverbs->delayJ = ((int) pocketverbs->maxdelayJ * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayJ != count && pocketverbs->delayJ % count == 0) {
-						pocketverbs->delayJ += 1;        //try for primeish Js
+						pocketverbs->delayJ += 1; // try for primeish Js
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayJ > pocketverbs->maxdelayJ) pocketverbs->delayJ = pocketverbs->maxdelayJ; //insanitycheck
+				if (pocketverbs->delayJ > pocketverbs->maxdelayJ) pocketverbs->delayJ = pocketverbs->maxdelayJ; // insanitycheck
 				for (count = pocketverbs->alpJL; count < 9809; count++) {
 					pocketverbs->aJL[count] = 0.0;
 				}
@@ -1053,14 +1053,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 11:
-				pocketverbs->delayK = ((int)pocketverbs->maxdelayK * roomsize);
+				pocketverbs->delayK = ((int) pocketverbs->maxdelayK * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayK != count && pocketverbs->delayK % count == 0) {
-						pocketverbs->delayK += 1;        //try for primeish Ks
+						pocketverbs->delayK += 1; // try for primeish Ks
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayK > pocketverbs->maxdelayK) pocketverbs->delayK = pocketverbs->maxdelayK; //insanitycheck
+				if (pocketverbs->delayK > pocketverbs->maxdelayK) pocketverbs->delayK = pocketverbs->maxdelayK; // insanitycheck
 				for (count = pocketverbs->alpKL; count < 9521; count++) {
 					pocketverbs->aKL[count] = 0.0;
 				}
@@ -1070,14 +1070,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 12:
-				pocketverbs->delayL = ((int)pocketverbs->maxdelayL * roomsize);
+				pocketverbs->delayL = ((int) pocketverbs->maxdelayL * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayL != count && pocketverbs->delayL % count == 0) {
-						pocketverbs->delayL += 1;        //try for primeish Ls
+						pocketverbs->delayL += 1; // try for primeish Ls
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayL > pocketverbs->maxdelayL) pocketverbs->delayL = pocketverbs->maxdelayL; //insanitycheck
+				if (pocketverbs->delayL > pocketverbs->maxdelayL) pocketverbs->delayL = pocketverbs->maxdelayL; // insanitycheck
 				for (count = pocketverbs->alpLL; count < 8981; count++) {
 					pocketverbs->aLL[count] = 0.0;
 				}
@@ -1087,14 +1087,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 13:
-				pocketverbs->delayM = ((int)pocketverbs->maxdelayM * roomsize);
+				pocketverbs->delayM = ((int) pocketverbs->maxdelayM * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayM != count && pocketverbs->delayM % count == 0) {
-						pocketverbs->delayM += 1;        //try for primeish Ms
+						pocketverbs->delayM += 1; // try for primeish Ms
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayM > pocketverbs->maxdelayM) pocketverbs->delayM = pocketverbs->maxdelayM; //insanitycheck
+				if (pocketverbs->delayM > pocketverbs->maxdelayM) pocketverbs->delayM = pocketverbs->maxdelayM; // insanitycheck
 				for (count = pocketverbs->alpML; count < 8785; count++) {
 					pocketverbs->aML[count] = 0.0;
 				}
@@ -1104,14 +1104,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 14:
-				pocketverbs->delayN = ((int)pocketverbs->maxdelayN * roomsize);
+				pocketverbs->delayN = ((int) pocketverbs->maxdelayN * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayN != count && pocketverbs->delayN % count == 0) {
-						pocketverbs->delayN += 1;        //try for primeish Ns
+						pocketverbs->delayN += 1; // try for primeish Ns
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayN > pocketverbs->maxdelayN) pocketverbs->delayN = pocketverbs->maxdelayN; //insanitycheck
+				if (pocketverbs->delayN > pocketverbs->maxdelayN) pocketverbs->delayN = pocketverbs->maxdelayN; // insanitycheck
 				for (count = pocketverbs->alpNL; count < 8461; count++) {
 					pocketverbs->aNL[count] = 0.0;
 				}
@@ -1121,14 +1121,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 15:
-				pocketverbs->delayO = ((int)pocketverbs->maxdelayO * roomsize);
+				pocketverbs->delayO = ((int) pocketverbs->maxdelayO * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayO != count && pocketverbs->delayO % count == 0) {
-						pocketverbs->delayO += 1;        //try for primeish Os
+						pocketverbs->delayO += 1; // try for primeish Os
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayO > pocketverbs->maxdelayO) pocketverbs->delayO = pocketverbs->maxdelayO; //insanitycheck
+				if (pocketverbs->delayO > pocketverbs->maxdelayO) pocketverbs->delayO = pocketverbs->maxdelayO; // insanitycheck
 				for (count = pocketverbs->alpOL; count < 8309; count++) {
 					pocketverbs->aOL[count] = 0.0;
 				}
@@ -1138,14 +1138,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 16:
-				pocketverbs->delayP = ((int)pocketverbs->maxdelayP * roomsize);
+				pocketverbs->delayP = ((int) pocketverbs->maxdelayP * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayP != count && pocketverbs->delayP % count == 0) {
-						pocketverbs->delayP += 1;        //try for primeish Ps
+						pocketverbs->delayP += 1; // try for primeish Ps
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayP > pocketverbs->maxdelayP) pocketverbs->delayP = pocketverbs->maxdelayP; //insanitycheck
+				if (pocketverbs->delayP > pocketverbs->maxdelayP) pocketverbs->delayP = pocketverbs->maxdelayP; // insanitycheck
 				for (count = pocketverbs->alpPL; count < 7981; count++) {
 					pocketverbs->aPL[count] = 0.0;
 				}
@@ -1155,14 +1155,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 17:
-				pocketverbs->delayQ = ((int)pocketverbs->maxdelayQ * roomsize);
+				pocketverbs->delayQ = ((int) pocketverbs->maxdelayQ * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayQ != count && pocketverbs->delayQ % count == 0) {
-						pocketverbs->delayQ += 1;        //try for primeish Qs
+						pocketverbs->delayQ += 1; // try for primeish Qs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayQ > pocketverbs->maxdelayQ) pocketverbs->delayQ = pocketverbs->maxdelayQ; //insanitycheck
+				if (pocketverbs->delayQ > pocketverbs->maxdelayQ) pocketverbs->delayQ = pocketverbs->maxdelayQ; // insanitycheck
 				for (count = pocketverbs->alpQL; count < 7321; count++) {
 					pocketverbs->aQL[count] = 0.0;
 				}
@@ -1172,14 +1172,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 18:
-				pocketverbs->delayR = ((int)pocketverbs->maxdelayR * roomsize);
+				pocketverbs->delayR = ((int) pocketverbs->maxdelayR * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayR != count && pocketverbs->delayR % count == 0) {
-						pocketverbs->delayR += 1;        //try for primeish Rs
+						pocketverbs->delayR += 1; // try for primeish Rs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayR > pocketverbs->maxdelayR) pocketverbs->delayR = pocketverbs->maxdelayR; //insanitycheck
+				if (pocketverbs->delayR > pocketverbs->maxdelayR) pocketverbs->delayR = pocketverbs->maxdelayR; // insanitycheck
 				for (count = pocketverbs->alpRL; count < 6817; count++) {
 					pocketverbs->aRL[count] = 0.0;
 				}
@@ -1189,14 +1189,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 19:
-				pocketverbs->delayS = ((int)pocketverbs->maxdelayS * roomsize);
+				pocketverbs->delayS = ((int) pocketverbs->maxdelayS * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayS != count && pocketverbs->delayS % count == 0) {
-						pocketverbs->delayS += 1;        //try for primeish Ss
+						pocketverbs->delayS += 1; // try for primeish Ss
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayS > pocketverbs->maxdelayS) pocketverbs->delayS = pocketverbs->maxdelayS; //insanitycheck
+				if (pocketverbs->delayS > pocketverbs->maxdelayS) pocketverbs->delayS = pocketverbs->maxdelayS; // insanitycheck
 				for (count = pocketverbs->alpSL; count < 6505; count++) {
 					pocketverbs->aSL[count] = 0.0;
 				}
@@ -1206,14 +1206,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 20:
-				pocketverbs->delayT = ((int)pocketverbs->maxdelayT * roomsize);
+				pocketverbs->delayT = ((int) pocketverbs->maxdelayT * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayT != count && pocketverbs->delayT % count == 0) {
-						pocketverbs->delayT += 1;        //try for primeish Ts
+						pocketverbs->delayT += 1; // try for primeish Ts
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayT > pocketverbs->maxdelayT) pocketverbs->delayT = pocketverbs->maxdelayT; //insanitycheck
+				if (pocketverbs->delayT > pocketverbs->maxdelayT) pocketverbs->delayT = pocketverbs->maxdelayT; // insanitycheck
 				for (count = pocketverbs->alpTL; count < 6001; count++) {
 					pocketverbs->aTL[count] = 0.0;
 				}
@@ -1223,14 +1223,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 21:
-				pocketverbs->delayU = ((int)pocketverbs->maxdelayU * roomsize);
+				pocketverbs->delayU = ((int) pocketverbs->maxdelayU * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayU != count && pocketverbs->delayU % count == 0) {
-						pocketverbs->delayU += 1;        //try for primeish Us
+						pocketverbs->delayU += 1; // try for primeish Us
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayU > pocketverbs->maxdelayU) pocketverbs->delayU = pocketverbs->maxdelayU; //insanitycheck
+				if (pocketverbs->delayU > pocketverbs->maxdelayU) pocketverbs->delayU = pocketverbs->maxdelayU; // insanitycheck
 				for (count = pocketverbs->alpUL; count < 5837; count++) {
 					pocketverbs->aUL[count] = 0.0;
 				}
@@ -1240,14 +1240,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 22:
-				pocketverbs->delayV = ((int)pocketverbs->maxdelayV * roomsize);
+				pocketverbs->delayV = ((int) pocketverbs->maxdelayV * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayV != count && pocketverbs->delayV % count == 0) {
-						pocketverbs->delayV += 1;        //try for primeish Vs
+						pocketverbs->delayV += 1; // try for primeish Vs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayV > pocketverbs->maxdelayV) pocketverbs->delayV = pocketverbs->maxdelayV; //insanitycheck
+				if (pocketverbs->delayV > pocketverbs->maxdelayV) pocketverbs->delayV = pocketverbs->maxdelayV; // insanitycheck
 				for (count = pocketverbs->alpVL; count < 5501; count++) {
 					pocketverbs->aVL[count] = 0.0;
 				}
@@ -1257,14 +1257,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 23:
-				pocketverbs->delayW = ((int)pocketverbs->maxdelayW * roomsize);
+				pocketverbs->delayW = ((int) pocketverbs->maxdelayW * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayW != count && pocketverbs->delayW % count == 0) {
-						pocketverbs->delayW += 1;        //try for primeish Ws
+						pocketverbs->delayW += 1; // try for primeish Ws
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayW > pocketverbs->maxdelayW) pocketverbs->delayW = pocketverbs->maxdelayW; //insanitycheck
+				if (pocketverbs->delayW > pocketverbs->maxdelayW) pocketverbs->delayW = pocketverbs->maxdelayW; // insanitycheck
 				for (count = pocketverbs->alpWL; count < 5009; count++) {
 					pocketverbs->aWL[count] = 0.0;
 				}
@@ -1274,14 +1274,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 24:
-				pocketverbs->delayX = ((int)pocketverbs->maxdelayX * roomsize);
+				pocketverbs->delayX = ((int) pocketverbs->maxdelayX * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayX != count && pocketverbs->delayX % count == 0) {
-						pocketverbs->delayX += 1;        //try for primeish Xs
+						pocketverbs->delayX += 1; // try for primeish Xs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayX > pocketverbs->maxdelayX) pocketverbs->delayX = pocketverbs->maxdelayX; //insanitycheck
+				if (pocketverbs->delayX > pocketverbs->maxdelayX) pocketverbs->delayX = pocketverbs->maxdelayX; // insanitycheck
 				for (count = pocketverbs->alpXL; count < 4849; count++) {
 					pocketverbs->aXL[count] = 0.0;
 				}
@@ -1291,14 +1291,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 25:
-				pocketverbs->delayY = ((int)pocketverbs->maxdelayY * roomsize);
+				pocketverbs->delayY = ((int) pocketverbs->maxdelayY * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayY != count && pocketverbs->delayY % count == 0) {
-						pocketverbs->delayY += 1;        //try for primeish Ys
+						pocketverbs->delayY += 1; // try for primeish Ys
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayY > pocketverbs->maxdelayY) pocketverbs->delayY = pocketverbs->maxdelayY; //insanitycheck
+				if (pocketverbs->delayY > pocketverbs->maxdelayY) pocketverbs->delayY = pocketverbs->maxdelayY; // insanitycheck
 				for (count = pocketverbs->alpYL; count < 4295; count++) {
 					pocketverbs->aYL[count] = 0.0;
 				}
@@ -1308,14 +1308,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 26:
-				pocketverbs->delayZ = ((int)pocketverbs->maxdelayZ * roomsize);
+				pocketverbs->delayZ = ((int) pocketverbs->maxdelayZ * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayZ != count && pocketverbs->delayZ % count == 0) {
-						pocketverbs->delayZ += 1;        //try for primeish Zs
+						pocketverbs->delayZ += 1; // try for primeish Zs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayZ > pocketverbs->maxdelayZ) pocketverbs->delayZ = pocketverbs->maxdelayZ; //insanitycheck
+				if (pocketverbs->delayZ > pocketverbs->maxdelayZ) pocketverbs->delayZ = pocketverbs->maxdelayZ; // insanitycheck
 				for (count = pocketverbs->alpZL; count < 4179; count++) {
 					pocketverbs->aZL[count] = 0.0;
 				}
@@ -1323,21 +1323,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->oZL[count] = 0.0;
 				}
 				break;
-		} //end of switch statement
-		//pocketverbs->countdown--; we are doing this after the second one
+		} // end of switch statement
+		// pocketverbs->countdown--; we are doing this after the second one
 	}
 
 	if (pocketverbs->countdown > 0) {
 		switch (pocketverbs->countdown) {
 			case 1:
-				pocketverbs->delayA = ((int)pocketverbs->maxdelayA * roomsize);
+				pocketverbs->delayA = ((int) pocketverbs->maxdelayA * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayA != count && pocketverbs->delayA % count == 0) {
-						pocketverbs->delayA += 1;        //try for primeish As
+						pocketverbs->delayA += 1; // try for primeish As
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayA > pocketverbs->maxdelayA) pocketverbs->delayA = pocketverbs->maxdelayA; //insanitycheck
+				if (pocketverbs->delayA > pocketverbs->maxdelayA) pocketverbs->delayA = pocketverbs->maxdelayA; // insanitycheck
 				for (count = pocketverbs->alpAR; count < 15149; count++) {
 					pocketverbs->aAR[count] = 0.0;
 				}
@@ -1347,14 +1347,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 2:
-				pocketverbs->delayB = ((int)pocketverbs->maxdelayB * roomsize);
+				pocketverbs->delayB = ((int) pocketverbs->maxdelayB * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayB != count && pocketverbs->delayB % count == 0) {
-						pocketverbs->delayB += 1;        //try for primeish Bs
+						pocketverbs->delayB += 1; // try for primeish Bs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayB > pocketverbs->maxdelayB) pocketverbs->delayB = pocketverbs->maxdelayB; //insanitycheck
+				if (pocketverbs->delayB > pocketverbs->maxdelayB) pocketverbs->delayB = pocketverbs->maxdelayB; // insanitycheck
 				for (count = pocketverbs->alpBR; count < 14617; count++) {
 					pocketverbs->aBR[count] = 0.0;
 				}
@@ -1364,14 +1364,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 3:
-				pocketverbs->delayC = ((int)pocketverbs->maxdelayC * roomsize);
+				pocketverbs->delayC = ((int) pocketverbs->maxdelayC * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayC != count && pocketverbs->delayC % count == 0) {
-						pocketverbs->delayC += 1;        //try for primeish Cs
+						pocketverbs->delayC += 1; // try for primeish Cs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayC > pocketverbs->maxdelayC) pocketverbs->delayC = pocketverbs->maxdelayC; //insanitycheck
+				if (pocketverbs->delayC > pocketverbs->maxdelayC) pocketverbs->delayC = pocketverbs->maxdelayC; // insanitycheck
 				for (count = pocketverbs->alpCR; count < 14357; count++) {
 					pocketverbs->aCR[count] = 0.0;
 				}
@@ -1381,14 +1381,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 4:
-				pocketverbs->delayD = ((int)pocketverbs->maxdelayD * roomsize);
+				pocketverbs->delayD = ((int) pocketverbs->maxdelayD * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayD != count && pocketverbs->delayD % count == 0) {
-						pocketverbs->delayD += 1;        //try for primeish Ds
+						pocketverbs->delayD += 1; // try for primeish Ds
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayD > pocketverbs->maxdelayD) pocketverbs->delayD = pocketverbs->maxdelayD; //insanitycheck
+				if (pocketverbs->delayD > pocketverbs->maxdelayD) pocketverbs->delayD = pocketverbs->maxdelayD; // insanitycheck
 				for (count = pocketverbs->alpDR; count < 13817; count++) {
 					pocketverbs->aDR[count] = 0.0;
 				}
@@ -1398,14 +1398,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 5:
-				pocketverbs->delayE = ((int)pocketverbs->maxdelayE * roomsize);
+				pocketverbs->delayE = ((int) pocketverbs->maxdelayE * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayE != count && pocketverbs->delayE % count == 0) {
-						pocketverbs->delayE += 1;        //try for primeish Es
+						pocketverbs->delayE += 1; // try for primeish Es
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayE > pocketverbs->maxdelayE) pocketverbs->delayE = pocketverbs->maxdelayE; //insanitycheck
+				if (pocketverbs->delayE > pocketverbs->maxdelayE) pocketverbs->delayE = pocketverbs->maxdelayE; // insanitycheck
 				for (count = pocketverbs->alpER; count < 13561; count++) {
 					pocketverbs->aER[count] = 0.0;
 				}
@@ -1415,14 +1415,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 6:
-				pocketverbs->delayF = ((int)pocketverbs->maxdelayF * roomsize);
+				pocketverbs->delayF = ((int) pocketverbs->maxdelayF * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayF != count && pocketverbs->delayF % count == 0) {
-						pocketverbs->delayF += 1;        //try for primeish Fs
+						pocketverbs->delayF += 1; // try for primeish Fs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayF > pocketverbs->maxdelayF) pocketverbs->delayF = pocketverbs->maxdelayF; //insanitycheck
+				if (pocketverbs->delayF > pocketverbs->maxdelayF) pocketverbs->delayF = pocketverbs->maxdelayF; // insanitycheck
 				for (count = pocketverbs->alpFR; count < 13045; count++) {
 					pocketverbs->aFR[count] = 0.0;
 				}
@@ -1432,14 +1432,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 7:
-				pocketverbs->delayG = ((int)pocketverbs->maxdelayG * roomsize);
+				pocketverbs->delayG = ((int) pocketverbs->maxdelayG * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayG != count && pocketverbs->delayG % count == 0) {
-						pocketverbs->delayG += 1;        //try for primeish Gs
+						pocketverbs->delayG += 1; // try for primeish Gs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayG > pocketverbs->maxdelayG) pocketverbs->delayG = pocketverbs->maxdelayG; //insanitycheck
+				if (pocketverbs->delayG > pocketverbs->maxdelayG) pocketverbs->delayG = pocketverbs->maxdelayG; // insanitycheck
 				for (count = pocketverbs->alpGR; count < 11965; count++) {
 					pocketverbs->aGR[count] = 0.0;
 				}
@@ -1449,14 +1449,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 8:
-				pocketverbs->delayH = ((int)pocketverbs->maxdelayH * roomsize);
+				pocketverbs->delayH = ((int) pocketverbs->maxdelayH * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayH != count && pocketverbs->delayH % count == 0) {
-						pocketverbs->delayH += 1;        //try for primeish Hs
+						pocketverbs->delayH += 1; // try for primeish Hs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayH > pocketverbs->maxdelayH) pocketverbs->delayH = pocketverbs->maxdelayH; //insanitycheck
+				if (pocketverbs->delayH > pocketverbs->maxdelayH) pocketverbs->delayH = pocketverbs->maxdelayH; // insanitycheck
 				for (count = pocketverbs->alpHR; count < 11129; count++) {
 					pocketverbs->aHR[count] = 0.0;
 				}
@@ -1466,14 +1466,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 9:
-				pocketverbs->delayI = ((int)pocketverbs->maxdelayI * roomsize);
+				pocketverbs->delayI = ((int) pocketverbs->maxdelayI * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayI != count && pocketverbs->delayI % count == 0) {
-						pocketverbs->delayI += 1;        //try for primeish Is
+						pocketverbs->delayI += 1; // try for primeish Is
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayI > pocketverbs->maxdelayI) pocketverbs->delayI = pocketverbs->maxdelayI; //insanitycheck
+				if (pocketverbs->delayI > pocketverbs->maxdelayI) pocketverbs->delayI = pocketverbs->maxdelayI; // insanitycheck
 				for (count = pocketverbs->alpIR; count < 10597; count++) {
 					pocketverbs->aIR[count] = 0.0;
 				}
@@ -1483,14 +1483,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 10:
-				pocketverbs->delayJ = ((int)pocketverbs->maxdelayJ * roomsize);
+				pocketverbs->delayJ = ((int) pocketverbs->maxdelayJ * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayJ != count && pocketverbs->delayJ % count == 0) {
-						pocketverbs->delayJ += 1;        //try for primeish Js
+						pocketverbs->delayJ += 1; // try for primeish Js
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayJ > pocketverbs->maxdelayJ) pocketverbs->delayJ = pocketverbs->maxdelayJ; //insanitycheck
+				if (pocketverbs->delayJ > pocketverbs->maxdelayJ) pocketverbs->delayJ = pocketverbs->maxdelayJ; // insanitycheck
 				for (count = pocketverbs->alpJR; count < 9809; count++) {
 					pocketverbs->aJR[count] = 0.0;
 				}
@@ -1500,14 +1500,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 11:
-				pocketverbs->delayK = ((int)pocketverbs->maxdelayK * roomsize);
+				pocketverbs->delayK = ((int) pocketverbs->maxdelayK * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayK != count && pocketverbs->delayK % count == 0) {
-						pocketverbs->delayK += 1;        //try for primeish Ks
+						pocketverbs->delayK += 1; // try for primeish Ks
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayK > pocketverbs->maxdelayK) pocketverbs->delayK = pocketverbs->maxdelayK; //insanitycheck
+				if (pocketverbs->delayK > pocketverbs->maxdelayK) pocketverbs->delayK = pocketverbs->maxdelayK; // insanitycheck
 				for (count = pocketverbs->alpKR; count < 9521; count++) {
 					pocketverbs->aKR[count] = 0.0;
 				}
@@ -1517,14 +1517,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 12:
-				pocketverbs->delayL = ((int)pocketverbs->maxdelayL * roomsize);
+				pocketverbs->delayL = ((int) pocketverbs->maxdelayL * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayL != count && pocketverbs->delayL % count == 0) {
-						pocketverbs->delayL += 1;        //try for primeish Ls
+						pocketverbs->delayL += 1; // try for primeish Ls
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayL > pocketverbs->maxdelayL) pocketverbs->delayL = pocketverbs->maxdelayL; //insanitycheck
+				if (pocketverbs->delayL > pocketverbs->maxdelayL) pocketverbs->delayL = pocketverbs->maxdelayL; // insanitycheck
 				for (count = pocketverbs->alpLR; count < 8981; count++) {
 					pocketverbs->aLR[count] = 0.0;
 				}
@@ -1534,14 +1534,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 13:
-				pocketverbs->delayM = ((int)pocketverbs->maxdelayM * roomsize);
+				pocketverbs->delayM = ((int) pocketverbs->maxdelayM * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayM != count && pocketverbs->delayM % count == 0) {
-						pocketverbs->delayM += 1;        //try for primeish Ms
+						pocketverbs->delayM += 1; // try for primeish Ms
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayM > pocketverbs->maxdelayM) pocketverbs->delayM = pocketverbs->maxdelayM; //insanitycheck
+				if (pocketverbs->delayM > pocketverbs->maxdelayM) pocketverbs->delayM = pocketverbs->maxdelayM; // insanitycheck
 				for (count = pocketverbs->alpMR; count < 8785; count++) {
 					pocketverbs->aMR[count] = 0.0;
 				}
@@ -1551,14 +1551,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 14:
-				pocketverbs->delayN = ((int)pocketverbs->maxdelayN * roomsize);
+				pocketverbs->delayN = ((int) pocketverbs->maxdelayN * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayN != count && pocketverbs->delayN % count == 0) {
-						pocketverbs->delayN += 1;        //try for primeish Ns
+						pocketverbs->delayN += 1; // try for primeish Ns
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayN > pocketverbs->maxdelayN) pocketverbs->delayN = pocketverbs->maxdelayN; //insanitycheck
+				if (pocketverbs->delayN > pocketverbs->maxdelayN) pocketverbs->delayN = pocketverbs->maxdelayN; // insanitycheck
 				for (count = pocketverbs->alpNR; count < 8461; count++) {
 					pocketverbs->aNR[count] = 0.0;
 				}
@@ -1568,14 +1568,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 15:
-				pocketverbs->delayO = ((int)pocketverbs->maxdelayO * roomsize);
+				pocketverbs->delayO = ((int) pocketverbs->maxdelayO * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayO != count && pocketverbs->delayO % count == 0) {
-						pocketverbs->delayO += 1;        //try for primeish Os
+						pocketverbs->delayO += 1; // try for primeish Os
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayO > pocketverbs->maxdelayO) pocketverbs->delayO = pocketverbs->maxdelayO; //insanitycheck
+				if (pocketverbs->delayO > pocketverbs->maxdelayO) pocketverbs->delayO = pocketverbs->maxdelayO; // insanitycheck
 				for (count = pocketverbs->alpOR; count < 8309; count++) {
 					pocketverbs->aOR[count] = 0.0;
 				}
@@ -1585,14 +1585,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 16:
-				pocketverbs->delayP = ((int)pocketverbs->maxdelayP * roomsize);
+				pocketverbs->delayP = ((int) pocketverbs->maxdelayP * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayP != count && pocketverbs->delayP % count == 0) {
-						pocketverbs->delayP += 1;        //try for primeish Ps
+						pocketverbs->delayP += 1; // try for primeish Ps
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayP > pocketverbs->maxdelayP) pocketverbs->delayP = pocketverbs->maxdelayP; //insanitycheck
+				if (pocketverbs->delayP > pocketverbs->maxdelayP) pocketverbs->delayP = pocketverbs->maxdelayP; // insanitycheck
 				for (count = pocketverbs->alpPR; count < 7981; count++) {
 					pocketverbs->aPR[count] = 0.0;
 				}
@@ -1602,14 +1602,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 17:
-				pocketverbs->delayQ = ((int)pocketverbs->maxdelayQ * roomsize);
+				pocketverbs->delayQ = ((int) pocketverbs->maxdelayQ * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayQ != count && pocketverbs->delayQ % count == 0) {
-						pocketverbs->delayQ += 1;        //try for primeish Qs
+						pocketverbs->delayQ += 1; // try for primeish Qs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayQ > pocketverbs->maxdelayQ) pocketverbs->delayQ = pocketverbs->maxdelayQ; //insanitycheck
+				if (pocketverbs->delayQ > pocketverbs->maxdelayQ) pocketverbs->delayQ = pocketverbs->maxdelayQ; // insanitycheck
 				for (count = pocketverbs->alpQR; count < 7321; count++) {
 					pocketverbs->aQR[count] = 0.0;
 				}
@@ -1619,14 +1619,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 18:
-				pocketverbs->delayR = ((int)pocketverbs->maxdelayR * roomsize);
+				pocketverbs->delayR = ((int) pocketverbs->maxdelayR * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayR != count && pocketverbs->delayR % count == 0) {
-						pocketverbs->delayR += 1;        //try for primeish Rs
+						pocketverbs->delayR += 1; // try for primeish Rs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayR > pocketverbs->maxdelayR) pocketverbs->delayR = pocketverbs->maxdelayR; //insanitycheck
+				if (pocketverbs->delayR > pocketverbs->maxdelayR) pocketverbs->delayR = pocketverbs->maxdelayR; // insanitycheck
 				for (count = pocketverbs->alpRR; count < 6817; count++) {
 					pocketverbs->aRR[count] = 0.0;
 				}
@@ -1636,14 +1636,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 19:
-				pocketverbs->delayS = ((int)pocketverbs->maxdelayS * roomsize);
+				pocketverbs->delayS = ((int) pocketverbs->maxdelayS * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayS != count && pocketverbs->delayS % count == 0) {
-						pocketverbs->delayS += 1;        //try for primeish Ss
+						pocketverbs->delayS += 1; // try for primeish Ss
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayS > pocketverbs->maxdelayS) pocketverbs->delayS = pocketverbs->maxdelayS; //insanitycheck
+				if (pocketverbs->delayS > pocketverbs->maxdelayS) pocketverbs->delayS = pocketverbs->maxdelayS; // insanitycheck
 				for (count = pocketverbs->alpSR; count < 6505; count++) {
 					pocketverbs->aSR[count] = 0.0;
 				}
@@ -1653,14 +1653,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 20:
-				pocketverbs->delayT = ((int)pocketverbs->maxdelayT * roomsize);
+				pocketverbs->delayT = ((int) pocketverbs->maxdelayT * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayT != count && pocketverbs->delayT % count == 0) {
-						pocketverbs->delayT += 1;        //try for primeish Ts
+						pocketverbs->delayT += 1; // try for primeish Ts
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayT > pocketverbs->maxdelayT) pocketverbs->delayT = pocketverbs->maxdelayT; //insanitycheck
+				if (pocketverbs->delayT > pocketverbs->maxdelayT) pocketverbs->delayT = pocketverbs->maxdelayT; // insanitycheck
 				for (count = pocketverbs->alpTR; count < 6001; count++) {
 					pocketverbs->aTR[count] = 0.0;
 				}
@@ -1670,14 +1670,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 21:
-				pocketverbs->delayU = ((int)pocketverbs->maxdelayU * roomsize);
+				pocketverbs->delayU = ((int) pocketverbs->maxdelayU * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayU != count && pocketverbs->delayU % count == 0) {
-						pocketverbs->delayU += 1;        //try for primeish Us
+						pocketverbs->delayU += 1; // try for primeish Us
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayU > pocketverbs->maxdelayU) pocketverbs->delayU = pocketverbs->maxdelayU; //insanitycheck
+				if (pocketverbs->delayU > pocketverbs->maxdelayU) pocketverbs->delayU = pocketverbs->maxdelayU; // insanitycheck
 				for (count = pocketverbs->alpUR; count < 5837; count++) {
 					pocketverbs->aUR[count] = 0.0;
 				}
@@ -1687,14 +1687,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 22:
-				pocketverbs->delayV = ((int)pocketverbs->maxdelayV * roomsize);
+				pocketverbs->delayV = ((int) pocketverbs->maxdelayV * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayV != count && pocketverbs->delayV % count == 0) {
-						pocketverbs->delayV += 1;        //try for primeish Vs
+						pocketverbs->delayV += 1; // try for primeish Vs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayV > pocketverbs->maxdelayV) pocketverbs->delayV = pocketverbs->maxdelayV; //insanitycheck
+				if (pocketverbs->delayV > pocketverbs->maxdelayV) pocketverbs->delayV = pocketverbs->maxdelayV; // insanitycheck
 				for (count = pocketverbs->alpVR; count < 5501; count++) {
 					pocketverbs->aVR[count] = 0.0;
 				}
@@ -1704,14 +1704,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 23:
-				pocketverbs->delayW = ((int)pocketverbs->maxdelayW * roomsize);
+				pocketverbs->delayW = ((int) pocketverbs->maxdelayW * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayW != count && pocketverbs->delayW % count == 0) {
-						pocketverbs->delayW += 1;        //try for primeish Ws
+						pocketverbs->delayW += 1; // try for primeish Ws
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayW > pocketverbs->maxdelayW) pocketverbs->delayW = pocketverbs->maxdelayW; //insanitycheck
+				if (pocketverbs->delayW > pocketverbs->maxdelayW) pocketverbs->delayW = pocketverbs->maxdelayW; // insanitycheck
 				for (count = pocketverbs->alpWR; count < 5009; count++) {
 					pocketverbs->aWR[count] = 0.0;
 				}
@@ -1721,14 +1721,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 24:
-				pocketverbs->delayX = ((int)pocketverbs->maxdelayX * roomsize);
+				pocketverbs->delayX = ((int) pocketverbs->maxdelayX * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayX != count && pocketverbs->delayX % count == 0) {
-						pocketverbs->delayX += 1;        //try for primeish Xs
+						pocketverbs->delayX += 1; // try for primeish Xs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayX > pocketverbs->maxdelayX) pocketverbs->delayX = pocketverbs->maxdelayX; //insanitycheck
+				if (pocketverbs->delayX > pocketverbs->maxdelayX) pocketverbs->delayX = pocketverbs->maxdelayX; // insanitycheck
 				for (count = pocketverbs->alpXR; count < 4849; count++) {
 					pocketverbs->aXR[count] = 0.0;
 				}
@@ -1738,14 +1738,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 25:
-				pocketverbs->delayY = ((int)pocketverbs->maxdelayY * roomsize);
+				pocketverbs->delayY = ((int) pocketverbs->maxdelayY * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayY != count && pocketverbs->delayY % count == 0) {
-						pocketverbs->delayY += 1;        //try for primeish Ys
+						pocketverbs->delayY += 1; // try for primeish Ys
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayY > pocketverbs->maxdelayY) pocketverbs->delayY = pocketverbs->maxdelayY; //insanitycheck
+				if (pocketverbs->delayY > pocketverbs->maxdelayY) pocketverbs->delayY = pocketverbs->maxdelayY; // insanitycheck
 				for (count = pocketverbs->alpYR; count < 4295; count++) {
 					pocketverbs->aYR[count] = 0.0;
 				}
@@ -1755,14 +1755,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				break;
 
 			case 26:
-				pocketverbs->delayZ = ((int)pocketverbs->maxdelayZ * roomsize);
+				pocketverbs->delayZ = ((int) pocketverbs->maxdelayZ * roomsize);
 				for (count = 2; count <= max; count++) {
 					if (pocketverbs->delayZ != count && pocketverbs->delayZ % count == 0) {
-						pocketverbs->delayZ += 1;        //try for primeish Zs
+						pocketverbs->delayZ += 1; // try for primeish Zs
 						count = 2;
 					}
 				}
-				if (pocketverbs->delayZ > pocketverbs->maxdelayZ) pocketverbs->delayZ = pocketverbs->maxdelayZ; //insanitycheck
+				if (pocketverbs->delayZ > pocketverbs->maxdelayZ) pocketverbs->delayZ = pocketverbs->maxdelayZ; // insanitycheck
 				for (count = pocketverbs->alpZR; count < 4179; count++) {
 					pocketverbs->aZR[count] = 0.0;
 				}
@@ -1770,8 +1770,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->oZR[count] = 0.0;
 				}
 				break;
-		} //end of switch statement
-		pocketverbs->countdown--; //every buffer we'll do one of the recalculations for prime buffer sizes
+		} // end of switch statement
+		pocketverbs->countdown--; // every buffer we'll do one of the recalculations for prime buffer sizes
 	}
 
 	while (sampleFrames-- > 0) {
@@ -1790,8 +1790,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		pocketverbs->peakR -= release;
 		if (pocketverbs->peakR < fabs(inputSampleR * 2.0)) pocketverbs->peakR = fabs(inputSampleR * 2.0);
 		if (pocketverbs->peakR > 1.0) pocketverbs->peakR = 1.0;
-		//chase the maximum signal to incorporate the wetter/louder behavior
-		//boost for more extreme effect when in use, cap it
+		// chase the maximum signal to incorporate the wetter/louder behavior
+		// boost for more extreme effect when in use, cap it
 
 		inputSampleL *= gain;
 		bridgerectifier = fabs(inputSampleL);
@@ -1803,16 +1803,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		bridgerectifier = sin(bridgerectifier);
 		if (inputSampleR > 0) inputSampleR = bridgerectifier;
 		else inputSampleR = -bridgerectifier;
-		//here we apply the ADT2 console-on-steroids trick
-
-
-
-
+		// here we apply the ADT2 console-on-steroids trick
 
 		switch (verbtype) {
 
-
-			case 1://Chamber
+			case 1: // Chamber
 				allpasstemp = pocketverbs->alpAL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -1825,7 +1820,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->aAL[pocketverbs->alpAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[3] = pocketverbs->dAL[2];
 				pocketverbs->dAL[2] = pocketverbs->dAL[1];
@@ -1844,7 +1839,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->aBL[pocketverbs->alpBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[3] = pocketverbs->dBL[2];
 				pocketverbs->dBL[2] = pocketverbs->dBL[1];
@@ -1863,7 +1858,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->aCL[pocketverbs->alpCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[3] = pocketverbs->dCL[2];
 				pocketverbs->dCL[2] = pocketverbs->dCL[1];
@@ -1882,7 +1877,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->aDL[pocketverbs->alpDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[3] = pocketverbs->dDL[2];
 				pocketverbs->dDL[2] = pocketverbs->dDL[1];
@@ -1901,7 +1896,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->aEL[pocketverbs->alpEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[3] = pocketverbs->dEL[2];
 				pocketverbs->dEL[2] = pocketverbs->dEL[1];
@@ -1920,7 +1915,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->aFL[pocketverbs->alpFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[3] = pocketverbs->dFL[2];
 				pocketverbs->dFL[2] = pocketverbs->dFL[1];
@@ -1939,7 +1934,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->aGL[pocketverbs->alpGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[3] = pocketverbs->dGL[2];
 				pocketverbs->dGL[2] = pocketverbs->dGL[1];
@@ -1958,7 +1953,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->aHL[pocketverbs->alpHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[3] = pocketverbs->dHL[2];
 				pocketverbs->dHL[2] = pocketverbs->dHL[1];
@@ -1977,7 +1972,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->aIL[pocketverbs->alpIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[3] = pocketverbs->dIL[2];
 				pocketverbs->dIL[2] = pocketverbs->dIL[1];
@@ -1996,7 +1991,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->aJL[pocketverbs->alpJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[3] = pocketverbs->dJL[2];
 				pocketverbs->dJL[2] = pocketverbs->dJL[1];
@@ -2015,7 +2010,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->aKL[pocketverbs->alpKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[3] = pocketverbs->dKL[2];
 				pocketverbs->dKL[2] = pocketverbs->dKL[1];
@@ -2034,7 +2029,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->aLL[pocketverbs->alpLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[3] = pocketverbs->dLL[2];
 				pocketverbs->dLL[2] = pocketverbs->dLL[1];
@@ -2053,7 +2048,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->aML[pocketverbs->alpML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[3] = pocketverbs->dML[2];
 				pocketverbs->dML[2] = pocketverbs->dML[1];
@@ -2072,7 +2067,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->aNL[pocketverbs->alpNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[3] = pocketverbs->dNL[2];
 				pocketverbs->dNL[2] = pocketverbs->dNL[1];
@@ -2091,7 +2086,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->aOL[pocketverbs->alpOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[3] = pocketverbs->dOL[2];
 				pocketverbs->dOL[2] = pocketverbs->dOL[1];
@@ -2110,7 +2105,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->aPL[pocketverbs->alpPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[3] = pocketverbs->dPL[2];
 				pocketverbs->dPL[2] = pocketverbs->dPL[1];
@@ -2129,7 +2124,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->aQL[pocketverbs->alpQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[3] = pocketverbs->dQL[2];
 				pocketverbs->dQL[2] = pocketverbs->dQL[1];
@@ -2148,7 +2143,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->aRL[pocketverbs->alpRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[3] = pocketverbs->dRL[2];
 				pocketverbs->dRL[2] = pocketverbs->dRL[1];
@@ -2167,7 +2162,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->aSL[pocketverbs->alpSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[3] = pocketverbs->dSL[2];
 				pocketverbs->dSL[2] = pocketverbs->dSL[1];
@@ -2186,7 +2181,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->aTL[pocketverbs->alpTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[3] = pocketverbs->dTL[2];
 				pocketverbs->dTL[2] = pocketverbs->dTL[1];
@@ -2205,7 +2200,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->aUL[pocketverbs->alpUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[3] = pocketverbs->dUL[2];
 				pocketverbs->dUL[2] = pocketverbs->dUL[1];
@@ -2224,7 +2219,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->aVL[pocketverbs->alpVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[3] = pocketverbs->dVL[2];
 				pocketverbs->dVL[2] = pocketverbs->dVL[1];
@@ -2243,7 +2238,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->aWL[pocketverbs->alpWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[3] = pocketverbs->dWL[2];
 				pocketverbs->dWL[2] = pocketverbs->dWL[1];
@@ -2262,7 +2257,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->aXL[pocketverbs->alpXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[3] = pocketverbs->dXL[2];
 				pocketverbs->dXL[2] = pocketverbs->dXL[1];
@@ -2281,7 +2276,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->aYL[pocketverbs->alpYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[3] = pocketverbs->dYL[2];
 				pocketverbs->dYL[2] = pocketverbs->dYL[1];
@@ -2300,7 +2295,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->aZL[pocketverbs->alpZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[3] = pocketverbs->dZL[2];
 				pocketverbs->dZL[2] = pocketverbs->dZL[1];
@@ -2321,7 +2316,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->oAL[pocketverbs->outAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[6] = pocketverbs->dAL[5];
 				pocketverbs->dAL[5] = pocketverbs->dAL[4];
@@ -2340,7 +2335,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->oBL[pocketverbs->outBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[6] = pocketverbs->dBL[5];
 				pocketverbs->dBL[5] = pocketverbs->dBL[4];
@@ -2359,7 +2354,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->oCL[pocketverbs->outCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[6] = pocketverbs->dCL[5];
 				pocketverbs->dCL[5] = pocketverbs->dCL[4];
@@ -2378,7 +2373,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->oDL[pocketverbs->outDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[6] = pocketverbs->dDL[5];
 				pocketverbs->dDL[5] = pocketverbs->dDL[4];
@@ -2397,7 +2392,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->oEL[pocketverbs->outEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[6] = pocketverbs->dEL[5];
 				pocketverbs->dEL[5] = pocketverbs->dEL[4];
@@ -2416,7 +2411,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->oFL[pocketverbs->outFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[6] = pocketverbs->dFL[5];
 				pocketverbs->dFL[5] = pocketverbs->dFL[4];
@@ -2435,7 +2430,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->oGL[pocketverbs->outGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[6] = pocketverbs->dGL[5];
 				pocketverbs->dGL[5] = pocketverbs->dGL[4];
@@ -2454,7 +2449,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->oHL[pocketverbs->outHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[6] = pocketverbs->dHL[5];
 				pocketverbs->dHL[5] = pocketverbs->dHL[4];
@@ -2473,7 +2468,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->oIL[pocketverbs->outIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[6] = pocketverbs->dIL[5];
 				pocketverbs->dIL[5] = pocketverbs->dIL[4];
@@ -2492,7 +2487,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->oJL[pocketverbs->outJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[6] = pocketverbs->dJL[5];
 				pocketverbs->dJL[5] = pocketverbs->dJL[4];
@@ -2511,7 +2506,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->oKL[pocketverbs->outKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[6] = pocketverbs->dKL[5];
 				pocketverbs->dKL[5] = pocketverbs->dKL[4];
@@ -2530,7 +2525,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->oLL[pocketverbs->outLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[6] = pocketverbs->dLL[5];
 				pocketverbs->dLL[5] = pocketverbs->dLL[4];
@@ -2549,7 +2544,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->oML[pocketverbs->outML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[6] = pocketverbs->dML[5];
 				pocketverbs->dML[5] = pocketverbs->dML[4];
@@ -2568,7 +2563,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->oNL[pocketverbs->outNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[6] = pocketverbs->dNL[5];
 				pocketverbs->dNL[5] = pocketverbs->dNL[4];
@@ -2587,7 +2582,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->oOL[pocketverbs->outOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[6] = pocketverbs->dOL[5];
 				pocketverbs->dOL[5] = pocketverbs->dOL[4];
@@ -2606,7 +2601,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->oPL[pocketverbs->outPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[6] = pocketverbs->dPL[5];
 				pocketverbs->dPL[5] = pocketverbs->dPL[4];
@@ -2625,7 +2620,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->oQL[pocketverbs->outQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[6] = pocketverbs->dQL[5];
 				pocketverbs->dQL[5] = pocketverbs->dQL[4];
@@ -2644,7 +2639,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->oRL[pocketverbs->outRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[6] = pocketverbs->dRL[5];
 				pocketverbs->dRL[5] = pocketverbs->dRL[4];
@@ -2663,7 +2658,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->oSL[pocketverbs->outSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[6] = pocketverbs->dSL[5];
 				pocketverbs->dSL[5] = pocketverbs->dSL[4];
@@ -2682,7 +2677,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->oTL[pocketverbs->outTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[6] = pocketverbs->dTL[5];
 				pocketverbs->dTL[5] = pocketverbs->dTL[4];
@@ -2701,7 +2696,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->oUL[pocketverbs->outUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[6] = pocketverbs->dUL[5];
 				pocketverbs->dUL[5] = pocketverbs->dUL[4];
@@ -2720,7 +2715,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->oVL[pocketverbs->outVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[6] = pocketverbs->dVL[5];
 				pocketverbs->dVL[5] = pocketverbs->dVL[4];
@@ -2739,7 +2734,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->oWL[pocketverbs->outWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[6] = pocketverbs->dWL[5];
 				pocketverbs->dWL[5] = pocketverbs->dWL[4];
@@ -2758,7 +2753,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->oXL[pocketverbs->outXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[6] = pocketverbs->dXL[5];
 				pocketverbs->dXL[5] = pocketverbs->dXL[4];
@@ -2777,7 +2772,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->oYL[pocketverbs->outYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[6] = pocketverbs->dYL[5];
 				pocketverbs->dYL[5] = pocketverbs->dYL[4];
@@ -2796,20 +2791,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->oZL[pocketverbs->outZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[6] = pocketverbs->dZL[5];
 				pocketverbs->dZL[5] = pocketverbs->dZL[4];
 				pocketverbs->dZL[4] = inputSampleL;
 				inputSampleL = (pocketverbs->dZL[4] + pocketverbs->dZL[5] + pocketverbs->dZL[6]);
-				//output Chamber
+				// output Chamber
 				break;
 
-
-
-
-
-			case 2: //Spring
+			case 2: // Spring
 
 				allpasstemp = pocketverbs->alpAL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
@@ -2823,7 +2814,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->aAL[pocketverbs->alpAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[3] = pocketverbs->dAL[2];
 				pocketverbs->dAL[2] = pocketverbs->dAL[1];
@@ -2842,7 +2833,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->aBL[pocketverbs->alpBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[3] = pocketverbs->dBL[2];
 				pocketverbs->dBL[2] = pocketverbs->dBL[1];
@@ -2861,7 +2852,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->aCL[pocketverbs->alpCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[3] = pocketverbs->dCL[2];
 				pocketverbs->dCL[2] = pocketverbs->dCL[1];
@@ -2880,7 +2871,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->aDL[pocketverbs->alpDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[3] = pocketverbs->dDL[2];
 				pocketverbs->dDL[2] = pocketverbs->dDL[1];
@@ -2899,7 +2890,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->aEL[pocketverbs->alpEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[3] = pocketverbs->dEL[2];
 				pocketverbs->dEL[2] = pocketverbs->dEL[1];
@@ -2918,7 +2909,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->aFL[pocketverbs->alpFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[3] = pocketverbs->dFL[2];
 				pocketverbs->dFL[2] = pocketverbs->dFL[1];
@@ -2937,7 +2928,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->aGL[pocketverbs->alpGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[3] = pocketverbs->dGL[2];
 				pocketverbs->dGL[2] = pocketverbs->dGL[1];
@@ -2956,7 +2947,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->aHL[pocketverbs->alpHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[3] = pocketverbs->dHL[2];
 				pocketverbs->dHL[2] = pocketverbs->dHL[1];
@@ -2975,7 +2966,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->aIL[pocketverbs->alpIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[3] = pocketverbs->dIL[2];
 				pocketverbs->dIL[2] = pocketverbs->dIL[1];
@@ -2994,7 +2985,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->aJL[pocketverbs->alpJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[3] = pocketverbs->dJL[2];
 				pocketverbs->dJL[2] = pocketverbs->dJL[1];
@@ -3013,7 +3004,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->aKL[pocketverbs->alpKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[3] = pocketverbs->dKL[2];
 				pocketverbs->dKL[2] = pocketverbs->dKL[1];
@@ -3032,7 +3023,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->aLL[pocketverbs->alpLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[3] = pocketverbs->dLL[2];
 				pocketverbs->dLL[2] = pocketverbs->dLL[1];
@@ -3051,7 +3042,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->aML[pocketverbs->alpML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[3] = pocketverbs->dML[2];
 				pocketverbs->dML[2] = pocketverbs->dML[1];
@@ -3070,7 +3061,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->aNL[pocketverbs->alpNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[3] = pocketverbs->dNL[2];
 				pocketverbs->dNL[2] = pocketverbs->dNL[1];
@@ -3089,7 +3080,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->aOL[pocketverbs->alpOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[3] = pocketverbs->dOL[2];
 				pocketverbs->dOL[2] = pocketverbs->dOL[1];
@@ -3108,7 +3099,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->aPL[pocketverbs->alpPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[3] = pocketverbs->dPL[2];
 				pocketverbs->dPL[2] = pocketverbs->dPL[1];
@@ -3127,7 +3118,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->aQL[pocketverbs->alpQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[3] = pocketverbs->dQL[2];
 				pocketverbs->dQL[2] = pocketverbs->dQL[1];
@@ -3146,7 +3137,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->aRL[pocketverbs->alpRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[3] = pocketverbs->dRL[2];
 				pocketverbs->dRL[2] = pocketverbs->dRL[1];
@@ -3165,7 +3156,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->aSL[pocketverbs->alpSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[3] = pocketverbs->dSL[2];
 				pocketverbs->dSL[2] = pocketverbs->dSL[1];
@@ -3184,7 +3175,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->aTL[pocketverbs->alpTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[3] = pocketverbs->dTL[2];
 				pocketverbs->dTL[2] = pocketverbs->dTL[1];
@@ -3203,7 +3194,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->aUL[pocketverbs->alpUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[3] = pocketverbs->dUL[2];
 				pocketverbs->dUL[2] = pocketverbs->dUL[1];
@@ -3222,7 +3213,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->aVL[pocketverbs->alpVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[3] = pocketverbs->dVL[2];
 				pocketverbs->dVL[2] = pocketverbs->dVL[1];
@@ -3241,7 +3232,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->aWL[pocketverbs->alpWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[3] = pocketverbs->dWL[2];
 				pocketverbs->dWL[2] = pocketverbs->dWL[1];
@@ -3260,7 +3251,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->aXL[pocketverbs->alpXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[3] = pocketverbs->dXL[2];
 				pocketverbs->dXL[2] = pocketverbs->dXL[1];
@@ -3279,7 +3270,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->aYL[pocketverbs->alpYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[3] = pocketverbs->dYL[2];
 				pocketverbs->dYL[2] = pocketverbs->dYL[1];
@@ -3298,7 +3289,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->aZL[pocketverbs->alpZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[3] = pocketverbs->dZL[2];
 				pocketverbs->dZL[2] = pocketverbs->dZL[1];
@@ -3319,7 +3310,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->oAL[pocketverbs->outAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[6] = pocketverbs->dAL[5];
 				pocketverbs->dAL[5] = pocketverbs->dAL[4];
@@ -3338,7 +3329,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->oBL[pocketverbs->outBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[6] = pocketverbs->dBL[5];
 				pocketverbs->dBL[5] = pocketverbs->dBL[4];
@@ -3357,7 +3348,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->oCL[pocketverbs->outCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[6] = pocketverbs->dCL[5];
 				pocketverbs->dCL[5] = pocketverbs->dCL[4];
@@ -3376,7 +3367,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->oDL[pocketverbs->outDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[6] = pocketverbs->dDL[5];
 				pocketverbs->dDL[5] = pocketverbs->dDL[4];
@@ -3395,7 +3386,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->oEL[pocketverbs->outEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[6] = pocketverbs->dEL[5];
 				pocketverbs->dEL[5] = pocketverbs->dEL[4];
@@ -3414,7 +3405,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->oFL[pocketverbs->outFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[6] = pocketverbs->dFL[5];
 				pocketverbs->dFL[5] = pocketverbs->dFL[4];
@@ -3433,7 +3424,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->oGL[pocketverbs->outGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[6] = pocketverbs->dGL[5];
 				pocketverbs->dGL[5] = pocketverbs->dGL[4];
@@ -3452,7 +3443,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->oHL[pocketverbs->outHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[6] = pocketverbs->dHL[5];
 				pocketverbs->dHL[5] = pocketverbs->dHL[4];
@@ -3471,7 +3462,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->oIL[pocketverbs->outIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[6] = pocketverbs->dIL[5];
 				pocketverbs->dIL[5] = pocketverbs->dIL[4];
@@ -3490,7 +3481,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->oJL[pocketverbs->outJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[6] = pocketverbs->dJL[5];
 				pocketverbs->dJL[5] = pocketverbs->dJL[4];
@@ -3509,7 +3500,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->oKL[pocketverbs->outKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[6] = pocketverbs->dKL[5];
 				pocketverbs->dKL[5] = pocketverbs->dKL[4];
@@ -3528,7 +3519,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->oLL[pocketverbs->outLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[6] = pocketverbs->dLL[5];
 				pocketverbs->dLL[5] = pocketverbs->dLL[4];
@@ -3547,7 +3538,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->oML[pocketverbs->outML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[6] = pocketverbs->dML[5];
 				pocketverbs->dML[5] = pocketverbs->dML[4];
@@ -3566,7 +3557,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->oNL[pocketverbs->outNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[6] = pocketverbs->dNL[5];
 				pocketverbs->dNL[5] = pocketverbs->dNL[4];
@@ -3585,7 +3576,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->oOL[pocketverbs->outOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[6] = pocketverbs->dOL[5];
 				pocketverbs->dOL[5] = pocketverbs->dOL[4];
@@ -3604,7 +3595,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->oPL[pocketverbs->outPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[6] = pocketverbs->dPL[5];
 				pocketverbs->dPL[5] = pocketverbs->dPL[4];
@@ -3623,7 +3614,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->oQL[pocketverbs->outQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[6] = pocketverbs->dQL[5];
 				pocketverbs->dQL[5] = pocketverbs->dQL[4];
@@ -3642,7 +3633,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->oRL[pocketverbs->outRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[6] = pocketverbs->dRL[5];
 				pocketverbs->dRL[5] = pocketverbs->dRL[4];
@@ -3661,7 +3652,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->oSL[pocketverbs->outSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[6] = pocketverbs->dSL[5];
 				pocketverbs->dSL[5] = pocketverbs->dSL[4];
@@ -3680,7 +3671,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->oTL[pocketverbs->outTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[6] = pocketverbs->dTL[5];
 				pocketverbs->dTL[5] = pocketverbs->dTL[4];
@@ -3699,7 +3690,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->oUL[pocketverbs->outUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[6] = pocketverbs->dUL[5];
 				pocketverbs->dUL[5] = pocketverbs->dUL[4];
@@ -3718,7 +3709,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->oVL[pocketverbs->outVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[6] = pocketverbs->dVL[5];
 				pocketverbs->dVL[5] = pocketverbs->dVL[4];
@@ -3737,7 +3728,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->oWL[pocketverbs->outWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[6] = pocketverbs->dWL[5];
 				pocketverbs->dWL[5] = pocketverbs->dWL[4];
@@ -3756,7 +3747,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->oXL[pocketverbs->outXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[6] = pocketverbs->dXL[5];
 				pocketverbs->dXL[5] = pocketverbs->dXL[4];
@@ -3775,7 +3766,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->oYL[pocketverbs->outYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[6] = pocketverbs->dYL[5];
 				pocketverbs->dYL[5] = pocketverbs->dYL[4];
@@ -3794,17 +3785,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->oZL[pocketverbs->outZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[6] = pocketverbs->dZL[5];
 				pocketverbs->dZL[5] = pocketverbs->dZL[4];
 				pocketverbs->dZL[4] = inputSampleL;
 				inputSampleL = (pocketverbs->dZL[5] + pocketverbs->dZL[6]);
-				//output Spring
+				// output Spring
 				break;
 
-
-			case 3: //Tiled
+			case 3: // Tiled
 				allpasstemp = pocketverbs->alpAL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -3817,7 +3807,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->aAL[pocketverbs->alpAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[2] = pocketverbs->dAL[1];
 				pocketverbs->dAL[1] = inputSampleL;
@@ -3835,7 +3825,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->aBL[pocketverbs->alpBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[2] = pocketverbs->dBL[1];
 				pocketverbs->dBL[1] = inputSampleL;
@@ -3853,7 +3843,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->aCL[pocketverbs->alpCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[2] = pocketverbs->dCL[1];
 				pocketverbs->dCL[1] = inputSampleL;
@@ -3871,7 +3861,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->aDL[pocketverbs->alpDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[2] = pocketverbs->dDL[1];
 				pocketverbs->dDL[1] = inputSampleL;
@@ -3889,7 +3879,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->aEL[pocketverbs->alpEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[2] = pocketverbs->dEL[1];
 				pocketverbs->dEL[1] = inputSampleL;
@@ -3907,7 +3897,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->aFL[pocketverbs->alpFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[2] = pocketverbs->dFL[1];
 				pocketverbs->dFL[1] = inputSampleL;
@@ -3925,7 +3915,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->aGL[pocketverbs->alpGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[2] = pocketverbs->dGL[1];
 				pocketverbs->dGL[1] = inputSampleL;
@@ -3943,7 +3933,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->aHL[pocketverbs->alpHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[2] = pocketverbs->dHL[1];
 				pocketverbs->dHL[1] = inputSampleL;
@@ -3961,7 +3951,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->aIL[pocketverbs->alpIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[2] = pocketverbs->dIL[1];
 				pocketverbs->dIL[1] = inputSampleL;
@@ -3979,7 +3969,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->aJL[pocketverbs->alpJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[2] = pocketverbs->dJL[1];
 				pocketverbs->dJL[1] = inputSampleL;
@@ -3997,7 +3987,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->aKL[pocketverbs->alpKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[2] = pocketverbs->dKL[1];
 				pocketverbs->dKL[1] = inputSampleL;
@@ -4015,7 +4005,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->aLL[pocketverbs->alpLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[2] = pocketverbs->dLL[1];
 				pocketverbs->dLL[1] = inputSampleL;
@@ -4033,7 +4023,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->aML[pocketverbs->alpML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[2] = pocketverbs->dML[1];
 				pocketverbs->dML[1] = inputSampleL;
@@ -4051,7 +4041,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->aNL[pocketverbs->alpNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[2] = pocketverbs->dNL[1];
 				pocketverbs->dNL[1] = inputSampleL;
@@ -4069,7 +4059,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->aOL[pocketverbs->alpOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[2] = pocketverbs->dOL[1];
 				pocketverbs->dOL[1] = inputSampleL;
@@ -4087,7 +4077,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->aPL[pocketverbs->alpPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[2] = pocketverbs->dPL[1];
 				pocketverbs->dPL[1] = inputSampleL;
@@ -4105,7 +4095,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->aQL[pocketverbs->alpQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[2] = pocketverbs->dQL[1];
 				pocketverbs->dQL[1] = inputSampleL;
@@ -4123,7 +4113,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->aRL[pocketverbs->alpRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[2] = pocketverbs->dRL[1];
 				pocketverbs->dRL[1] = inputSampleL;
@@ -4141,7 +4131,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->aSL[pocketverbs->alpSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[2] = pocketverbs->dSL[1];
 				pocketverbs->dSL[1] = inputSampleL;
@@ -4159,7 +4149,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->aTL[pocketverbs->alpTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[2] = pocketverbs->dTL[1];
 				pocketverbs->dTL[1] = inputSampleL;
@@ -4177,7 +4167,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->aUL[pocketverbs->alpUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[2] = pocketverbs->dUL[1];
 				pocketverbs->dUL[1] = inputSampleL;
@@ -4195,7 +4185,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->aVL[pocketverbs->alpVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[2] = pocketverbs->dVL[1];
 				pocketverbs->dVL[1] = inputSampleL;
@@ -4213,7 +4203,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->aWL[pocketverbs->alpWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[2] = pocketverbs->dWL[1];
 				pocketverbs->dWL[1] = inputSampleL;
@@ -4231,7 +4221,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->aXL[pocketverbs->alpXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[2] = pocketverbs->dXL[1];
 				pocketverbs->dXL[1] = inputSampleL;
@@ -4249,7 +4239,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->aYL[pocketverbs->alpYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[2] = pocketverbs->dYL[1];
 				pocketverbs->dYL[1] = inputSampleL;
@@ -4267,7 +4257,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->aZL[pocketverbs->alpZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[2] = pocketverbs->dZL[1];
 				pocketverbs->dZL[1] = inputSampleL;
@@ -4287,7 +4277,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->oAL[pocketverbs->outAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[5] = pocketverbs->dAL[4];
 				pocketverbs->dAL[4] = inputSampleL;
@@ -4305,7 +4295,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->oBL[pocketverbs->outBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[5] = pocketverbs->dBL[4];
 				pocketverbs->dBL[4] = inputSampleL;
@@ -4323,7 +4313,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->oCL[pocketverbs->outCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[5] = pocketverbs->dCL[4];
 				pocketverbs->dCL[4] = inputSampleL;
@@ -4341,7 +4331,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->oDL[pocketverbs->outDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[5] = pocketverbs->dDL[4];
 				pocketverbs->dDL[4] = inputSampleL;
@@ -4359,7 +4349,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->oEL[pocketverbs->outEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[5] = pocketverbs->dEL[4];
 				pocketverbs->dEL[4] = inputSampleL;
@@ -4377,7 +4367,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->oFL[pocketverbs->outFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[5] = pocketverbs->dFL[4];
 				pocketverbs->dFL[4] = inputSampleL;
@@ -4395,7 +4385,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->oGL[pocketverbs->outGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[5] = pocketverbs->dGL[4];
 				pocketverbs->dGL[4] = inputSampleL;
@@ -4413,7 +4403,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->oHL[pocketverbs->outHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[5] = pocketverbs->dHL[4];
 				pocketverbs->dHL[4] = inputSampleL;
@@ -4431,7 +4421,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->oIL[pocketverbs->outIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[5] = pocketverbs->dIL[4];
 				pocketverbs->dIL[4] = inputSampleL;
@@ -4449,7 +4439,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->oJL[pocketverbs->outJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[5] = pocketverbs->dJL[4];
 				pocketverbs->dJL[4] = inputSampleL;
@@ -4467,7 +4457,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->oKL[pocketverbs->outKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[5] = pocketverbs->dKL[4];
 				pocketverbs->dKL[4] = inputSampleL;
@@ -4485,7 +4475,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->oLL[pocketverbs->outLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[5] = pocketverbs->dLL[4];
 				pocketverbs->dLL[4] = inputSampleL;
@@ -4503,7 +4493,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->oML[pocketverbs->outML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[5] = pocketverbs->dML[4];
 				pocketverbs->dML[4] = inputSampleL;
@@ -4521,7 +4511,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->oNL[pocketverbs->outNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[5] = pocketverbs->dNL[4];
 				pocketverbs->dNL[4] = inputSampleL;
@@ -4539,7 +4529,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->oOL[pocketverbs->outOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[5] = pocketverbs->dOL[4];
 				pocketverbs->dOL[4] = inputSampleL;
@@ -4557,7 +4547,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->oPL[pocketverbs->outPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[5] = pocketverbs->dPL[4];
 				pocketverbs->dPL[4] = inputSampleL;
@@ -4575,7 +4565,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->oQL[pocketverbs->outQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[5] = pocketverbs->dQL[4];
 				pocketverbs->dQL[4] = inputSampleL;
@@ -4593,7 +4583,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->oRL[pocketverbs->outRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[5] = pocketverbs->dRL[4];
 				pocketverbs->dRL[4] = inputSampleL;
@@ -4611,7 +4601,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->oSL[pocketverbs->outSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[5] = pocketverbs->dSL[4];
 				pocketverbs->dSL[4] = inputSampleL;
@@ -4629,7 +4619,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->oTL[pocketverbs->outTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[5] = pocketverbs->dTL[4];
 				pocketverbs->dTL[4] = inputSampleL;
@@ -4647,7 +4637,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->oUL[pocketverbs->outUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[5] = pocketverbs->dUL[4];
 				pocketverbs->dUL[4] = inputSampleL;
@@ -4665,7 +4655,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->oVL[pocketverbs->outVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[5] = pocketverbs->dVL[4];
 				pocketverbs->dVL[4] = inputSampleL;
@@ -4683,7 +4673,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->oWL[pocketverbs->outWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[5] = pocketverbs->dWL[4];
 				pocketverbs->dWL[4] = inputSampleL;
@@ -4701,7 +4691,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->oXL[pocketverbs->outXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[5] = pocketverbs->dXL[4];
 				pocketverbs->dXL[4] = inputSampleL;
@@ -4719,7 +4709,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->oYL[pocketverbs->outYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[5] = pocketverbs->dYL[4];
 				pocketverbs->dYL[4] = inputSampleL;
@@ -4737,16 +4727,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->oZL[pocketverbs->outZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[5] = pocketverbs->dZL[4];
 				pocketverbs->dZL[4] = inputSampleL;
 				inputSampleL = (pocketverbs->dZL[4] + pocketverbs->dZL[5]);
-				//output Tiled
+				// output Tiled
 				break;
 
-
-			case 4://Room
+			case 4: // Room
 				allpasstemp = pocketverbs->alpAL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -4759,7 +4748,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->aAL[pocketverbs->alpAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[2] = pocketverbs->dAL[1];
 				pocketverbs->dAL[1] = inputSampleL;
@@ -4777,7 +4766,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->aBL[pocketverbs->alpBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[2] = pocketverbs->dBL[1];
 				pocketverbs->dBL[1] = inputSampleL;
@@ -4795,7 +4784,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->aCL[pocketverbs->alpCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[2] = pocketverbs->dCL[1];
 				pocketverbs->dCL[1] = inputSampleL;
@@ -4813,7 +4802,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->aDL[pocketverbs->alpDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[2] = pocketverbs->dDL[1];
 				pocketverbs->dDL[1] = inputSampleL;
@@ -4831,7 +4820,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->aEL[pocketverbs->alpEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[2] = pocketverbs->dEL[1];
 				pocketverbs->dEL[1] = inputSampleL;
@@ -4849,7 +4838,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->aFL[pocketverbs->alpFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[2] = pocketverbs->dFL[1];
 				pocketverbs->dFL[1] = inputSampleL;
@@ -4867,7 +4856,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->aGL[pocketverbs->alpGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[2] = pocketverbs->dGL[1];
 				pocketverbs->dGL[1] = inputSampleL;
@@ -4885,7 +4874,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->aHL[pocketverbs->alpHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[2] = pocketverbs->dHL[1];
 				pocketverbs->dHL[1] = inputSampleL;
@@ -4903,7 +4892,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->aIL[pocketverbs->alpIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[2] = pocketverbs->dIL[1];
 				pocketverbs->dIL[1] = inputSampleL;
@@ -4921,7 +4910,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->aJL[pocketverbs->alpJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[2] = pocketverbs->dJL[1];
 				pocketverbs->dJL[1] = inputSampleL;
@@ -4939,7 +4928,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->aKL[pocketverbs->alpKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[2] = pocketverbs->dKL[1];
 				pocketverbs->dKL[1] = inputSampleL;
@@ -4957,7 +4946,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->aLL[pocketverbs->alpLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[2] = pocketverbs->dLL[1];
 				pocketverbs->dLL[1] = inputSampleL;
@@ -4975,7 +4964,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->aML[pocketverbs->alpML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[2] = pocketverbs->dML[1];
 				pocketverbs->dML[1] = inputSampleL;
@@ -4993,7 +4982,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->aNL[pocketverbs->alpNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[2] = pocketverbs->dNL[1];
 				pocketverbs->dNL[1] = inputSampleL;
@@ -5011,7 +5000,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->aOL[pocketverbs->alpOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[2] = pocketverbs->dOL[1];
 				pocketverbs->dOL[1] = inputSampleL;
@@ -5029,7 +5018,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->aPL[pocketverbs->alpPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[2] = pocketverbs->dPL[1];
 				pocketverbs->dPL[1] = inputSampleL;
@@ -5047,7 +5036,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->aQL[pocketverbs->alpQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[2] = pocketverbs->dQL[1];
 				pocketverbs->dQL[1] = inputSampleL;
@@ -5065,7 +5054,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->aRL[pocketverbs->alpRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[2] = pocketverbs->dRL[1];
 				pocketverbs->dRL[1] = inputSampleL;
@@ -5083,7 +5072,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->aSL[pocketverbs->alpSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[2] = pocketverbs->dSL[1];
 				pocketverbs->dSL[1] = inputSampleL;
@@ -5101,7 +5090,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->aTL[pocketverbs->alpTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[2] = pocketverbs->dTL[1];
 				pocketverbs->dTL[1] = inputSampleL;
@@ -5119,7 +5108,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->aUL[pocketverbs->alpUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[2] = pocketverbs->dUL[1];
 				pocketverbs->dUL[1] = inputSampleL;
@@ -5137,7 +5126,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->aVL[pocketverbs->alpVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[2] = pocketverbs->dVL[1];
 				pocketverbs->dVL[1] = inputSampleL;
@@ -5155,7 +5144,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->aWL[pocketverbs->alpWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[2] = pocketverbs->dWL[1];
 				pocketverbs->dWL[1] = inputSampleL;
@@ -5173,7 +5162,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->aXL[pocketverbs->alpXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[2] = pocketverbs->dXL[1];
 				pocketverbs->dXL[1] = inputSampleL;
@@ -5191,7 +5180,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->aYL[pocketverbs->alpYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[2] = pocketverbs->dYL[1];
 				pocketverbs->dYL[1] = inputSampleL;
@@ -5209,7 +5198,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->aZL[pocketverbs->alpZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[2] = pocketverbs->dZL[1];
 				pocketverbs->dZL[1] = inputSampleL;
@@ -5229,7 +5218,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->oAL[pocketverbs->outAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[5] = pocketverbs->dAL[4];
 				pocketverbs->dAL[4] = inputSampleL;
@@ -5247,7 +5236,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->oBL[pocketverbs->outBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[5] = pocketverbs->dBL[4];
 				pocketverbs->dBL[4] = inputSampleL;
@@ -5265,7 +5254,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->oCL[pocketverbs->outCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[5] = pocketverbs->dCL[4];
 				pocketverbs->dCL[4] = inputSampleL;
@@ -5283,7 +5272,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->oDL[pocketverbs->outDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[5] = pocketverbs->dDL[4];
 				pocketverbs->dDL[4] = inputSampleL;
@@ -5301,7 +5290,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->oEL[pocketverbs->outEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[5] = pocketverbs->dEL[4];
 				pocketverbs->dEL[4] = inputSampleL;
@@ -5319,7 +5308,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->oFL[pocketverbs->outFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[5] = pocketverbs->dFL[4];
 				pocketverbs->dFL[4] = inputSampleL;
@@ -5337,7 +5326,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->oGL[pocketverbs->outGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[5] = pocketverbs->dGL[4];
 				pocketverbs->dGL[4] = inputSampleL;
@@ -5355,7 +5344,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->oHL[pocketverbs->outHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[5] = pocketverbs->dHL[4];
 				pocketverbs->dHL[4] = inputSampleL;
@@ -5373,7 +5362,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->oIL[pocketverbs->outIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[5] = pocketverbs->dIL[4];
 				pocketverbs->dIL[4] = inputSampleL;
@@ -5391,7 +5380,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->oJL[pocketverbs->outJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[5] = pocketverbs->dJL[4];
 				pocketverbs->dJL[4] = inputSampleL;
@@ -5409,7 +5398,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->oKL[pocketverbs->outKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[5] = pocketverbs->dKL[4];
 				pocketverbs->dKL[4] = inputSampleL;
@@ -5427,7 +5416,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->oLL[pocketverbs->outLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[5] = pocketverbs->dLL[4];
 				pocketverbs->dLL[4] = inputSampleL;
@@ -5445,7 +5434,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->oML[pocketverbs->outML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[5] = pocketverbs->dML[4];
 				pocketverbs->dML[4] = inputSampleL;
@@ -5463,7 +5452,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->oNL[pocketverbs->outNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[5] = pocketverbs->dNL[4];
 				pocketverbs->dNL[4] = inputSampleL;
@@ -5481,7 +5470,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->oOL[pocketverbs->outOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[5] = pocketverbs->dOL[4];
 				pocketverbs->dOL[4] = inputSampleL;
@@ -5499,7 +5488,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->oPL[pocketverbs->outPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[5] = pocketverbs->dPL[4];
 				pocketverbs->dPL[4] = inputSampleL;
@@ -5517,7 +5506,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->oQL[pocketverbs->outQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[5] = pocketverbs->dQL[4];
 				pocketverbs->dQL[4] = inputSampleL;
@@ -5535,7 +5524,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->oRL[pocketverbs->outRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[5] = pocketverbs->dRL[4];
 				pocketverbs->dRL[4] = inputSampleL;
@@ -5553,7 +5542,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->oSL[pocketverbs->outSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[5] = pocketverbs->dSL[4];
 				pocketverbs->dSL[4] = inputSampleL;
@@ -5571,7 +5560,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->oTL[pocketverbs->outTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[5] = pocketverbs->dTL[4];
 				pocketverbs->dTL[4] = inputSampleL;
@@ -5589,7 +5578,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->oUL[pocketverbs->outUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[5] = pocketverbs->dUL[4];
 				pocketverbs->dUL[4] = inputSampleL;
@@ -5607,7 +5596,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->oVL[pocketverbs->outVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[5] = pocketverbs->dVL[4];
 				pocketverbs->dVL[4] = inputSampleL;
@@ -5625,7 +5614,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->oWL[pocketverbs->outWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[5] = pocketverbs->dWL[4];
 				pocketverbs->dWL[4] = inputSampleL;
@@ -5643,7 +5632,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->oXL[pocketverbs->outXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[5] = pocketverbs->dXL[4];
 				pocketverbs->dXL[4] = inputSampleL;
@@ -5661,7 +5650,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->oYL[pocketverbs->outYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[5] = pocketverbs->dYL[4];
 				pocketverbs->dYL[4] = inputSampleL;
@@ -5679,7 +5668,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->oZL[pocketverbs->outZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[5] = pocketverbs->dZL[4];
 				pocketverbs->dZL[4] = inputSampleL;
@@ -5736,15 +5725,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				inputSampleL += (pocketverbs->dZL[5] * wetness);
 
 				inputSampleL /= (26.0 + (wetness * 4.0));
-				//output Room effect
+				// output Room effect
 				break;
 
-
-
-
-
-
-			case 5: //Stretch
+			case 5: // Stretch
 				allpasstemp = pocketverbs->alpAL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -5757,7 +5741,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->aAL[pocketverbs->alpAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[2] = pocketverbs->dAL[1];
 				pocketverbs->dAL[1] = inputSampleL;
@@ -5775,7 +5759,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->aBL[pocketverbs->alpBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[2] = pocketverbs->dBL[1];
 				pocketverbs->dBL[1] = inputSampleL;
@@ -5793,7 +5777,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->aCL[pocketverbs->alpCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[2] = pocketverbs->dCL[1];
 				pocketverbs->dCL[1] = inputSampleL;
@@ -5811,7 +5795,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->aDL[pocketverbs->alpDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[2] = pocketverbs->dDL[1];
 				pocketverbs->dDL[1] = inputSampleL;
@@ -5829,7 +5813,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->aEL[pocketverbs->alpEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[2] = pocketverbs->dEL[1];
 				pocketverbs->dEL[1] = inputSampleL;
@@ -5847,7 +5831,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->aFL[pocketverbs->alpFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[2] = pocketverbs->dFL[1];
 				pocketverbs->dFL[1] = inputSampleL;
@@ -5865,7 +5849,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->aGL[pocketverbs->alpGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[2] = pocketverbs->dGL[1];
 				pocketverbs->dGL[1] = inputSampleL;
@@ -5883,7 +5867,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->aHL[pocketverbs->alpHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[2] = pocketverbs->dHL[1];
 				pocketverbs->dHL[1] = inputSampleL;
@@ -5901,7 +5885,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->aIL[pocketverbs->alpIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[2] = pocketverbs->dIL[1];
 				pocketverbs->dIL[1] = inputSampleL;
@@ -5919,7 +5903,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->aJL[pocketverbs->alpJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[2] = pocketverbs->dJL[1];
 				pocketverbs->dJL[1] = inputSampleL;
@@ -5937,7 +5921,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->aKL[pocketverbs->alpKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[2] = pocketverbs->dKL[1];
 				pocketverbs->dKL[1] = inputSampleL;
@@ -5955,7 +5939,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->aLL[pocketverbs->alpLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[2] = pocketverbs->dLL[1];
 				pocketverbs->dLL[1] = inputSampleL;
@@ -5973,7 +5957,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->aML[pocketverbs->alpML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[2] = pocketverbs->dML[1];
 				pocketverbs->dML[1] = inputSampleL;
@@ -5991,7 +5975,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->aNL[pocketverbs->alpNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[2] = pocketverbs->dNL[1];
 				pocketverbs->dNL[1] = inputSampleL;
@@ -6009,7 +5993,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->aOL[pocketverbs->alpOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[2] = pocketverbs->dOL[1];
 				pocketverbs->dOL[1] = inputSampleL;
@@ -6027,7 +6011,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->aPL[pocketverbs->alpPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[2] = pocketverbs->dPL[1];
 				pocketverbs->dPL[1] = inputSampleL;
@@ -6045,7 +6029,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->aQL[pocketverbs->alpQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[2] = pocketverbs->dQL[1];
 				pocketverbs->dQL[1] = inputSampleL;
@@ -6063,7 +6047,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->aRL[pocketverbs->alpRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[2] = pocketverbs->dRL[1];
 				pocketverbs->dRL[1] = inputSampleL;
@@ -6081,7 +6065,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->aSL[pocketverbs->alpSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[2] = pocketverbs->dSL[1];
 				pocketverbs->dSL[1] = inputSampleL;
@@ -6099,7 +6083,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->aTL[pocketverbs->alpTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[2] = pocketverbs->dTL[1];
 				pocketverbs->dTL[1] = inputSampleL;
@@ -6117,7 +6101,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->aUL[pocketverbs->alpUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[2] = pocketverbs->dUL[1];
 				pocketverbs->dUL[1] = inputSampleL;
@@ -6135,7 +6119,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->aVL[pocketverbs->alpVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[2] = pocketverbs->dVL[1];
 				pocketverbs->dVL[1] = inputSampleL;
@@ -6153,7 +6137,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->aWL[pocketverbs->alpWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[2] = pocketverbs->dWL[1];
 				pocketverbs->dWL[1] = inputSampleL;
@@ -6171,7 +6155,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->aXL[pocketverbs->alpXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[2] = pocketverbs->dXL[1];
 				pocketverbs->dXL[1] = inputSampleL;
@@ -6189,7 +6173,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->aYL[pocketverbs->alpYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[2] = pocketverbs->dYL[1];
 				pocketverbs->dYL[1] = inputSampleL;
@@ -6207,7 +6191,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->aZL[pocketverbs->alpZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[2] = pocketverbs->dZL[1];
 				pocketverbs->dZL[1] = inputSampleL;
@@ -6227,7 +6211,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->oAL[pocketverbs->outAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[5] = pocketverbs->dAL[4];
 				pocketverbs->dAL[4] = inputSampleL;
@@ -6245,7 +6229,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->oBL[pocketverbs->outBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[5] = pocketverbs->dBL[4];
 				pocketverbs->dBL[4] = inputSampleL;
@@ -6263,7 +6247,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->oCL[pocketverbs->outCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[5] = pocketverbs->dCL[4];
 				pocketverbs->dCL[4] = inputSampleL;
@@ -6281,7 +6265,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->oDL[pocketverbs->outDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[5] = pocketverbs->dDL[4];
 				pocketverbs->dDL[4] = inputSampleL;
@@ -6299,7 +6283,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->oEL[pocketverbs->outEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[5] = pocketverbs->dEL[4];
 				pocketverbs->dEL[4] = inputSampleL;
@@ -6317,7 +6301,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->oFL[pocketverbs->outFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[5] = pocketverbs->dFL[4];
 				pocketverbs->dFL[4] = inputSampleL;
@@ -6335,7 +6319,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->oGL[pocketverbs->outGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[5] = pocketverbs->dGL[4];
 				pocketverbs->dGL[4] = inputSampleL;
@@ -6353,7 +6337,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->oHL[pocketverbs->outHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[5] = pocketverbs->dHL[4];
 				pocketverbs->dHL[4] = inputSampleL;
@@ -6371,7 +6355,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->oIL[pocketverbs->outIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[5] = pocketverbs->dIL[4];
 				pocketverbs->dIL[4] = inputSampleL;
@@ -6389,7 +6373,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->oJL[pocketverbs->outJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[5] = pocketverbs->dJL[4];
 				pocketverbs->dJL[4] = inputSampleL;
@@ -6407,7 +6391,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->oKL[pocketverbs->outKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[5] = pocketverbs->dKL[4];
 				pocketverbs->dKL[4] = inputSampleL;
@@ -6425,7 +6409,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->oLL[pocketverbs->outLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[5] = pocketverbs->dLL[4];
 				pocketverbs->dLL[4] = inputSampleL;
@@ -6443,7 +6427,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->oML[pocketverbs->outML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[5] = pocketverbs->dML[4];
 				pocketverbs->dML[4] = inputSampleL;
@@ -6461,7 +6445,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->oNL[pocketverbs->outNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[5] = pocketverbs->dNL[4];
 				pocketverbs->dNL[4] = inputSampleL;
@@ -6479,7 +6463,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->oOL[pocketverbs->outOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[5] = pocketverbs->dOL[4];
 				pocketverbs->dOL[4] = inputSampleL;
@@ -6497,7 +6481,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->oPL[pocketverbs->outPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[5] = pocketverbs->dPL[4];
 				pocketverbs->dPL[4] = inputSampleL;
@@ -6515,7 +6499,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->oQL[pocketverbs->outQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[5] = pocketverbs->dQL[4];
 				pocketverbs->dQL[4] = inputSampleL;
@@ -6533,7 +6517,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->oRL[pocketverbs->outRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[5] = pocketverbs->dRL[4];
 				pocketverbs->dRL[4] = inputSampleL;
@@ -6551,7 +6535,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->oSL[pocketverbs->outSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[5] = pocketverbs->dSL[4];
 				pocketverbs->dSL[4] = inputSampleL;
@@ -6569,7 +6553,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->oTL[pocketverbs->outTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[5] = pocketverbs->dTL[4];
 				pocketverbs->dTL[4] = inputSampleL;
@@ -6587,7 +6571,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->oUL[pocketverbs->outUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[5] = pocketverbs->dUL[4];
 				pocketverbs->dUL[4] = inputSampleL;
@@ -6605,7 +6589,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->oVL[pocketverbs->outVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[5] = pocketverbs->dVL[4];
 				pocketverbs->dVL[4] = inputSampleL;
@@ -6623,7 +6607,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->oWL[pocketverbs->outWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[5] = pocketverbs->dWL[4];
 				pocketverbs->dWL[4] = inputSampleL;
@@ -6641,7 +6625,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->oXL[pocketverbs->outXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[5] = pocketverbs->dXL[4];
 				pocketverbs->dXL[4] = inputSampleL;
@@ -6659,7 +6643,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->oYL[pocketverbs->outYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[5] = pocketverbs->dYL[4];
 				pocketverbs->dYL[4] = inputSampleL;
@@ -6677,16 +6661,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->oZL[pocketverbs->outZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[5] = pocketverbs->dZL[4];
 				pocketverbs->dZL[4] = inputSampleL;
 				inputSampleL = (pocketverbs->dZL[4] + pocketverbs->dZL[5]) / 2.0;
-				//output Stretch unrealistic but smooth fake Paulstretch
+				// output Stretch unrealistic but smooth fake Paulstretch
 				break;
 
-
-			case 6: //Zarathustra
+			case 6: // Zarathustra
 				allpasstemp = pocketverbs->alpAL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -6699,12 +6682,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->aAL[pocketverbs->alpAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[3] = pocketverbs->dAL[2];
 				pocketverbs->dAL[2] = pocketverbs->dAL[1];
 				pocketverbs->dAL[1] = inputSampleL;
-				inputSampleL = (pocketverbs->dAL[1] + pocketverbs->dAL[2] + pocketverbs->dZL[3]) / 3.0; //add feedback
+				inputSampleL = (pocketverbs->dAL[1] + pocketverbs->dAL[2] + pocketverbs->dZL[3]) / 3.0; // add feedback
 
 				allpasstemp = pocketverbs->alpBL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayB) {
@@ -6718,7 +6701,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->aBL[pocketverbs->alpBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[3] = pocketverbs->dBL[2];
 				pocketverbs->dBL[2] = pocketverbs->dBL[1];
@@ -6737,7 +6720,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->aCL[pocketverbs->alpCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[3] = pocketverbs->dCL[2];
 				pocketverbs->dCL[2] = pocketverbs->dCL[1];
@@ -6756,7 +6739,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->aDL[pocketverbs->alpDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[3] = pocketverbs->dDL[2];
 				pocketverbs->dDL[2] = pocketverbs->dDL[1];
@@ -6775,7 +6758,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->aEL[pocketverbs->alpEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[3] = pocketverbs->dEL[2];
 				pocketverbs->dEL[2] = pocketverbs->dEL[1];
@@ -6794,7 +6777,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->aFL[pocketverbs->alpFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[3] = pocketverbs->dFL[2];
 				pocketverbs->dFL[2] = pocketverbs->dFL[1];
@@ -6813,7 +6796,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->aGL[pocketverbs->alpGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[3] = pocketverbs->dGL[2];
 				pocketverbs->dGL[2] = pocketverbs->dGL[1];
@@ -6832,7 +6815,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->aHL[pocketverbs->alpHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[3] = pocketverbs->dHL[2];
 				pocketverbs->dHL[2] = pocketverbs->dHL[1];
@@ -6851,7 +6834,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->aIL[pocketverbs->alpIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[3] = pocketverbs->dIL[2];
 				pocketverbs->dIL[2] = pocketverbs->dIL[1];
@@ -6870,7 +6853,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->aJL[pocketverbs->alpJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[3] = pocketverbs->dJL[2];
 				pocketverbs->dJL[2] = pocketverbs->dJL[1];
@@ -6889,7 +6872,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->aKL[pocketverbs->alpKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[3] = pocketverbs->dKL[2];
 				pocketverbs->dKL[2] = pocketverbs->dKL[1];
@@ -6908,7 +6891,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->aLL[pocketverbs->alpLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[3] = pocketverbs->dLL[2];
 				pocketverbs->dLL[2] = pocketverbs->dLL[1];
@@ -6927,7 +6910,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->aML[pocketverbs->alpML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[3] = pocketverbs->dML[2];
 				pocketverbs->dML[2] = pocketverbs->dML[1];
@@ -6946,7 +6929,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->aNL[pocketverbs->alpNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[3] = pocketverbs->dNL[2];
 				pocketverbs->dNL[2] = pocketverbs->dNL[1];
@@ -6965,7 +6948,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->aOL[pocketverbs->alpOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[3] = pocketverbs->dOL[2];
 				pocketverbs->dOL[2] = pocketverbs->dOL[1];
@@ -6984,7 +6967,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->aPL[pocketverbs->alpPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[3] = pocketverbs->dPL[2];
 				pocketverbs->dPL[2] = pocketverbs->dPL[1];
@@ -7003,7 +6986,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->aQL[pocketverbs->alpQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[3] = pocketverbs->dQL[2];
 				pocketverbs->dQL[2] = pocketverbs->dQL[1];
@@ -7022,7 +7005,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->aRL[pocketverbs->alpRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[3] = pocketverbs->dRL[2];
 				pocketverbs->dRL[2] = pocketverbs->dRL[1];
@@ -7041,7 +7024,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->aSL[pocketverbs->alpSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[3] = pocketverbs->dSL[2];
 				pocketverbs->dSL[2] = pocketverbs->dSL[1];
@@ -7060,7 +7043,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->aTL[pocketverbs->alpTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[3] = pocketverbs->dTL[2];
 				pocketverbs->dTL[2] = pocketverbs->dTL[1];
@@ -7079,7 +7062,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->aUL[pocketverbs->alpUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[3] = pocketverbs->dUL[2];
 				pocketverbs->dUL[2] = pocketverbs->dUL[1];
@@ -7098,7 +7081,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->aVL[pocketverbs->alpVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[3] = pocketverbs->dVL[2];
 				pocketverbs->dVL[2] = pocketverbs->dVL[1];
@@ -7117,7 +7100,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->aWL[pocketverbs->alpWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[3] = pocketverbs->dWL[2];
 				pocketverbs->dWL[2] = pocketverbs->dWL[1];
@@ -7136,7 +7119,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->aXL[pocketverbs->alpXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[3] = pocketverbs->dXL[2];
 				pocketverbs->dXL[2] = pocketverbs->dXL[1];
@@ -7155,7 +7138,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->aYL[pocketverbs->alpYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[3] = pocketverbs->dYL[2];
 				pocketverbs->dYL[2] = pocketverbs->dYL[1];
@@ -7174,7 +7157,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->aZL[pocketverbs->alpZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[3] = pocketverbs->dZL[2];
 				pocketverbs->dZL[2] = pocketverbs->dZL[1];
@@ -7195,12 +7178,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAL = pocketverbs->delayA;
 				}
 				inputSampleL += (pocketverbs->oAL[pocketverbs->outAL]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAL[6] = pocketverbs->dAL[5];
 				pocketverbs->dAL[5] = pocketverbs->dAL[4];
 				pocketverbs->dAL[4] = inputSampleL;
-				inputSampleL = (pocketverbs->dCL[1] + pocketverbs->dAL[5] + pocketverbs->dAL[6]) / 3.0; //note, feeding in dry again for a little more clarity!
+				inputSampleL = (pocketverbs->dCL[1] + pocketverbs->dAL[5] + pocketverbs->dAL[6]) / 3.0; // note, feeding in dry again for a little more clarity!
 
 				allpasstemp = pocketverbs->outBL - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayB) {
@@ -7214,7 +7197,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBL = pocketverbs->delayB;
 				}
 				inputSampleL += (pocketverbs->oBL[pocketverbs->outBL]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBL[6] = pocketverbs->dBL[5];
 				pocketverbs->dBL[5] = pocketverbs->dBL[4];
@@ -7233,7 +7216,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCL = pocketverbs->delayC;
 				}
 				inputSampleL += (pocketverbs->oCL[pocketverbs->outCL]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCL[6] = pocketverbs->dCL[5];
 				pocketverbs->dCL[5] = pocketverbs->dCL[4];
@@ -7252,7 +7235,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDL = pocketverbs->delayD;
 				}
 				inputSampleL += (pocketverbs->oDL[pocketverbs->outDL]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDL[6] = pocketverbs->dDL[5];
 				pocketverbs->dDL[5] = pocketverbs->dDL[4];
@@ -7271,7 +7254,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outEL = pocketverbs->delayE;
 				}
 				inputSampleL += (pocketverbs->oEL[pocketverbs->outEL]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dEL[6] = pocketverbs->dEL[5];
 				pocketverbs->dEL[5] = pocketverbs->dEL[4];
@@ -7290,7 +7273,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFL = pocketverbs->delayF;
 				}
 				inputSampleL += (pocketverbs->oFL[pocketverbs->outFL]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFL[6] = pocketverbs->dFL[5];
 				pocketverbs->dFL[5] = pocketverbs->dFL[4];
@@ -7309,7 +7292,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGL = pocketverbs->delayG;
 				}
 				inputSampleL += (pocketverbs->oGL[pocketverbs->outGL]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGL[6] = pocketverbs->dGL[5];
 				pocketverbs->dGL[5] = pocketverbs->dGL[4];
@@ -7328,7 +7311,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHL = pocketverbs->delayH;
 				}
 				inputSampleL += (pocketverbs->oHL[pocketverbs->outHL]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHL[6] = pocketverbs->dHL[5];
 				pocketverbs->dHL[5] = pocketverbs->dHL[4];
@@ -7347,7 +7330,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIL = pocketverbs->delayI;
 				}
 				inputSampleL += (pocketverbs->oIL[pocketverbs->outIL]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIL[6] = pocketverbs->dIL[5];
 				pocketverbs->dIL[5] = pocketverbs->dIL[4];
@@ -7366,7 +7349,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJL = pocketverbs->delayJ;
 				}
 				inputSampleL += (pocketverbs->oJL[pocketverbs->outJL]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJL[6] = pocketverbs->dJL[5];
 				pocketverbs->dJL[5] = pocketverbs->dJL[4];
@@ -7385,7 +7368,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKL = pocketverbs->delayK;
 				}
 				inputSampleL += (pocketverbs->oKL[pocketverbs->outKL]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKL[6] = pocketverbs->dKL[5];
 				pocketverbs->dKL[5] = pocketverbs->dKL[4];
@@ -7404,7 +7387,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLL = pocketverbs->delayL;
 				}
 				inputSampleL += (pocketverbs->oLL[pocketverbs->outLL]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLL[6] = pocketverbs->dLL[5];
 				pocketverbs->dLL[5] = pocketverbs->dLL[4];
@@ -7423,7 +7406,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outML = pocketverbs->delayM;
 				}
 				inputSampleL += (pocketverbs->oML[pocketverbs->outML]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dML[6] = pocketverbs->dML[5];
 				pocketverbs->dML[5] = pocketverbs->dML[4];
@@ -7442,7 +7425,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNL = pocketverbs->delayN;
 				}
 				inputSampleL += (pocketverbs->oNL[pocketverbs->outNL]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNL[6] = pocketverbs->dNL[5];
 				pocketverbs->dNL[5] = pocketverbs->dNL[4];
@@ -7461,7 +7444,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOL = pocketverbs->delayO;
 				}
 				inputSampleL += (pocketverbs->oOL[pocketverbs->outOL]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOL[6] = pocketverbs->dOL[5];
 				pocketverbs->dOL[5] = pocketverbs->dOL[4];
@@ -7480,7 +7463,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPL = pocketverbs->delayP;
 				}
 				inputSampleL += (pocketverbs->oPL[pocketverbs->outPL]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPL[6] = pocketverbs->dPL[5];
 				pocketverbs->dPL[5] = pocketverbs->dPL[4];
@@ -7499,7 +7482,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQL = pocketverbs->delayQ;
 				}
 				inputSampleL += (pocketverbs->oQL[pocketverbs->outQL]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQL[6] = pocketverbs->dQL[5];
 				pocketverbs->dQL[5] = pocketverbs->dQL[4];
@@ -7518,7 +7501,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRL = pocketverbs->delayR;
 				}
 				inputSampleL += (pocketverbs->oRL[pocketverbs->outRL]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRL[6] = pocketverbs->dRL[5];
 				pocketverbs->dRL[5] = pocketverbs->dRL[4];
@@ -7537,7 +7520,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSL = pocketverbs->delayS;
 				}
 				inputSampleL += (pocketverbs->oSL[pocketverbs->outSL]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSL[6] = pocketverbs->dSL[5];
 				pocketverbs->dSL[5] = pocketverbs->dSL[4];
@@ -7556,7 +7539,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTL = pocketverbs->delayT;
 				}
 				inputSampleL += (pocketverbs->oTL[pocketverbs->outTL]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTL[6] = pocketverbs->dTL[5];
 				pocketverbs->dTL[5] = pocketverbs->dTL[4];
@@ -7575,7 +7558,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUL = pocketverbs->delayU;
 				}
 				inputSampleL += (pocketverbs->oUL[pocketverbs->outUL]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUL[6] = pocketverbs->dUL[5];
 				pocketverbs->dUL[5] = pocketverbs->dUL[4];
@@ -7594,7 +7577,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVL = pocketverbs->delayV;
 				}
 				inputSampleL += (pocketverbs->oVL[pocketverbs->outVL]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVL[6] = pocketverbs->dVL[5];
 				pocketverbs->dVL[5] = pocketverbs->dVL[4];
@@ -7613,7 +7596,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWL = pocketverbs->delayW;
 				}
 				inputSampleL += (pocketverbs->oWL[pocketverbs->outWL]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWL[6] = pocketverbs->dWL[5];
 				pocketverbs->dWL[5] = pocketverbs->dWL[4];
@@ -7632,7 +7615,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXL = pocketverbs->delayX;
 				}
 				inputSampleL += (pocketverbs->oXL[pocketverbs->outXL]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXL[6] = pocketverbs->dXL[5];
 				pocketverbs->dXL[5] = pocketverbs->dXL[4];
@@ -7651,7 +7634,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYL = pocketverbs->delayY;
 				}
 				inputSampleL += (pocketverbs->oYL[pocketverbs->outYL]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYL[6] = pocketverbs->dYL[5];
 				pocketverbs->dYL[5] = pocketverbs->dYL[4];
@@ -7670,22 +7653,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZL = pocketverbs->delayZ;
 				}
 				inputSampleL += (pocketverbs->oZL[pocketverbs->outZL]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZL[6] = pocketverbs->dZL[5];
 				pocketverbs->dZL[5] = pocketverbs->dZL[4];
 				pocketverbs->dZL[4] = inputSampleL;
 				inputSampleL = (pocketverbs->dZL[4] + pocketverbs->dZL[5] + pocketverbs->dZL[6]);
-				//output Zarathustra infinite space verb
+				// output Zarathustra infinite space verb
 				break;
-
 		}
-		//end big switch for verb type
+		// end big switch for verb type
 
 		switch (verbtype) {
 
-
-			case 1://Chamber
+			case 1: // Chamber
 				allpasstemp = pocketverbs->alpAR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -7698,7 +7679,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->aAR[pocketverbs->alpAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[3] = pocketverbs->dAR[2];
 				pocketverbs->dAR[2] = pocketverbs->dAR[1];
@@ -7717,7 +7698,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->aBR[pocketverbs->alpBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[3] = pocketverbs->dBR[2];
 				pocketverbs->dBR[2] = pocketverbs->dBR[1];
@@ -7736,7 +7717,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->aCR[pocketverbs->alpCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[3] = pocketverbs->dCR[2];
 				pocketverbs->dCR[2] = pocketverbs->dCR[1];
@@ -7755,7 +7736,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->aDR[pocketverbs->alpDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[3] = pocketverbs->dDR[2];
 				pocketverbs->dDR[2] = pocketverbs->dDR[1];
@@ -7774,7 +7755,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->aER[pocketverbs->alpER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[3] = pocketverbs->dER[2];
 				pocketverbs->dER[2] = pocketverbs->dER[1];
@@ -7793,7 +7774,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->aFR[pocketverbs->alpFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[3] = pocketverbs->dFR[2];
 				pocketverbs->dFR[2] = pocketverbs->dFR[1];
@@ -7812,7 +7793,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->aGR[pocketverbs->alpGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[3] = pocketverbs->dGR[2];
 				pocketverbs->dGR[2] = pocketverbs->dGR[1];
@@ -7831,7 +7812,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->aHR[pocketverbs->alpHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[3] = pocketverbs->dHR[2];
 				pocketverbs->dHR[2] = pocketverbs->dHR[1];
@@ -7850,7 +7831,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->aIR[pocketverbs->alpIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[3] = pocketverbs->dIR[2];
 				pocketverbs->dIR[2] = pocketverbs->dIR[1];
@@ -7869,7 +7850,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->aJR[pocketverbs->alpJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[3] = pocketverbs->dJR[2];
 				pocketverbs->dJR[2] = pocketverbs->dJR[1];
@@ -7888,7 +7869,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->aKR[pocketverbs->alpKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[3] = pocketverbs->dKR[2];
 				pocketverbs->dKR[2] = pocketverbs->dKR[1];
@@ -7907,7 +7888,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->aLR[pocketverbs->alpLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[3] = pocketverbs->dLR[2];
 				pocketverbs->dLR[2] = pocketverbs->dLR[1];
@@ -7926,7 +7907,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->aMR[pocketverbs->alpMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[3] = pocketverbs->dMR[2];
 				pocketverbs->dMR[2] = pocketverbs->dMR[1];
@@ -7945,7 +7926,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->aNR[pocketverbs->alpNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[3] = pocketverbs->dNR[2];
 				pocketverbs->dNR[2] = pocketverbs->dNR[1];
@@ -7964,7 +7945,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->aOR[pocketverbs->alpOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[3] = pocketverbs->dOR[2];
 				pocketverbs->dOR[2] = pocketverbs->dOR[1];
@@ -7983,7 +7964,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->aPR[pocketverbs->alpPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[3] = pocketverbs->dPR[2];
 				pocketverbs->dPR[2] = pocketverbs->dPR[1];
@@ -8002,7 +7983,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->aQR[pocketverbs->alpQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[3] = pocketverbs->dQR[2];
 				pocketverbs->dQR[2] = pocketverbs->dQR[1];
@@ -8021,7 +8002,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->aRR[pocketverbs->alpRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[3] = pocketverbs->dRR[2];
 				pocketverbs->dRR[2] = pocketverbs->dRR[1];
@@ -8040,7 +8021,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->aSR[pocketverbs->alpSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[3] = pocketverbs->dSR[2];
 				pocketverbs->dSR[2] = pocketverbs->dSR[1];
@@ -8059,7 +8040,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->aTR[pocketverbs->alpTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[3] = pocketverbs->dTR[2];
 				pocketverbs->dTR[2] = pocketverbs->dTR[1];
@@ -8078,7 +8059,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->aUR[pocketverbs->alpUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[3] = pocketverbs->dUR[2];
 				pocketverbs->dUR[2] = pocketverbs->dUR[1];
@@ -8097,7 +8078,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->aVR[pocketverbs->alpVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[3] = pocketverbs->dVR[2];
 				pocketverbs->dVR[2] = pocketverbs->dVR[1];
@@ -8116,7 +8097,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->aWR[pocketverbs->alpWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[3] = pocketverbs->dWR[2];
 				pocketverbs->dWR[2] = pocketverbs->dWR[1];
@@ -8135,7 +8116,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->aXR[pocketverbs->alpXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[3] = pocketverbs->dXR[2];
 				pocketverbs->dXR[2] = pocketverbs->dXR[1];
@@ -8154,7 +8135,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->aYR[pocketverbs->alpYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[3] = pocketverbs->dYR[2];
 				pocketverbs->dYR[2] = pocketverbs->dYR[1];
@@ -8173,7 +8154,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->aZR[pocketverbs->alpZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[3] = pocketverbs->dZR[2];
 				pocketverbs->dZR[2] = pocketverbs->dZR[1];
@@ -8194,7 +8175,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->oAR[pocketverbs->outAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[6] = pocketverbs->dAR[5];
 				pocketverbs->dAR[5] = pocketverbs->dAR[4];
@@ -8213,7 +8194,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->oBR[pocketverbs->outBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[6] = pocketverbs->dBR[5];
 				pocketverbs->dBR[5] = pocketverbs->dBR[4];
@@ -8232,7 +8213,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->oCR[pocketverbs->outCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[6] = pocketverbs->dCR[5];
 				pocketverbs->dCR[5] = pocketverbs->dCR[4];
@@ -8251,7 +8232,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->oDR[pocketverbs->outDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[6] = pocketverbs->dDR[5];
 				pocketverbs->dDR[5] = pocketverbs->dDR[4];
@@ -8270,7 +8251,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->oER[pocketverbs->outER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[6] = pocketverbs->dER[5];
 				pocketverbs->dER[5] = pocketverbs->dER[4];
@@ -8289,7 +8270,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->oFR[pocketverbs->outFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[6] = pocketverbs->dFR[5];
 				pocketverbs->dFR[5] = pocketverbs->dFR[4];
@@ -8308,7 +8289,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->oGR[pocketverbs->outGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[6] = pocketverbs->dGR[5];
 				pocketverbs->dGR[5] = pocketverbs->dGR[4];
@@ -8327,7 +8308,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->oHR[pocketverbs->outHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[6] = pocketverbs->dHR[5];
 				pocketverbs->dHR[5] = pocketverbs->dHR[4];
@@ -8346,7 +8327,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->oIR[pocketverbs->outIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[6] = pocketverbs->dIR[5];
 				pocketverbs->dIR[5] = pocketverbs->dIR[4];
@@ -8365,7 +8346,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->oJR[pocketverbs->outJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[6] = pocketverbs->dJR[5];
 				pocketverbs->dJR[5] = pocketverbs->dJR[4];
@@ -8384,7 +8365,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->oKR[pocketverbs->outKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[6] = pocketverbs->dKR[5];
 				pocketverbs->dKR[5] = pocketverbs->dKR[4];
@@ -8403,7 +8384,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->oLR[pocketverbs->outLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[6] = pocketverbs->dLR[5];
 				pocketverbs->dLR[5] = pocketverbs->dLR[4];
@@ -8422,7 +8403,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->oMR[pocketverbs->outMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[6] = pocketverbs->dMR[5];
 				pocketverbs->dMR[5] = pocketverbs->dMR[4];
@@ -8441,7 +8422,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->oNR[pocketverbs->outNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[6] = pocketverbs->dNR[5];
 				pocketverbs->dNR[5] = pocketverbs->dNR[4];
@@ -8460,7 +8441,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->oOR[pocketverbs->outOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[6] = pocketverbs->dOR[5];
 				pocketverbs->dOR[5] = pocketverbs->dOR[4];
@@ -8479,7 +8460,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->oPR[pocketverbs->outPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[6] = pocketverbs->dPR[5];
 				pocketverbs->dPR[5] = pocketverbs->dPR[4];
@@ -8498,7 +8479,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->oQR[pocketverbs->outQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[6] = pocketverbs->dQR[5];
 				pocketverbs->dQR[5] = pocketverbs->dQR[4];
@@ -8517,7 +8498,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->oRR[pocketverbs->outRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[6] = pocketverbs->dRR[5];
 				pocketverbs->dRR[5] = pocketverbs->dRR[4];
@@ -8536,7 +8517,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->oSR[pocketverbs->outSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[6] = pocketverbs->dSR[5];
 				pocketverbs->dSR[5] = pocketverbs->dSR[4];
@@ -8555,7 +8536,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->oTR[pocketverbs->outTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[6] = pocketverbs->dTR[5];
 				pocketverbs->dTR[5] = pocketverbs->dTR[4];
@@ -8574,7 +8555,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->oUR[pocketverbs->outUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[6] = pocketverbs->dUR[5];
 				pocketverbs->dUR[5] = pocketverbs->dUR[4];
@@ -8593,7 +8574,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->oVR[pocketverbs->outVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[6] = pocketverbs->dVR[5];
 				pocketverbs->dVR[5] = pocketverbs->dVR[4];
@@ -8612,7 +8593,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->oWR[pocketverbs->outWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[6] = pocketverbs->dWR[5];
 				pocketverbs->dWR[5] = pocketverbs->dWR[4];
@@ -8631,7 +8612,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->oXR[pocketverbs->outXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[6] = pocketverbs->dXR[5];
 				pocketverbs->dXR[5] = pocketverbs->dXR[4];
@@ -8650,7 +8631,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->oYR[pocketverbs->outYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[6] = pocketverbs->dYR[5];
 				pocketverbs->dYR[5] = pocketverbs->dYR[4];
@@ -8669,20 +8650,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->oZR[pocketverbs->outZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[6] = pocketverbs->dZR[5];
 				pocketverbs->dZR[5] = pocketverbs->dZR[4];
 				pocketverbs->dZR[4] = inputSampleR;
 				inputSampleR = (pocketverbs->dZR[4] + pocketverbs->dZR[5] + pocketverbs->dZR[6]);
-				//output Chamber
+				// output Chamber
 				break;
 
-
-
-
-
-			case 2: //Spring
+			case 2: // Spring
 
 				allpasstemp = pocketverbs->alpAR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
@@ -8696,7 +8673,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->aAR[pocketverbs->alpAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[3] = pocketverbs->dAR[2];
 				pocketverbs->dAR[2] = pocketverbs->dAR[1];
@@ -8715,7 +8692,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->aBR[pocketverbs->alpBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[3] = pocketverbs->dBR[2];
 				pocketverbs->dBR[2] = pocketverbs->dBR[1];
@@ -8734,7 +8711,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->aCR[pocketverbs->alpCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[3] = pocketverbs->dCR[2];
 				pocketverbs->dCR[2] = pocketverbs->dCR[1];
@@ -8753,7 +8730,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->aDR[pocketverbs->alpDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[3] = pocketverbs->dDR[2];
 				pocketverbs->dDR[2] = pocketverbs->dDR[1];
@@ -8772,7 +8749,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->aER[pocketverbs->alpER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[3] = pocketverbs->dER[2];
 				pocketverbs->dER[2] = pocketverbs->dER[1];
@@ -8791,7 +8768,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->aFR[pocketverbs->alpFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[3] = pocketverbs->dFR[2];
 				pocketverbs->dFR[2] = pocketverbs->dFR[1];
@@ -8810,7 +8787,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->aGR[pocketverbs->alpGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[3] = pocketverbs->dGR[2];
 				pocketverbs->dGR[2] = pocketverbs->dGR[1];
@@ -8829,7 +8806,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->aHR[pocketverbs->alpHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[3] = pocketverbs->dHR[2];
 				pocketverbs->dHR[2] = pocketverbs->dHR[1];
@@ -8848,7 +8825,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->aIR[pocketverbs->alpIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[3] = pocketverbs->dIR[2];
 				pocketverbs->dIR[2] = pocketverbs->dIR[1];
@@ -8867,7 +8844,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->aJR[pocketverbs->alpJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[3] = pocketverbs->dJR[2];
 				pocketverbs->dJR[2] = pocketverbs->dJR[1];
@@ -8886,7 +8863,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->aKR[pocketverbs->alpKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[3] = pocketverbs->dKR[2];
 				pocketverbs->dKR[2] = pocketverbs->dKR[1];
@@ -8905,7 +8882,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->aLR[pocketverbs->alpLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[3] = pocketverbs->dLR[2];
 				pocketverbs->dLR[2] = pocketverbs->dLR[1];
@@ -8924,7 +8901,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->aMR[pocketverbs->alpMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[3] = pocketverbs->dMR[2];
 				pocketverbs->dMR[2] = pocketverbs->dMR[1];
@@ -8943,7 +8920,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->aNR[pocketverbs->alpNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[3] = pocketverbs->dNR[2];
 				pocketverbs->dNR[2] = pocketverbs->dNR[1];
@@ -8962,7 +8939,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->aOR[pocketverbs->alpOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[3] = pocketverbs->dOR[2];
 				pocketverbs->dOR[2] = pocketverbs->dOR[1];
@@ -8981,7 +8958,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->aPR[pocketverbs->alpPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[3] = pocketverbs->dPR[2];
 				pocketverbs->dPR[2] = pocketverbs->dPR[1];
@@ -9000,7 +8977,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->aQR[pocketverbs->alpQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[3] = pocketverbs->dQR[2];
 				pocketverbs->dQR[2] = pocketverbs->dQR[1];
@@ -9019,7 +8996,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->aRR[pocketverbs->alpRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[3] = pocketverbs->dRR[2];
 				pocketverbs->dRR[2] = pocketverbs->dRR[1];
@@ -9038,7 +9015,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->aSR[pocketverbs->alpSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[3] = pocketverbs->dSR[2];
 				pocketverbs->dSR[2] = pocketverbs->dSR[1];
@@ -9057,7 +9034,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->aTR[pocketverbs->alpTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[3] = pocketverbs->dTR[2];
 				pocketverbs->dTR[2] = pocketverbs->dTR[1];
@@ -9076,7 +9053,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->aUR[pocketverbs->alpUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[3] = pocketverbs->dUR[2];
 				pocketverbs->dUR[2] = pocketverbs->dUR[1];
@@ -9095,7 +9072,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->aVR[pocketverbs->alpVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[3] = pocketverbs->dVR[2];
 				pocketverbs->dVR[2] = pocketverbs->dVR[1];
@@ -9114,7 +9091,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->aWR[pocketverbs->alpWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[3] = pocketverbs->dWR[2];
 				pocketverbs->dWR[2] = pocketverbs->dWR[1];
@@ -9133,7 +9110,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->aXR[pocketverbs->alpXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[3] = pocketverbs->dXR[2];
 				pocketverbs->dXR[2] = pocketverbs->dXR[1];
@@ -9152,7 +9129,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->aYR[pocketverbs->alpYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[3] = pocketverbs->dYR[2];
 				pocketverbs->dYR[2] = pocketverbs->dYR[1];
@@ -9171,7 +9148,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->aZR[pocketverbs->alpZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[3] = pocketverbs->dZR[2];
 				pocketverbs->dZR[2] = pocketverbs->dZR[1];
@@ -9192,7 +9169,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->oAR[pocketverbs->outAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[6] = pocketverbs->dAR[5];
 				pocketverbs->dAR[5] = pocketverbs->dAR[4];
@@ -9211,7 +9188,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->oBR[pocketverbs->outBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[6] = pocketverbs->dBR[5];
 				pocketverbs->dBR[5] = pocketverbs->dBR[4];
@@ -9230,7 +9207,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->oCR[pocketverbs->outCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[6] = pocketverbs->dCR[5];
 				pocketverbs->dCR[5] = pocketverbs->dCR[4];
@@ -9249,7 +9226,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->oDR[pocketverbs->outDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[6] = pocketverbs->dDR[5];
 				pocketverbs->dDR[5] = pocketverbs->dDR[4];
@@ -9268,7 +9245,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->oER[pocketverbs->outER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[6] = pocketverbs->dER[5];
 				pocketverbs->dER[5] = pocketverbs->dER[4];
@@ -9287,7 +9264,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->oFR[pocketverbs->outFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[6] = pocketverbs->dFR[5];
 				pocketverbs->dFR[5] = pocketverbs->dFR[4];
@@ -9306,7 +9283,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->oGR[pocketverbs->outGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[6] = pocketverbs->dGR[5];
 				pocketverbs->dGR[5] = pocketverbs->dGR[4];
@@ -9325,7 +9302,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->oHR[pocketverbs->outHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[6] = pocketverbs->dHR[5];
 				pocketverbs->dHR[5] = pocketverbs->dHR[4];
@@ -9344,7 +9321,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->oIR[pocketverbs->outIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[6] = pocketverbs->dIR[5];
 				pocketverbs->dIR[5] = pocketverbs->dIR[4];
@@ -9363,7 +9340,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->oJR[pocketverbs->outJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[6] = pocketverbs->dJR[5];
 				pocketverbs->dJR[5] = pocketverbs->dJR[4];
@@ -9382,7 +9359,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->oKR[pocketverbs->outKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[6] = pocketverbs->dKR[5];
 				pocketverbs->dKR[5] = pocketverbs->dKR[4];
@@ -9401,7 +9378,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->oLR[pocketverbs->outLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[6] = pocketverbs->dLR[5];
 				pocketverbs->dLR[5] = pocketverbs->dLR[4];
@@ -9420,7 +9397,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->oMR[pocketverbs->outMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[6] = pocketverbs->dMR[5];
 				pocketverbs->dMR[5] = pocketverbs->dMR[4];
@@ -9439,7 +9416,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->oNR[pocketverbs->outNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[6] = pocketverbs->dNR[5];
 				pocketverbs->dNR[5] = pocketverbs->dNR[4];
@@ -9458,7 +9435,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->oOR[pocketverbs->outOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[6] = pocketverbs->dOR[5];
 				pocketverbs->dOR[5] = pocketverbs->dOR[4];
@@ -9477,7 +9454,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->oPR[pocketverbs->outPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[6] = pocketverbs->dPR[5];
 				pocketverbs->dPR[5] = pocketverbs->dPR[4];
@@ -9496,7 +9473,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->oQR[pocketverbs->outQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[6] = pocketverbs->dQR[5];
 				pocketverbs->dQR[5] = pocketverbs->dQR[4];
@@ -9515,7 +9492,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->oRR[pocketverbs->outRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[6] = pocketverbs->dRR[5];
 				pocketverbs->dRR[5] = pocketverbs->dRR[4];
@@ -9534,7 +9511,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->oSR[pocketverbs->outSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[6] = pocketverbs->dSR[5];
 				pocketverbs->dSR[5] = pocketverbs->dSR[4];
@@ -9553,7 +9530,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->oTR[pocketverbs->outTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[6] = pocketverbs->dTR[5];
 				pocketverbs->dTR[5] = pocketverbs->dTR[4];
@@ -9572,7 +9549,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->oUR[pocketverbs->outUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[6] = pocketverbs->dUR[5];
 				pocketverbs->dUR[5] = pocketverbs->dUR[4];
@@ -9591,7 +9568,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->oVR[pocketverbs->outVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[6] = pocketverbs->dVR[5];
 				pocketverbs->dVR[5] = pocketverbs->dVR[4];
@@ -9610,7 +9587,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->oWR[pocketverbs->outWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[6] = pocketverbs->dWR[5];
 				pocketverbs->dWR[5] = pocketverbs->dWR[4];
@@ -9629,7 +9606,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->oXR[pocketverbs->outXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[6] = pocketverbs->dXR[5];
 				pocketverbs->dXR[5] = pocketverbs->dXR[4];
@@ -9648,7 +9625,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->oYR[pocketverbs->outYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[6] = pocketverbs->dYR[5];
 				pocketverbs->dYR[5] = pocketverbs->dYR[4];
@@ -9667,17 +9644,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->oZR[pocketverbs->outZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[6] = pocketverbs->dZR[5];
 				pocketverbs->dZR[5] = pocketverbs->dZR[4];
 				pocketverbs->dZR[4] = inputSampleR;
 				inputSampleR = (pocketverbs->dZR[5] + pocketverbs->dZR[6]);
-				//output Spring
+				// output Spring
 				break;
 
-
-			case 3: //Tiled
+			case 3: // Tiled
 				allpasstemp = pocketverbs->alpAR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -9690,7 +9666,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->aAR[pocketverbs->alpAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[2] = pocketverbs->dAR[1];
 				pocketverbs->dAR[1] = inputSampleR;
@@ -9708,7 +9684,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->aBR[pocketverbs->alpBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[2] = pocketverbs->dBR[1];
 				pocketverbs->dBR[1] = inputSampleR;
@@ -9726,7 +9702,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->aCR[pocketverbs->alpCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[2] = pocketverbs->dCR[1];
 				pocketverbs->dCR[1] = inputSampleR;
@@ -9744,7 +9720,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->aDR[pocketverbs->alpDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[2] = pocketverbs->dDR[1];
 				pocketverbs->dDR[1] = inputSampleR;
@@ -9762,7 +9738,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->aER[pocketverbs->alpER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[2] = pocketverbs->dER[1];
 				pocketverbs->dER[1] = inputSampleR;
@@ -9780,7 +9756,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->aFR[pocketverbs->alpFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[2] = pocketverbs->dFR[1];
 				pocketverbs->dFR[1] = inputSampleR;
@@ -9798,7 +9774,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->aGR[pocketverbs->alpGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[2] = pocketverbs->dGR[1];
 				pocketverbs->dGR[1] = inputSampleR;
@@ -9816,7 +9792,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->aHR[pocketverbs->alpHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[2] = pocketverbs->dHR[1];
 				pocketverbs->dHR[1] = inputSampleR;
@@ -9834,7 +9810,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->aIR[pocketverbs->alpIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[2] = pocketverbs->dIR[1];
 				pocketverbs->dIR[1] = inputSampleR;
@@ -9852,7 +9828,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->aJR[pocketverbs->alpJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[2] = pocketverbs->dJR[1];
 				pocketverbs->dJR[1] = inputSampleR;
@@ -9870,7 +9846,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->aKR[pocketverbs->alpKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[2] = pocketverbs->dKR[1];
 				pocketverbs->dKR[1] = inputSampleR;
@@ -9888,7 +9864,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->aLR[pocketverbs->alpLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[2] = pocketverbs->dLR[1];
 				pocketverbs->dLR[1] = inputSampleR;
@@ -9906,7 +9882,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->aMR[pocketverbs->alpMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[2] = pocketverbs->dMR[1];
 				pocketverbs->dMR[1] = inputSampleR;
@@ -9924,7 +9900,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->aNR[pocketverbs->alpNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[2] = pocketverbs->dNR[1];
 				pocketverbs->dNR[1] = inputSampleR;
@@ -9942,7 +9918,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->aOR[pocketverbs->alpOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[2] = pocketverbs->dOR[1];
 				pocketverbs->dOR[1] = inputSampleR;
@@ -9960,7 +9936,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->aPR[pocketverbs->alpPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[2] = pocketverbs->dPR[1];
 				pocketverbs->dPR[1] = inputSampleR;
@@ -9978,7 +9954,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->aQR[pocketverbs->alpQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[2] = pocketverbs->dQR[1];
 				pocketverbs->dQR[1] = inputSampleR;
@@ -9996,7 +9972,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->aRR[pocketverbs->alpRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[2] = pocketverbs->dRR[1];
 				pocketverbs->dRR[1] = inputSampleR;
@@ -10014,7 +9990,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->aSR[pocketverbs->alpSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[2] = pocketverbs->dSR[1];
 				pocketverbs->dSR[1] = inputSampleR;
@@ -10032,7 +10008,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->aTR[pocketverbs->alpTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[2] = pocketverbs->dTR[1];
 				pocketverbs->dTR[1] = inputSampleR;
@@ -10050,7 +10026,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->aUR[pocketverbs->alpUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[2] = pocketverbs->dUR[1];
 				pocketverbs->dUR[1] = inputSampleR;
@@ -10068,7 +10044,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->aVR[pocketverbs->alpVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[2] = pocketverbs->dVR[1];
 				pocketverbs->dVR[1] = inputSampleR;
@@ -10086,7 +10062,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->aWR[pocketverbs->alpWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[2] = pocketverbs->dWR[1];
 				pocketverbs->dWR[1] = inputSampleR;
@@ -10104,7 +10080,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->aXR[pocketverbs->alpXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[2] = pocketverbs->dXR[1];
 				pocketverbs->dXR[1] = inputSampleR;
@@ -10122,7 +10098,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->aYR[pocketverbs->alpYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[2] = pocketverbs->dYR[1];
 				pocketverbs->dYR[1] = inputSampleR;
@@ -10140,7 +10116,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->aZR[pocketverbs->alpZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[2] = pocketverbs->dZR[1];
 				pocketverbs->dZR[1] = inputSampleR;
@@ -10160,7 +10136,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->oAR[pocketverbs->outAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[5] = pocketverbs->dAR[4];
 				pocketverbs->dAR[4] = inputSampleR;
@@ -10178,7 +10154,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->oBR[pocketverbs->outBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[5] = pocketverbs->dBR[4];
 				pocketverbs->dBR[4] = inputSampleR;
@@ -10196,7 +10172,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->oCR[pocketverbs->outCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[5] = pocketverbs->dCR[4];
 				pocketverbs->dCR[4] = inputSampleR;
@@ -10214,7 +10190,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->oDR[pocketverbs->outDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[5] = pocketverbs->dDR[4];
 				pocketverbs->dDR[4] = inputSampleR;
@@ -10232,7 +10208,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->oER[pocketverbs->outER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[5] = pocketverbs->dER[4];
 				pocketverbs->dER[4] = inputSampleR;
@@ -10250,7 +10226,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->oFR[pocketverbs->outFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[5] = pocketverbs->dFR[4];
 				pocketverbs->dFR[4] = inputSampleR;
@@ -10268,7 +10244,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->oGR[pocketverbs->outGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[5] = pocketverbs->dGR[4];
 				pocketverbs->dGR[4] = inputSampleR;
@@ -10286,7 +10262,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->oHR[pocketverbs->outHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[5] = pocketverbs->dHR[4];
 				pocketverbs->dHR[4] = inputSampleR;
@@ -10304,7 +10280,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->oIR[pocketverbs->outIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[5] = pocketverbs->dIR[4];
 				pocketverbs->dIR[4] = inputSampleR;
@@ -10322,7 +10298,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->oJR[pocketverbs->outJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[5] = pocketverbs->dJR[4];
 				pocketverbs->dJR[4] = inputSampleR;
@@ -10340,7 +10316,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->oKR[pocketverbs->outKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[5] = pocketverbs->dKR[4];
 				pocketverbs->dKR[4] = inputSampleR;
@@ -10358,7 +10334,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->oLR[pocketverbs->outLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[5] = pocketverbs->dLR[4];
 				pocketverbs->dLR[4] = inputSampleR;
@@ -10376,7 +10352,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->oMR[pocketverbs->outMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[5] = pocketverbs->dMR[4];
 				pocketverbs->dMR[4] = inputSampleR;
@@ -10394,7 +10370,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->oNR[pocketverbs->outNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[5] = pocketverbs->dNR[4];
 				pocketverbs->dNR[4] = inputSampleR;
@@ -10412,7 +10388,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->oOR[pocketverbs->outOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[5] = pocketverbs->dOR[4];
 				pocketverbs->dOR[4] = inputSampleR;
@@ -10430,7 +10406,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->oPR[pocketverbs->outPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[5] = pocketverbs->dPR[4];
 				pocketverbs->dPR[4] = inputSampleR;
@@ -10448,7 +10424,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->oQR[pocketverbs->outQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[5] = pocketverbs->dQR[4];
 				pocketverbs->dQR[4] = inputSampleR;
@@ -10466,7 +10442,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->oRR[pocketverbs->outRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[5] = pocketverbs->dRR[4];
 				pocketverbs->dRR[4] = inputSampleR;
@@ -10484,7 +10460,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->oSR[pocketverbs->outSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[5] = pocketverbs->dSR[4];
 				pocketverbs->dSR[4] = inputSampleR;
@@ -10502,7 +10478,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->oTR[pocketverbs->outTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[5] = pocketverbs->dTR[4];
 				pocketverbs->dTR[4] = inputSampleR;
@@ -10520,7 +10496,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->oUR[pocketverbs->outUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[5] = pocketverbs->dUR[4];
 				pocketverbs->dUR[4] = inputSampleR;
@@ -10538,7 +10514,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->oVR[pocketverbs->outVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[5] = pocketverbs->dVR[4];
 				pocketverbs->dVR[4] = inputSampleR;
@@ -10556,7 +10532,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->oWR[pocketverbs->outWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[5] = pocketverbs->dWR[4];
 				pocketverbs->dWR[4] = inputSampleR;
@@ -10574,7 +10550,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->oXR[pocketverbs->outXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[5] = pocketverbs->dXR[4];
 				pocketverbs->dXR[4] = inputSampleR;
@@ -10592,7 +10568,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->oYR[pocketverbs->outYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[5] = pocketverbs->dYR[4];
 				pocketverbs->dYR[4] = inputSampleR;
@@ -10610,16 +10586,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->oZR[pocketverbs->outZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[5] = pocketverbs->dZR[4];
 				pocketverbs->dZR[4] = inputSampleR;
 				inputSampleR = (pocketverbs->dZR[4] + pocketverbs->dZR[5]);
-				//output Tiled
+				// output Tiled
 				break;
 
-
-			case 4://Room
+			case 4: // Room
 				allpasstemp = pocketverbs->alpAR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -10632,7 +10607,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->aAR[pocketverbs->alpAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[2] = pocketverbs->dAR[1];
 				pocketverbs->dAR[1] = inputSampleR;
@@ -10650,7 +10625,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->aBR[pocketverbs->alpBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[2] = pocketverbs->dBR[1];
 				pocketverbs->dBR[1] = inputSampleR;
@@ -10668,7 +10643,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->aCR[pocketverbs->alpCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[2] = pocketverbs->dCR[1];
 				pocketverbs->dCR[1] = inputSampleR;
@@ -10686,7 +10661,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->aDR[pocketverbs->alpDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[2] = pocketverbs->dDR[1];
 				pocketverbs->dDR[1] = inputSampleR;
@@ -10704,7 +10679,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->aER[pocketverbs->alpER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[2] = pocketverbs->dER[1];
 				pocketverbs->dER[1] = inputSampleR;
@@ -10722,7 +10697,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->aFR[pocketverbs->alpFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[2] = pocketverbs->dFR[1];
 				pocketverbs->dFR[1] = inputSampleR;
@@ -10740,7 +10715,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->aGR[pocketverbs->alpGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[2] = pocketverbs->dGR[1];
 				pocketverbs->dGR[1] = inputSampleR;
@@ -10758,7 +10733,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->aHR[pocketverbs->alpHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[2] = pocketverbs->dHR[1];
 				pocketverbs->dHR[1] = inputSampleR;
@@ -10776,7 +10751,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->aIR[pocketverbs->alpIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[2] = pocketverbs->dIR[1];
 				pocketverbs->dIR[1] = inputSampleR;
@@ -10794,7 +10769,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->aJR[pocketverbs->alpJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[2] = pocketverbs->dJR[1];
 				pocketverbs->dJR[1] = inputSampleR;
@@ -10812,7 +10787,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->aKR[pocketverbs->alpKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[2] = pocketverbs->dKR[1];
 				pocketverbs->dKR[1] = inputSampleR;
@@ -10830,7 +10805,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->aLR[pocketverbs->alpLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[2] = pocketverbs->dLR[1];
 				pocketverbs->dLR[1] = inputSampleR;
@@ -10848,7 +10823,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->aMR[pocketverbs->alpMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[2] = pocketverbs->dMR[1];
 				pocketverbs->dMR[1] = inputSampleR;
@@ -10866,7 +10841,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->aNR[pocketverbs->alpNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[2] = pocketverbs->dNR[1];
 				pocketverbs->dNR[1] = inputSampleR;
@@ -10884,7 +10859,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->aOR[pocketverbs->alpOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[2] = pocketverbs->dOR[1];
 				pocketverbs->dOR[1] = inputSampleR;
@@ -10902,7 +10877,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->aPR[pocketverbs->alpPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[2] = pocketverbs->dPR[1];
 				pocketverbs->dPR[1] = inputSampleR;
@@ -10920,7 +10895,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->aQR[pocketverbs->alpQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[2] = pocketverbs->dQR[1];
 				pocketverbs->dQR[1] = inputSampleR;
@@ -10938,7 +10913,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->aRR[pocketverbs->alpRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[2] = pocketverbs->dRR[1];
 				pocketverbs->dRR[1] = inputSampleR;
@@ -10956,7 +10931,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->aSR[pocketverbs->alpSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[2] = pocketverbs->dSR[1];
 				pocketverbs->dSR[1] = inputSampleR;
@@ -10974,7 +10949,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->aTR[pocketverbs->alpTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[2] = pocketverbs->dTR[1];
 				pocketverbs->dTR[1] = inputSampleR;
@@ -10992,7 +10967,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->aUR[pocketverbs->alpUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[2] = pocketverbs->dUR[1];
 				pocketverbs->dUR[1] = inputSampleR;
@@ -11010,7 +10985,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->aVR[pocketverbs->alpVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[2] = pocketverbs->dVR[1];
 				pocketverbs->dVR[1] = inputSampleR;
@@ -11028,7 +11003,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->aWR[pocketverbs->alpWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[2] = pocketverbs->dWR[1];
 				pocketverbs->dWR[1] = inputSampleR;
@@ -11046,7 +11021,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->aXR[pocketverbs->alpXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[2] = pocketverbs->dXR[1];
 				pocketverbs->dXR[1] = inputSampleR;
@@ -11064,7 +11039,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->aYR[pocketverbs->alpYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[2] = pocketverbs->dYR[1];
 				pocketverbs->dYR[1] = inputSampleR;
@@ -11082,7 +11057,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->aZR[pocketverbs->alpZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[2] = pocketverbs->dZR[1];
 				pocketverbs->dZR[1] = inputSampleR;
@@ -11102,7 +11077,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->oAR[pocketverbs->outAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[5] = pocketverbs->dAR[4];
 				pocketverbs->dAR[4] = inputSampleR;
@@ -11120,7 +11095,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->oBR[pocketverbs->outBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[5] = pocketverbs->dBR[4];
 				pocketverbs->dBR[4] = inputSampleR;
@@ -11138,7 +11113,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->oCR[pocketverbs->outCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[5] = pocketverbs->dCR[4];
 				pocketverbs->dCR[4] = inputSampleR;
@@ -11156,7 +11131,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->oDR[pocketverbs->outDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[5] = pocketverbs->dDR[4];
 				pocketverbs->dDR[4] = inputSampleR;
@@ -11174,7 +11149,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->oER[pocketverbs->outER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[5] = pocketverbs->dER[4];
 				pocketverbs->dER[4] = inputSampleR;
@@ -11192,7 +11167,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->oFR[pocketverbs->outFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[5] = pocketverbs->dFR[4];
 				pocketverbs->dFR[4] = inputSampleR;
@@ -11210,7 +11185,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->oGR[pocketverbs->outGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[5] = pocketverbs->dGR[4];
 				pocketverbs->dGR[4] = inputSampleR;
@@ -11228,7 +11203,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->oHR[pocketverbs->outHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[5] = pocketverbs->dHR[4];
 				pocketverbs->dHR[4] = inputSampleR;
@@ -11246,7 +11221,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->oIR[pocketverbs->outIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[5] = pocketverbs->dIR[4];
 				pocketverbs->dIR[4] = inputSampleR;
@@ -11264,7 +11239,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->oJR[pocketverbs->outJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[5] = pocketverbs->dJR[4];
 				pocketverbs->dJR[4] = inputSampleR;
@@ -11282,7 +11257,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->oKR[pocketverbs->outKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[5] = pocketverbs->dKR[4];
 				pocketverbs->dKR[4] = inputSampleR;
@@ -11300,7 +11275,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->oLR[pocketverbs->outLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[5] = pocketverbs->dLR[4];
 				pocketverbs->dLR[4] = inputSampleR;
@@ -11318,7 +11293,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->oMR[pocketverbs->outMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[5] = pocketverbs->dMR[4];
 				pocketverbs->dMR[4] = inputSampleR;
@@ -11336,7 +11311,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->oNR[pocketverbs->outNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[5] = pocketverbs->dNR[4];
 				pocketverbs->dNR[4] = inputSampleR;
@@ -11354,7 +11329,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->oOR[pocketverbs->outOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[5] = pocketverbs->dOR[4];
 				pocketverbs->dOR[4] = inputSampleR;
@@ -11372,7 +11347,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->oPR[pocketverbs->outPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[5] = pocketverbs->dPR[4];
 				pocketverbs->dPR[4] = inputSampleR;
@@ -11390,7 +11365,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->oQR[pocketverbs->outQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[5] = pocketverbs->dQR[4];
 				pocketverbs->dQR[4] = inputSampleR;
@@ -11408,7 +11383,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->oRR[pocketverbs->outRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[5] = pocketverbs->dRR[4];
 				pocketverbs->dRR[4] = inputSampleR;
@@ -11426,7 +11401,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->oSR[pocketverbs->outSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[5] = pocketverbs->dSR[4];
 				pocketverbs->dSR[4] = inputSampleR;
@@ -11444,7 +11419,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->oTR[pocketverbs->outTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[5] = pocketverbs->dTR[4];
 				pocketverbs->dTR[4] = inputSampleR;
@@ -11462,7 +11437,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->oUR[pocketverbs->outUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[5] = pocketverbs->dUR[4];
 				pocketverbs->dUR[4] = inputSampleR;
@@ -11480,7 +11455,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->oVR[pocketverbs->outVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[5] = pocketverbs->dVR[4];
 				pocketverbs->dVR[4] = inputSampleR;
@@ -11498,7 +11473,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->oWR[pocketverbs->outWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[5] = pocketverbs->dWR[4];
 				pocketverbs->dWR[4] = inputSampleR;
@@ -11516,7 +11491,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->oXR[pocketverbs->outXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[5] = pocketverbs->dXR[4];
 				pocketverbs->dXR[4] = inputSampleR;
@@ -11534,7 +11509,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->oYR[pocketverbs->outYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[5] = pocketverbs->dYR[4];
 				pocketverbs->dYR[4] = inputSampleR;
@@ -11552,7 +11527,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->oZR[pocketverbs->outZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[5] = pocketverbs->dZR[4];
 				pocketverbs->dZR[4] = inputSampleR;
@@ -11609,15 +11584,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				inputSampleR += (pocketverbs->dZR[5] * wetness);
 
 				inputSampleR /= (26.0 + (wetness * 4.0));
-				//output Room effect
+				// output Room effect
 				break;
 
-
-
-
-
-
-			case 5: //Stretch
+			case 5: // Stretch
 				allpasstemp = pocketverbs->alpAR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -11630,7 +11600,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->aAR[pocketverbs->alpAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[2] = pocketverbs->dAR[1];
 				pocketverbs->dAR[1] = inputSampleR;
@@ -11648,7 +11618,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->aBR[pocketverbs->alpBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[2] = pocketverbs->dBR[1];
 				pocketverbs->dBR[1] = inputSampleR;
@@ -11666,7 +11636,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->aCR[pocketverbs->alpCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[2] = pocketverbs->dCR[1];
 				pocketverbs->dCR[1] = inputSampleR;
@@ -11684,7 +11654,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->aDR[pocketverbs->alpDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[2] = pocketverbs->dDR[1];
 				pocketverbs->dDR[1] = inputSampleR;
@@ -11702,7 +11672,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->aER[pocketverbs->alpER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[2] = pocketverbs->dER[1];
 				pocketverbs->dER[1] = inputSampleR;
@@ -11720,7 +11690,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->aFR[pocketverbs->alpFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[2] = pocketverbs->dFR[1];
 				pocketverbs->dFR[1] = inputSampleR;
@@ -11738,7 +11708,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->aGR[pocketverbs->alpGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[2] = pocketverbs->dGR[1];
 				pocketverbs->dGR[1] = inputSampleR;
@@ -11756,7 +11726,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->aHR[pocketverbs->alpHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[2] = pocketverbs->dHR[1];
 				pocketverbs->dHR[1] = inputSampleR;
@@ -11774,7 +11744,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->aIR[pocketverbs->alpIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[2] = pocketverbs->dIR[1];
 				pocketverbs->dIR[1] = inputSampleR;
@@ -11792,7 +11762,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->aJR[pocketverbs->alpJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[2] = pocketverbs->dJR[1];
 				pocketverbs->dJR[1] = inputSampleR;
@@ -11810,7 +11780,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->aKR[pocketverbs->alpKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[2] = pocketverbs->dKR[1];
 				pocketverbs->dKR[1] = inputSampleR;
@@ -11828,7 +11798,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->aLR[pocketverbs->alpLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[2] = pocketverbs->dLR[1];
 				pocketverbs->dLR[1] = inputSampleR;
@@ -11846,7 +11816,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->aMR[pocketverbs->alpMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[2] = pocketverbs->dMR[1];
 				pocketverbs->dMR[1] = inputSampleR;
@@ -11864,7 +11834,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->aNR[pocketverbs->alpNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[2] = pocketverbs->dNR[1];
 				pocketverbs->dNR[1] = inputSampleR;
@@ -11882,7 +11852,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->aOR[pocketverbs->alpOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[2] = pocketverbs->dOR[1];
 				pocketverbs->dOR[1] = inputSampleR;
@@ -11900,7 +11870,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->aPR[pocketverbs->alpPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[2] = pocketverbs->dPR[1];
 				pocketverbs->dPR[1] = inputSampleR;
@@ -11918,7 +11888,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->aQR[pocketverbs->alpQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[2] = pocketverbs->dQR[1];
 				pocketverbs->dQR[1] = inputSampleR;
@@ -11936,7 +11906,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->aRR[pocketverbs->alpRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[2] = pocketverbs->dRR[1];
 				pocketverbs->dRR[1] = inputSampleR;
@@ -11954,7 +11924,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->aSR[pocketverbs->alpSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[2] = pocketverbs->dSR[1];
 				pocketverbs->dSR[1] = inputSampleR;
@@ -11972,7 +11942,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->aTR[pocketverbs->alpTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[2] = pocketverbs->dTR[1];
 				pocketverbs->dTR[1] = inputSampleR;
@@ -11990,7 +11960,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->aUR[pocketverbs->alpUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[2] = pocketverbs->dUR[1];
 				pocketverbs->dUR[1] = inputSampleR;
@@ -12008,7 +11978,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->aVR[pocketverbs->alpVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[2] = pocketverbs->dVR[1];
 				pocketverbs->dVR[1] = inputSampleR;
@@ -12026,7 +11996,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->aWR[pocketverbs->alpWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[2] = pocketverbs->dWR[1];
 				pocketverbs->dWR[1] = inputSampleR;
@@ -12044,7 +12014,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->aXR[pocketverbs->alpXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[2] = pocketverbs->dXR[1];
 				pocketverbs->dXR[1] = inputSampleR;
@@ -12062,7 +12032,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->aYR[pocketverbs->alpYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[2] = pocketverbs->dYR[1];
 				pocketverbs->dYR[1] = inputSampleR;
@@ -12080,7 +12050,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->aZR[pocketverbs->alpZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[2] = pocketverbs->dZR[1];
 				pocketverbs->dZR[1] = inputSampleR;
@@ -12100,7 +12070,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->oAR[pocketverbs->outAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[5] = pocketverbs->dAR[4];
 				pocketverbs->dAR[4] = inputSampleR;
@@ -12118,7 +12088,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->oBR[pocketverbs->outBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[5] = pocketverbs->dBR[4];
 				pocketverbs->dBR[4] = inputSampleR;
@@ -12136,7 +12106,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->oCR[pocketverbs->outCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[5] = pocketverbs->dCR[4];
 				pocketverbs->dCR[4] = inputSampleR;
@@ -12154,7 +12124,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->oDR[pocketverbs->outDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[5] = pocketverbs->dDR[4];
 				pocketverbs->dDR[4] = inputSampleR;
@@ -12172,7 +12142,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->oER[pocketverbs->outER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[5] = pocketverbs->dER[4];
 				pocketverbs->dER[4] = inputSampleR;
@@ -12190,7 +12160,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->oFR[pocketverbs->outFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[5] = pocketverbs->dFR[4];
 				pocketverbs->dFR[4] = inputSampleR;
@@ -12208,7 +12178,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->oGR[pocketverbs->outGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[5] = pocketverbs->dGR[4];
 				pocketverbs->dGR[4] = inputSampleR;
@@ -12226,7 +12196,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->oHR[pocketverbs->outHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[5] = pocketverbs->dHR[4];
 				pocketverbs->dHR[4] = inputSampleR;
@@ -12244,7 +12214,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->oIR[pocketverbs->outIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[5] = pocketverbs->dIR[4];
 				pocketverbs->dIR[4] = inputSampleR;
@@ -12262,7 +12232,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->oJR[pocketverbs->outJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[5] = pocketverbs->dJR[4];
 				pocketverbs->dJR[4] = inputSampleR;
@@ -12280,7 +12250,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->oKR[pocketverbs->outKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[5] = pocketverbs->dKR[4];
 				pocketverbs->dKR[4] = inputSampleR;
@@ -12298,7 +12268,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->oLR[pocketverbs->outLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[5] = pocketverbs->dLR[4];
 				pocketverbs->dLR[4] = inputSampleR;
@@ -12316,7 +12286,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->oMR[pocketverbs->outMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[5] = pocketverbs->dMR[4];
 				pocketverbs->dMR[4] = inputSampleR;
@@ -12334,7 +12304,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->oNR[pocketverbs->outNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[5] = pocketverbs->dNR[4];
 				pocketverbs->dNR[4] = inputSampleR;
@@ -12352,7 +12322,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->oOR[pocketverbs->outOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[5] = pocketverbs->dOR[4];
 				pocketverbs->dOR[4] = inputSampleR;
@@ -12370,7 +12340,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->oPR[pocketverbs->outPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[5] = pocketverbs->dPR[4];
 				pocketverbs->dPR[4] = inputSampleR;
@@ -12388,7 +12358,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->oQR[pocketverbs->outQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[5] = pocketverbs->dQR[4];
 				pocketverbs->dQR[4] = inputSampleR;
@@ -12406,7 +12376,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->oRR[pocketverbs->outRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[5] = pocketverbs->dRR[4];
 				pocketverbs->dRR[4] = inputSampleR;
@@ -12424,7 +12394,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->oSR[pocketverbs->outSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[5] = pocketverbs->dSR[4];
 				pocketverbs->dSR[4] = inputSampleR;
@@ -12442,7 +12412,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->oTR[pocketverbs->outTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[5] = pocketverbs->dTR[4];
 				pocketverbs->dTR[4] = inputSampleR;
@@ -12460,7 +12430,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->oUR[pocketverbs->outUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[5] = pocketverbs->dUR[4];
 				pocketverbs->dUR[4] = inputSampleR;
@@ -12478,7 +12448,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->oVR[pocketverbs->outVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[5] = pocketverbs->dVR[4];
 				pocketverbs->dVR[4] = inputSampleR;
@@ -12496,7 +12466,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->oWR[pocketverbs->outWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[5] = pocketverbs->dWR[4];
 				pocketverbs->dWR[4] = inputSampleR;
@@ -12514,7 +12484,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->oXR[pocketverbs->outXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[5] = pocketverbs->dXR[4];
 				pocketverbs->dXR[4] = inputSampleR;
@@ -12532,7 +12502,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->oYR[pocketverbs->outYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[5] = pocketverbs->dYR[4];
 				pocketverbs->dYR[4] = inputSampleR;
@@ -12550,16 +12520,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->oZR[pocketverbs->outZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[5] = pocketverbs->dZR[4];
 				pocketverbs->dZR[4] = inputSampleR;
 				inputSampleR = (pocketverbs->dZR[4] + pocketverbs->dZR[5]) / 2.0;
-				//output Stretch unrealistic but smooth fake Paulstretch
+				// output Stretch unrealistic but smooth fake Paulstretch
 				break;
 
-
-			case 6: //Zarathustra
+			case 6: // Zarathustra
 				allpasstemp = pocketverbs->alpAR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayA) {
 					allpasstemp = pocketverbs->delayA;
@@ -12572,12 +12541,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->aAR[pocketverbs->alpAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[3] = pocketverbs->dAR[2];
 				pocketverbs->dAR[2] = pocketverbs->dAR[1];
 				pocketverbs->dAR[1] = inputSampleR;
-				inputSampleR = (pocketverbs->dAR[1] + pocketverbs->dAR[2] + pocketverbs->dZR[3]) / 3.0; //add feedback
+				inputSampleR = (pocketverbs->dAR[1] + pocketverbs->dAR[2] + pocketverbs->dZR[3]) / 3.0; // add feedback
 
 				allpasstemp = pocketverbs->alpBR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayB) {
@@ -12591,7 +12560,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->aBR[pocketverbs->alpBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[3] = pocketverbs->dBR[2];
 				pocketverbs->dBR[2] = pocketverbs->dBR[1];
@@ -12610,7 +12579,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->aCR[pocketverbs->alpCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[3] = pocketverbs->dCR[2];
 				pocketverbs->dCR[2] = pocketverbs->dCR[1];
@@ -12629,7 +12598,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->aDR[pocketverbs->alpDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[3] = pocketverbs->dDR[2];
 				pocketverbs->dDR[2] = pocketverbs->dDR[1];
@@ -12648,7 +12617,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->aER[pocketverbs->alpER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[3] = pocketverbs->dER[2];
 				pocketverbs->dER[2] = pocketverbs->dER[1];
@@ -12667,7 +12636,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->aFR[pocketverbs->alpFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[3] = pocketverbs->dFR[2];
 				pocketverbs->dFR[2] = pocketverbs->dFR[1];
@@ -12686,7 +12655,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->aGR[pocketverbs->alpGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[3] = pocketverbs->dGR[2];
 				pocketverbs->dGR[2] = pocketverbs->dGR[1];
@@ -12705,7 +12674,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->aHR[pocketverbs->alpHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[3] = pocketverbs->dHR[2];
 				pocketverbs->dHR[2] = pocketverbs->dHR[1];
@@ -12724,7 +12693,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->aIR[pocketverbs->alpIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[3] = pocketverbs->dIR[2];
 				pocketverbs->dIR[2] = pocketverbs->dIR[1];
@@ -12743,7 +12712,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->aJR[pocketverbs->alpJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[3] = pocketverbs->dJR[2];
 				pocketverbs->dJR[2] = pocketverbs->dJR[1];
@@ -12762,7 +12731,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->aKR[pocketverbs->alpKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[3] = pocketverbs->dKR[2];
 				pocketverbs->dKR[2] = pocketverbs->dKR[1];
@@ -12781,7 +12750,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->aLR[pocketverbs->alpLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[3] = pocketverbs->dLR[2];
 				pocketverbs->dLR[2] = pocketverbs->dLR[1];
@@ -12800,7 +12769,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->aMR[pocketverbs->alpMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[3] = pocketverbs->dMR[2];
 				pocketverbs->dMR[2] = pocketverbs->dMR[1];
@@ -12819,7 +12788,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->aNR[pocketverbs->alpNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[3] = pocketverbs->dNR[2];
 				pocketverbs->dNR[2] = pocketverbs->dNR[1];
@@ -12838,7 +12807,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->aOR[pocketverbs->alpOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[3] = pocketverbs->dOR[2];
 				pocketverbs->dOR[2] = pocketverbs->dOR[1];
@@ -12857,7 +12826,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->aPR[pocketverbs->alpPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[3] = pocketverbs->dPR[2];
 				pocketverbs->dPR[2] = pocketverbs->dPR[1];
@@ -12876,7 +12845,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->aQR[pocketverbs->alpQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[3] = pocketverbs->dQR[2];
 				pocketverbs->dQR[2] = pocketverbs->dQR[1];
@@ -12895,7 +12864,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->aRR[pocketverbs->alpRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[3] = pocketverbs->dRR[2];
 				pocketverbs->dRR[2] = pocketverbs->dRR[1];
@@ -12914,7 +12883,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->aSR[pocketverbs->alpSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[3] = pocketverbs->dSR[2];
 				pocketverbs->dSR[2] = pocketverbs->dSR[1];
@@ -12933,7 +12902,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->aTR[pocketverbs->alpTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[3] = pocketverbs->dTR[2];
 				pocketverbs->dTR[2] = pocketverbs->dTR[1];
@@ -12952,7 +12921,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->aUR[pocketverbs->alpUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[3] = pocketverbs->dUR[2];
 				pocketverbs->dUR[2] = pocketverbs->dUR[1];
@@ -12971,7 +12940,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->aVR[pocketverbs->alpVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[3] = pocketverbs->dVR[2];
 				pocketverbs->dVR[2] = pocketverbs->dVR[1];
@@ -12990,7 +12959,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->aWR[pocketverbs->alpWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[3] = pocketverbs->dWR[2];
 				pocketverbs->dWR[2] = pocketverbs->dWR[1];
@@ -13009,7 +12978,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->aXR[pocketverbs->alpXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[3] = pocketverbs->dXR[2];
 				pocketverbs->dXR[2] = pocketverbs->dXR[1];
@@ -13028,7 +12997,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->aYR[pocketverbs->alpYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[3] = pocketverbs->dYR[2];
 				pocketverbs->dYR[2] = pocketverbs->dYR[1];
@@ -13047,7 +13016,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->alpZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->aZR[pocketverbs->alpZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[3] = pocketverbs->dZR[2];
 				pocketverbs->dZR[2] = pocketverbs->dZR[1];
@@ -13068,12 +13037,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outAR = pocketverbs->delayA;
 				}
 				inputSampleR += (pocketverbs->oAR[pocketverbs->outAR]);
-				//allpass filter A
+				// allpass filter A
 
 				pocketverbs->dAR[6] = pocketverbs->dAR[5];
 				pocketverbs->dAR[5] = pocketverbs->dAR[4];
 				pocketverbs->dAR[4] = inputSampleR;
-				inputSampleR = (pocketverbs->dCR[1] + pocketverbs->dAR[5] + pocketverbs->dAR[6]) / 3.0; //note, feeding in dry again for a little more clarity!
+				inputSampleR = (pocketverbs->dCR[1] + pocketverbs->dAR[5] + pocketverbs->dAR[6]) / 3.0; // note, feeding in dry again for a little more clarity!
 
 				allpasstemp = pocketverbs->outBR - 1;
 				if (allpasstemp < 0 || allpasstemp > pocketverbs->delayB) {
@@ -13087,7 +13056,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outBR = pocketverbs->delayB;
 				}
 				inputSampleR += (pocketverbs->oBR[pocketverbs->outBR]);
-				//allpass filter B
+				// allpass filter B
 
 				pocketverbs->dBR[6] = pocketverbs->dBR[5];
 				pocketverbs->dBR[5] = pocketverbs->dBR[4];
@@ -13106,7 +13075,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outCR = pocketverbs->delayC;
 				}
 				inputSampleR += (pocketverbs->oCR[pocketverbs->outCR]);
-				//allpass filter C
+				// allpass filter C
 
 				pocketverbs->dCR[6] = pocketverbs->dCR[5];
 				pocketverbs->dCR[5] = pocketverbs->dCR[4];
@@ -13125,7 +13094,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outDR = pocketverbs->delayD;
 				}
 				inputSampleR += (pocketverbs->oDR[pocketverbs->outDR]);
-				//allpass filter D
+				// allpass filter D
 
 				pocketverbs->dDR[6] = pocketverbs->dDR[5];
 				pocketverbs->dDR[5] = pocketverbs->dDR[4];
@@ -13144,7 +13113,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outER = pocketverbs->delayE;
 				}
 				inputSampleR += (pocketverbs->oER[pocketverbs->outER]);
-				//allpass filter E
+				// allpass filter E
 
 				pocketverbs->dER[6] = pocketverbs->dER[5];
 				pocketverbs->dER[5] = pocketverbs->dER[4];
@@ -13163,7 +13132,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outFR = pocketverbs->delayF;
 				}
 				inputSampleR += (pocketverbs->oFR[pocketverbs->outFR]);
-				//allpass filter F
+				// allpass filter F
 
 				pocketverbs->dFR[6] = pocketverbs->dFR[5];
 				pocketverbs->dFR[5] = pocketverbs->dFR[4];
@@ -13182,7 +13151,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outGR = pocketverbs->delayG;
 				}
 				inputSampleR += (pocketverbs->oGR[pocketverbs->outGR]);
-				//allpass filter G
+				// allpass filter G
 
 				pocketverbs->dGR[6] = pocketverbs->dGR[5];
 				pocketverbs->dGR[5] = pocketverbs->dGR[4];
@@ -13201,7 +13170,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outHR = pocketverbs->delayH;
 				}
 				inputSampleR += (pocketverbs->oHR[pocketverbs->outHR]);
-				//allpass filter H
+				// allpass filter H
 
 				pocketverbs->dHR[6] = pocketverbs->dHR[5];
 				pocketverbs->dHR[5] = pocketverbs->dHR[4];
@@ -13220,7 +13189,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outIR = pocketverbs->delayI;
 				}
 				inputSampleR += (pocketverbs->oIR[pocketverbs->outIR]);
-				//allpass filter I
+				// allpass filter I
 
 				pocketverbs->dIR[6] = pocketverbs->dIR[5];
 				pocketverbs->dIR[5] = pocketverbs->dIR[4];
@@ -13239,7 +13208,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outJR = pocketverbs->delayJ;
 				}
 				inputSampleR += (pocketverbs->oJR[pocketverbs->outJR]);
-				//allpass filter J
+				// allpass filter J
 
 				pocketverbs->dJR[6] = pocketverbs->dJR[5];
 				pocketverbs->dJR[5] = pocketverbs->dJR[4];
@@ -13258,7 +13227,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outKR = pocketverbs->delayK;
 				}
 				inputSampleR += (pocketverbs->oKR[pocketverbs->outKR]);
-				//allpass filter K
+				// allpass filter K
 
 				pocketverbs->dKR[6] = pocketverbs->dKR[5];
 				pocketverbs->dKR[5] = pocketverbs->dKR[4];
@@ -13277,7 +13246,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outLR = pocketverbs->delayL;
 				}
 				inputSampleR += (pocketverbs->oLR[pocketverbs->outLR]);
-				//allpass filter L
+				// allpass filter L
 
 				pocketverbs->dLR[6] = pocketverbs->dLR[5];
 				pocketverbs->dLR[5] = pocketverbs->dLR[4];
@@ -13296,7 +13265,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outMR = pocketverbs->delayM;
 				}
 				inputSampleR += (pocketverbs->oMR[pocketverbs->outMR]);
-				//allpass filter M
+				// allpass filter M
 
 				pocketverbs->dMR[6] = pocketverbs->dMR[5];
 				pocketverbs->dMR[5] = pocketverbs->dMR[4];
@@ -13315,7 +13284,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outNR = pocketverbs->delayN;
 				}
 				inputSampleR += (pocketverbs->oNR[pocketverbs->outNR]);
-				//allpass filter N
+				// allpass filter N
 
 				pocketverbs->dNR[6] = pocketverbs->dNR[5];
 				pocketverbs->dNR[5] = pocketverbs->dNR[4];
@@ -13334,7 +13303,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outOR = pocketverbs->delayO;
 				}
 				inputSampleR += (pocketverbs->oOR[pocketverbs->outOR]);
-				//allpass filter O
+				// allpass filter O
 
 				pocketverbs->dOR[6] = pocketverbs->dOR[5];
 				pocketverbs->dOR[5] = pocketverbs->dOR[4];
@@ -13353,7 +13322,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outPR = pocketverbs->delayP;
 				}
 				inputSampleR += (pocketverbs->oPR[pocketverbs->outPR]);
-				//allpass filter P
+				// allpass filter P
 
 				pocketverbs->dPR[6] = pocketverbs->dPR[5];
 				pocketverbs->dPR[5] = pocketverbs->dPR[4];
@@ -13372,7 +13341,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outQR = pocketverbs->delayQ;
 				}
 				inputSampleR += (pocketverbs->oQR[pocketverbs->outQR]);
-				//allpass filter Q
+				// allpass filter Q
 
 				pocketverbs->dQR[6] = pocketverbs->dQR[5];
 				pocketverbs->dQR[5] = pocketverbs->dQR[4];
@@ -13391,7 +13360,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outRR = pocketverbs->delayR;
 				}
 				inputSampleR += (pocketverbs->oRR[pocketverbs->outRR]);
-				//allpass filter R
+				// allpass filter R
 
 				pocketverbs->dRR[6] = pocketverbs->dRR[5];
 				pocketverbs->dRR[5] = pocketverbs->dRR[4];
@@ -13410,7 +13379,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outSR = pocketverbs->delayS;
 				}
 				inputSampleR += (pocketverbs->oSR[pocketverbs->outSR]);
-				//allpass filter S
+				// allpass filter S
 
 				pocketverbs->dSR[6] = pocketverbs->dSR[5];
 				pocketverbs->dSR[5] = pocketverbs->dSR[4];
@@ -13429,7 +13398,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outTR = pocketverbs->delayT;
 				}
 				inputSampleR += (pocketverbs->oTR[pocketverbs->outTR]);
-				//allpass filter T
+				// allpass filter T
 
 				pocketverbs->dTR[6] = pocketverbs->dTR[5];
 				pocketverbs->dTR[5] = pocketverbs->dTR[4];
@@ -13448,7 +13417,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outUR = pocketverbs->delayU;
 				}
 				inputSampleR += (pocketverbs->oUR[pocketverbs->outUR]);
-				//allpass filter U
+				// allpass filter U
 
 				pocketverbs->dUR[6] = pocketverbs->dUR[5];
 				pocketverbs->dUR[5] = pocketverbs->dUR[4];
@@ -13467,7 +13436,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outVR = pocketverbs->delayV;
 				}
 				inputSampleR += (pocketverbs->oVR[pocketverbs->outVR]);
-				//allpass filter V
+				// allpass filter V
 
 				pocketverbs->dVR[6] = pocketverbs->dVR[5];
 				pocketverbs->dVR[5] = pocketverbs->dVR[4];
@@ -13486,7 +13455,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outWR = pocketverbs->delayW;
 				}
 				inputSampleR += (pocketverbs->oWR[pocketverbs->outWR]);
-				//allpass filter W
+				// allpass filter W
 
 				pocketverbs->dWR[6] = pocketverbs->dWR[5];
 				pocketverbs->dWR[5] = pocketverbs->dWR[4];
@@ -13505,7 +13474,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outXR = pocketverbs->delayX;
 				}
 				inputSampleR += (pocketverbs->oXR[pocketverbs->outXR]);
-				//allpass filter X
+				// allpass filter X
 
 				pocketverbs->dXR[6] = pocketverbs->dXR[5];
 				pocketverbs->dXR[5] = pocketverbs->dXR[4];
@@ -13524,7 +13493,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outYR = pocketverbs->delayY;
 				}
 				inputSampleR += (pocketverbs->oYR[pocketverbs->outYR]);
-				//allpass filter Y
+				// allpass filter Y
 
 				pocketverbs->dYR[6] = pocketverbs->dYR[5];
 				pocketverbs->dYR[5] = pocketverbs->dYR[4];
@@ -13543,18 +13512,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					pocketverbs->outZR = pocketverbs->delayZ;
 				}
 				inputSampleR += (pocketverbs->oZR[pocketverbs->outZR]);
-				//allpass filter Z
+				// allpass filter Z
 
 				pocketverbs->dZR[6] = pocketverbs->dZR[5];
 				pocketverbs->dZR[5] = pocketverbs->dZR[4];
 				pocketverbs->dZR[4] = inputSampleR;
 				inputSampleR = (pocketverbs->dZR[4] + pocketverbs->dZR[5] + pocketverbs->dZR[6]);
-				//output Zarathustra infinite space verb
+				// output Zarathustra infinite space verb
 				break;
-
 		}
-		//end big switch for verb type
-
+		// end big switch for verb type
 
 		bridgerectifier = fabs(inputSampleL);
 		bridgerectifier = 1.0 - cos(bridgerectifier);
@@ -13566,43 +13533,43 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 0) inputSampleR -= bridgerectifier;
 		else inputSampleR += bridgerectifier;
 		inputSampleR /= gain;
-		//here we apply the ADT2 'console on steroids' trick
+		// here we apply the ADT2 'console on steroids' trick
 
 		wetness = wetnesstarget;
-		//setting up verb wetness to be manipulated by gate and peak
+		// setting up verb wetness to be manipulated by gate and peak
 
 		wetness *= pocketverbs->peakL;
-		//but we only use peak (indirect) to deal with dry/wet, so that it'll manipulate the dry/wet like we want
+		// but we only use peak (indirect) to deal with dry/wet, so that it'll manipulate the dry/wet like we want
 
 		drySampleL *= (1.0 - wetness);
 		inputSampleL *= wetness;
 		inputSampleL += drySampleL;
-		//here we combine the tanks with the dry signal
+		// here we combine the tanks with the dry signal
 
 		wetness = wetnesstarget;
-		//setting up verb wetness to be manipulated by gate and peak
+		// setting up verb wetness to be manipulated by gate and peak
 
 		wetness *= pocketverbs->peakR;
-		//but we only use peak (indirect) to deal with dry/wet, so that it'll manipulate the dry/wet like we want
+		// but we only use peak (indirect) to deal with dry/wet, so that it'll manipulate the dry/wet like we want
 
 		drySampleR *= (1.0 - wetness);
 		inputSampleR *= wetness;
 		inputSampleR += drySampleR;
-		//here we combine the tanks with the dry signal
+		// here we combine the tanks with the dry signal
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		pocketverbs->fpdL ^= pocketverbs->fpdL << 13;
 		pocketverbs->fpdL ^= pocketverbs->fpdL >> 17;
 		pocketverbs->fpdL ^= pocketverbs->fpdL << 5;
-		inputSampleL += (((double)pocketverbs->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) pocketverbs->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		pocketverbs->fpdR ^= pocketverbs->fpdR << 13;
 		pocketverbs->fpdR ^= pocketverbs->fpdR >> 17;
 		pocketverbs->fpdR ^= pocketverbs->fpdR << 5;
-		inputSampleR += (((double)pocketverbs->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) pocketverbs->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -13634,8 +13601,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

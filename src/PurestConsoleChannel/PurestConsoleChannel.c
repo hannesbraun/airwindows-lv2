@@ -80,21 +80,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		inputSampleL = sin(inputSampleL);
 		inputSampleR = sin(inputSampleR);
-		//amplitude aspect
+		// amplitude aspect
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		purestConsoleChannel->fpdL ^= purestConsoleChannel->fpdL << 13;
 		purestConsoleChannel->fpdL ^= purestConsoleChannel->fpdL >> 17;
 		purestConsoleChannel->fpdL ^= purestConsoleChannel->fpdL << 5;
-		inputSampleL += (((double)purestConsoleChannel->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) purestConsoleChannel->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		purestConsoleChannel->fpdR ^= purestConsoleChannel->fpdR << 13;
 		purestConsoleChannel->fpdR ^= purestConsoleChannel->fpdR >> 17;
 		purestConsoleChannel->fpdR ^= purestConsoleChannel->fpdR << 5;
-		inputSampleR += (((double)purestConsoleChannel->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) purestConsoleChannel->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -126,8 +126,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

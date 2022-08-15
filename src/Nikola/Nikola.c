@@ -97,7 +97,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out2 = nikola->output[1];
 
 	double decay = pow(*nikola->voltage, 3) * 32767.0;
-	int highsBoost = 16 - (int)(pow(*nikola->voltage, 2) * 16);
+	int highsBoost = 16 - (int) (pow(*nikola->voltage, 2) * 16);
 	double wet = *nikola->drywet;
 
 	while (sampleFrames-- > 0) {
@@ -111,26 +111,26 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		double bridgerectifier = fabs(inputSampleL);
 		if (bridgerectifier > nikola->outlevelL) nikola->outlevelL = bridgerectifier;
 		else nikola->outlevelL = ((nikola->outlevelL * decay) + bridgerectifier) / (decay + 1.0);
-		//set up envelope for handling quieter stuff if desired
+		// set up envelope for handling quieter stuff if desired
 		bridgerectifier = fabs(inputSampleR);
 		if (bridgerectifier > nikola->outlevelR) nikola->outlevelR = bridgerectifier;
 		else nikola->outlevelR = ((nikola->outlevelR * decay) + bridgerectifier) / (decay + 1.0);
-		//set up envelope for handling quieter stuff if desired
+		// set up envelope for handling quieter stuff if desired
 
 		nikola->framenumberL += 1;
 		nikola->framenumberR += 1;
-		//we're having the pulse wave start with a 0 if it's starting
+		// we're having the pulse wave start with a 0 if it's starting
 
 		if (inputSampleL > 0) {
 			if (nikola->wasNegativeL) nikola->framenumberL = highsBoost;
 			nikola->wasNegativeL = false;
 		} else nikola->wasNegativeL = true;
-		//our crossover trigger. If framenumber is 0, we've just gone into the positive cycle of the wave.
+		// our crossover trigger. If framenumber is 0, we've just gone into the positive cycle of the wave.
 		if (inputSampleR > 0) {
 			if (nikola->wasNegativeR) nikola->framenumberR = highsBoost;
 			nikola->wasNegativeR = false;
 		} else nikola->wasNegativeR = true;
-		//our crossover trigger. If framenumber is 0, we've just gone into the positive cycle of the wave.
+		// our crossover trigger. If framenumber is 0, we've just gone into the positive cycle of the wave.
 
 		if ((nikola->framenumberL > 0) && (nikola->framenumberL < 469)) {
 			switch (nikola->framenumberL) {
@@ -2958,26 +2958,26 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		inputSampleL *= nikola->outlevelL;
 		inputSampleR *= nikola->outlevelR;
-		//if envelope is in use, reduce by amount of quietness in source
+		// if envelope is in use, reduce by amount of quietness in source
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		nikola->fpdL ^= nikola->fpdL << 13;
 		nikola->fpdL ^= nikola->fpdL >> 17;
 		nikola->fpdL ^= nikola->fpdL << 5;
-		inputSampleL += (((double)nikola->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) nikola->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		nikola->fpdR ^= nikola->fpdR << 13;
 		nikola->fpdR ^= nikola->fpdR >> 17;
 		nikola->fpdR ^= nikola->fpdR << 5;
-		inputSampleR += (((double)nikola->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) nikola->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -3009,8 +3009,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

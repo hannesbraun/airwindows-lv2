@@ -97,13 +97,13 @@ typedef struct {
 	int countK, delayK;
 	int countL, delayL;
 	int countM, delayM;
-	int cycle; //all these ints are shared across channels, not duplicated
+	int cycle; // all these ints are shared across channels, not duplicated
 
 	double vibM;
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 } Galactic;
 
 static LV2_Handle instantiate(
@@ -249,7 +249,7 @@ static void activate(LV2_Handle instance)
 	galactic->countG = 1;
 	galactic->countH = 1;
 	galactic->countM = 1;
-	//the predelay
+	// the predelay
 	galactic->cycle = 0;
 
 	galactic->vibM = 3.0;
@@ -278,9 +278,9 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	int cycleEnd = floor(overallscale);
 	if (cycleEnd < 1) cycleEnd = 1;
 	if (cycleEnd > 4) cycleEnd = 4;
-	//this is going to be 2 for 88.1 or 96k, 3 for silly people, 4 for 176 or 192k
+	// this is going to be 2 for 88.1 or 96k, 3 for silly people, 4 for 176 or 192k
 	if (galactic->cycle > cycleEnd - 1) {
-		//sanity check
+		// sanity check
 		galactic->cycle = cycleEnd - 1;
 	}
 
@@ -334,17 +334,17 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		interpolMR += (galactic->aMR[workingMR + 1 - ((workingMR + 1 > galactic->delayM) ? galactic->delayM + 1 : 0)] * ((offsetMR - floor(offsetMR))));
 		inputSampleL = interpolML;
 		inputSampleR = interpolMR;
-		//predelay that applies vibrato
-		//want vibrato speed AND depth like in MatrixVerb
+		// predelay that applies vibrato
+		// want vibrato speed AND depth like in MatrixVerb
 
 		galactic->iirAL = (galactic->iirAL * (1.0 - lowpass)) + (inputSampleL * lowpass);
 		inputSampleL = galactic->iirAL;
 		galactic->iirAR = (galactic->iirAR * (1.0 - lowpass)) + (inputSampleR * lowpass);
 		inputSampleR = galactic->iirAR;
-		//initial filter
+		// initial filter
 
 		galactic->cycle++;
-		if (galactic->cycle == cycleEnd) { //hit the end point and we do a reverb sample
+		if (galactic->cycle == cycleEnd) { // hit the end point and we do a reverb sample
 			galactic->aIL[galactic->countI] = inputSampleL + (galactic->feedbackAR * regen);
 			galactic->aJL[galactic->countJ] = inputSampleL + (galactic->feedbackBR * regen);
 			galactic->aKL[galactic->countK] = inputSampleL + (galactic->feedbackCR * regen);
@@ -371,7 +371,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			double outJR = galactic->aJR[galactic->countJ - ((galactic->countJ > galactic->delayJ) ? galactic->delayJ + 1 : 0)];
 			double outKR = galactic->aKR[galactic->countK - ((galactic->countK > galactic->delayK) ? galactic->delayK + 1 : 0)];
 			double outLR = galactic->aLR[galactic->countL - ((galactic->countL > galactic->delayL) ? galactic->delayL + 1 : 0)];
-			//first block: now we have four outputs
+			// first block: now we have four outputs
 
 			galactic->aAL[galactic->countA] = (outIL - (outJL + outKL + outLL));
 			galactic->aBL[galactic->countB] = (outJL - (outIL + outKL + outLL));
@@ -399,7 +399,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			double outBR = galactic->aBR[galactic->countB - ((galactic->countB > galactic->delayB) ? galactic->delayB + 1 : 0)];
 			double outCR = galactic->aCR[galactic->countC - ((galactic->countC > galactic->delayC) ? galactic->delayC + 1 : 0)];
 			double outDR = galactic->aDR[galactic->countD - ((galactic->countD > galactic->delayD) ? galactic->delayD + 1 : 0)];
-			//second block: four more outputs
+			// second block: four more outputs
 
 			galactic->aEL[galactic->countE] = (outAL - (outBL + outCL + outDL));
 			galactic->aFL[galactic->countF] = (outBL - (outAL + outCL + outDL));
@@ -427,7 +427,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			double outFR = galactic->aFR[galactic->countF - ((galactic->countF > galactic->delayF) ? galactic->delayF + 1 : 0)];
 			double outGR = galactic->aGR[galactic->countG - ((galactic->countG > galactic->delayG) ? galactic->delayG + 1 : 0)];
 			double outHR = galactic->aHR[galactic->countH - ((galactic->countH > galactic->delayH) ? galactic->delayH + 1 : 0)];
-			//third block: final outputs
+			// third block: final outputs
 
 			galactic->feedbackAL = (outEL - (outFL + outGL + outHL));
 			galactic->feedbackBL = (outFL - (outEL + outGL + outHL));
@@ -437,78 +437,78 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			galactic->feedbackBR = (outFR - (outER + outGR + outHR));
 			galactic->feedbackCR = (outGR - (outER + outFR + outHR));
 			galactic->feedbackDR = (outHR - (outER + outFR + outGR));
-			//which we need to feed back into the input again, a bit
+			// which we need to feed back into the input again, a bit
 
 			inputSampleL = (outEL + outFL + outGL + outHL) / 8.0;
 			inputSampleR = (outER + outFR + outGR + outHR) / 8.0;
-			//and take the final combined sum of outputs
+			// and take the final combined sum of outputs
 			if (cycleEnd == 4) {
-				galactic->lastRefL[0] = galactic->lastRefL[4]; //start from previous last
-				galactic->lastRefL[2] = (galactic->lastRefL[0] + inputSampleL) / 2; //half
-				galactic->lastRefL[1] = (galactic->lastRefL[0] + galactic->lastRefL[2]) / 2; //one quarter
-				galactic->lastRefL[3] = (galactic->lastRefL[2] + inputSampleL) / 2; //three quarters
-				galactic->lastRefL[4] = inputSampleL; //full
-				galactic->lastRefR[0] = galactic->lastRefR[4]; //start from previous last
-				galactic->lastRefR[2] = (galactic->lastRefR[0] + inputSampleR) / 2; //half
-				galactic->lastRefR[1] = (galactic->lastRefR[0] + galactic->lastRefR[2]) / 2; //one quarter
-				galactic->lastRefR[3] = (galactic->lastRefR[2] + inputSampleR) / 2; //three quarters
-				galactic->lastRefR[4] = inputSampleR; //full
+				galactic->lastRefL[0] = galactic->lastRefL[4]; // start from previous last
+				galactic->lastRefL[2] = (galactic->lastRefL[0] + inputSampleL) / 2; // half
+				galactic->lastRefL[1] = (galactic->lastRefL[0] + galactic->lastRefL[2]) / 2; // one quarter
+				galactic->lastRefL[3] = (galactic->lastRefL[2] + inputSampleL) / 2; // three quarters
+				galactic->lastRefL[4] = inputSampleL; // full
+				galactic->lastRefR[0] = galactic->lastRefR[4]; // start from previous last
+				galactic->lastRefR[2] = (galactic->lastRefR[0] + inputSampleR) / 2; // half
+				galactic->lastRefR[1] = (galactic->lastRefR[0] + galactic->lastRefR[2]) / 2; // one quarter
+				galactic->lastRefR[3] = (galactic->lastRefR[2] + inputSampleR) / 2; // three quarters
+				galactic->lastRefR[4] = inputSampleR; // full
 			}
 			if (cycleEnd == 3) {
-				galactic->lastRefL[0] = galactic->lastRefL[3]; //start from previous last
-				galactic->lastRefL[2] = (galactic->lastRefL[0] + galactic->lastRefL[0] + inputSampleL) / 3; //third
-				galactic->lastRefL[1] = (galactic->lastRefL[0] + inputSampleL + inputSampleL) / 3; //two thirds
-				galactic->lastRefL[3] = inputSampleL; //full
-				galactic->lastRefR[0] = galactic->lastRefR[3]; //start from previous last
-				galactic->lastRefR[2] = (galactic->lastRefR[0] + galactic->lastRefR[0] + inputSampleR) / 3; //third
-				galactic->lastRefR[1] = (galactic->lastRefR[0] + inputSampleR + inputSampleR) / 3; //two thirds
-				galactic->lastRefR[3] = inputSampleR; //full
+				galactic->lastRefL[0] = galactic->lastRefL[3]; // start from previous last
+				galactic->lastRefL[2] = (galactic->lastRefL[0] + galactic->lastRefL[0] + inputSampleL) / 3; // third
+				galactic->lastRefL[1] = (galactic->lastRefL[0] + inputSampleL + inputSampleL) / 3; // two thirds
+				galactic->lastRefL[3] = inputSampleL; // full
+				galactic->lastRefR[0] = galactic->lastRefR[3]; // start from previous last
+				galactic->lastRefR[2] = (galactic->lastRefR[0] + galactic->lastRefR[0] + inputSampleR) / 3; // third
+				galactic->lastRefR[1] = (galactic->lastRefR[0] + inputSampleR + inputSampleR) / 3; // two thirds
+				galactic->lastRefR[3] = inputSampleR; // full
 			}
 			if (cycleEnd == 2) {
-				galactic->lastRefL[0] = galactic->lastRefL[2]; //start from previous last
-				galactic->lastRefL[1] = (galactic->lastRefL[0] + inputSampleL) / 2; //half
-				galactic->lastRefL[2] = inputSampleL; //full
-				galactic->lastRefR[0] = galactic->lastRefR[2]; //start from previous last
-				galactic->lastRefR[1] = (galactic->lastRefR[0] + inputSampleR) / 2; //half
-				galactic->lastRefR[2] = inputSampleR; //full
+				galactic->lastRefL[0] = galactic->lastRefL[2]; // start from previous last
+				galactic->lastRefL[1] = (galactic->lastRefL[0] + inputSampleL) / 2; // half
+				galactic->lastRefL[2] = inputSampleL; // full
+				galactic->lastRefR[0] = galactic->lastRefR[2]; // start from previous last
+				galactic->lastRefR[1] = (galactic->lastRefR[0] + inputSampleR) / 2; // half
+				galactic->lastRefR[2] = inputSampleR; // full
 			}
 			if (cycleEnd == 1) {
 				galactic->lastRefL[0] = inputSampleL;
 				galactic->lastRefR[0] = inputSampleR;
 			}
-			galactic->cycle = 0; //reset
+			galactic->cycle = 0; // reset
 			inputSampleL = galactic->lastRefL[galactic->cycle];
 			inputSampleR = galactic->lastRefR[galactic->cycle];
 		} else {
 			inputSampleL = galactic->lastRefL[galactic->cycle];
 			inputSampleR = galactic->lastRefR[galactic->cycle];
-			//we are going through our references now
+			// we are going through our references now
 		}
 
 		galactic->iirBL = (galactic->iirBL * (1.0 - lowpass)) + (inputSampleL * lowpass);
 		inputSampleL = galactic->iirBL;
 		galactic->iirBR = (galactic->iirBR * (1.0 - lowpass)) + (inputSampleR * lowpass);
 		inputSampleR = galactic->iirBR;
-		//end filter
+		// end filter
 
 		if (wet < 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		galactic->fpdL ^= galactic->fpdL << 13;
 		galactic->fpdL ^= galactic->fpdL >> 17;
 		galactic->fpdL ^= galactic->fpdL << 5;
 		inputSampleL += ((((double) galactic->fpdL) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		frexpf((float) inputSampleR, &expon);
 		galactic->fpdR ^= galactic->fpdR << 13;
 		galactic->fpdR ^= galactic->fpdR >> 17;
 		galactic->fpdR ^= galactic->fpdR << 5;
 		inputSampleR += ((((double) galactic->fpdL) - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -540,8 +540,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

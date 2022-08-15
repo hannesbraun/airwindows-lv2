@@ -29,18 +29,17 @@ typedef struct {
 	const float* filter;
 	const float* sense;
 
-	double sL[41], mL[41]/*, cL[41]*/;
+	double sL[41], mL[41] /*, cL[41]*/;
 	double ratioAL;
 	double ratioBL;
 	double iirSampleAL;
 	double iirSampleBL;
 
-	double sR[41], mR[41]/*, cR[41]*/;
+	double sR[41], mR[41] /*, cR[41]*/;
 	double ratioAR;
 	double ratioBR;
 	double iirSampleAR;
 	double iirSampleBR;
-
 
 	bool flip;
 	uint32_t fpdL;
@@ -100,10 +99,10 @@ static void activate(LV2_Handle instance)
 	for (int x = 0; x < 41; x++) {
 		debess->sL[x] = 0.0;
 		debess->mL[x] = 0.0;
-		//debess->cL[x] = 0.0;
+		// debess->cL[x] = 0.0;
 		debess->sR[x] = 0.0;
 		debess->mR[x] = 0.0;
-		//debess->cR[x] = 0.0;
+		// debess->cR[x] = 0.0;
 	}
 	debess->ratioAL = 1.0;
 	debess->ratioBL = 1.0;
@@ -148,20 +147,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = debess->fpdL * 1.18e-17;
 		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = debess->fpdR * 1.18e-17;
 
-		debess->sL[0] = inputSampleL; //set up so both [0] and [1] will be input sample
-		debess->sR[0] = inputSampleR; //set up so both [0] and [1] will be input sample
-		//we only use the [1] so this is just where samples come in
+		debess->sL[0] = inputSampleL; // set up so both [0] and [1] will be input sample
+		debess->sR[0] = inputSampleR; // set up so both [0] and [1] will be input sample
+		// we only use the [1] so this is just where samples come in
 		for (int x = sharpness; x > 0; x--) {
 			debess->sL[x] = debess->sL[x - 1];
 			debess->sR[x] = debess->sR[x - 1];
-		} //building up a set of slews
+		} // building up a set of slews
 
 		debess->mL[1] = (debess->sL[1] - debess->sL[2]) * ((debess->sL[1] - debess->sL[2]) / 1.3);
 		debess->mR[1] = (debess->sR[1] - debess->sR[2]) * ((debess->sR[1] - debess->sR[2]) / 1.3);
 		for (int x = sharpness - 1; x > 1; x--) {
 			debess->mL[x] = (debess->sL[x] - debess->sL[x + 1]) * ((debess->sL[x - 1] - debess->sL[x]) / 1.3);
 			debess->mR[x] = (debess->sR[x] - debess->sR[x + 1]) * ((debess->sR[x - 1] - debess->sR[x]) / 1.3);
-		} //building up a set of slews of slews
+		} // building up a set of slews of slews
 
 		double senseL = fabs(debess->mL[1] - debess->mL[2]) * sharpness * sharpness;
 		double senseR = fabs(debess->mR[1] - debess->mR[2]) * sharpness * sharpness;
@@ -170,7 +169,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			if (multL < 1.0) senseL *= multL;
 			double multR = fabs(debess->mR[x] - debess->mR[x + 1]) * sharpness * sharpness;
 			if (multR < 1.0) senseR *= multR;
-		} //sense is slews of slews times each other
+		} // sense is slews of slews times each other
 
 		senseL = 1.0 + (intensity * intensity * senseL);
 		if (senseL > intensity) {
@@ -206,21 +205,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleL = *in1 - inputSampleL;
 			inputSampleR = *in2 - inputSampleR;
 		}
-		//sense monitoring
+		// sense monitoring
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		debess->fpdL ^= debess->fpdL << 13;
 		debess->fpdL ^= debess->fpdL >> 17;
 		debess->fpdL ^= debess->fpdL << 5;
-		inputSampleL += (((double)debess->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) debess->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		debess->fpdR ^= debess->fpdR << 13;
 		debess->fpdR ^= debess->fpdR >> 17;
 		debess->fpdR ^= debess->fpdR << 5;
-		inputSampleR += (((double)debess->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) debess->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -252,8 +251,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

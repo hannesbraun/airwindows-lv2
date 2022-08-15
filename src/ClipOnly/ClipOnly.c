@@ -93,55 +93,55 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 4.0) inputSampleR = 4.0;
 		if (inputSampleR < -4.0) inputSampleR = -4.0;
 
-		if (clipOnly->wasPosClipL == true) { //current will be over
-			if (inputSampleL < clipOnly->lastSampleL) { //next one will NOT be over
+		if (clipOnly->wasPosClipL == true) { // current will be over
+			if (inputSampleL < clipOnly->lastSampleL) { // next one will NOT be over
 				clipOnly->lastSampleL = ((refclip * hardness) + (inputSampleL * softness));
-			} else { //still clipping, still chasing the target
+			} else { // still clipping, still chasing the target
 				clipOnly->lastSampleL = ((clipOnly->lastSampleL * hardness) + (refclip * softness));
 			}
 		}
 		clipOnly->wasPosClipL = false;
-		if (inputSampleL > refclip) { //next will be over the true clip level. otherwise we directly use it
-			clipOnly->wasPosClipL = true; //set the clip flag
+		if (inputSampleL > refclip) { // next will be over the true clip level. otherwise we directly use it
+			clipOnly->wasPosClipL = true; // set the clip flag
 			inputSampleL = ((refclip * hardness) + (clipOnly->lastSampleL * softness));
 		}
 
-		if (clipOnly->wasNegClipL == true) { //current will be -over
-			if (inputSampleL > clipOnly->lastSampleL) { //next one will NOT be -over
+		if (clipOnly->wasNegClipL == true) { // current will be -over
+			if (inputSampleL > clipOnly->lastSampleL) { // next one will NOT be -over
 				clipOnly->lastSampleL = ((-refclip * hardness) + (inputSampleL * softness));
-			} else { //still clipping, still chasing the target
+			} else { // still clipping, still chasing the target
 				clipOnly->lastSampleL = ((clipOnly->lastSampleL * hardness) + (-refclip * softness));
 			}
 		}
 		clipOnly->wasNegClipL = false;
-		if (inputSampleL < -refclip) { //next will be -refclip.  otherwise we directly use it
-			clipOnly->wasNegClipL = true; //set the clip flag
+		if (inputSampleL < -refclip) { // next will be -refclip.  otherwise we directly use it
+			clipOnly->wasNegClipL = true; // set the clip flag
 			inputSampleL = ((-refclip * hardness) + (clipOnly->lastSampleL * softness));
 		}
 
-		if (clipOnly->wasPosClipR == true) { //current will be over
-			if (inputSampleR < clipOnly->lastSampleR) { //next one will NOT be over
+		if (clipOnly->wasPosClipR == true) { // current will be over
+			if (inputSampleR < clipOnly->lastSampleR) { // next one will NOT be over
 				clipOnly->lastSampleR = ((refclip * hardness) + (inputSampleR * softness));
-			} else { //still clipping, still chasing the target
+			} else { // still clipping, still chasing the target
 				clipOnly->lastSampleR = ((clipOnly->lastSampleR * hardness) + (refclip * softness));
 			}
 		}
 		clipOnly->wasPosClipR = false;
-		if (inputSampleR > refclip) { //next will be over the true clip level. otherwise we directly use it
-			clipOnly->wasPosClipR = true; //set the clip flag
+		if (inputSampleR > refclip) { // next will be over the true clip level. otherwise we directly use it
+			clipOnly->wasPosClipR = true; // set the clip flag
 			inputSampleR = ((refclip * hardness) + (clipOnly->lastSampleR * softness));
 		}
 
-		if (clipOnly->wasNegClipR == true) { //current will be -over
-			if (inputSampleR > clipOnly->lastSampleR) { //next one will NOT be -over
+		if (clipOnly->wasNegClipR == true) { // current will be -over
+			if (inputSampleR > clipOnly->lastSampleR) { // next one will NOT be -over
 				clipOnly->lastSampleR = ((-refclip * hardness) + (inputSampleR * softness));
-			} else { //still clipping, still chasing the target
+			} else { // still clipping, still chasing the target
 				clipOnly->lastSampleR = ((clipOnly->lastSampleR * hardness) + (-refclip * softness));
 			}
 		}
 		clipOnly->wasNegClipR = false;
-		if (inputSampleR < -refclip) { //next will be -refclip.  otherwise we directly use it
-			clipOnly->wasNegClipR = true; //set the clip flag
+		if (inputSampleR < -refclip) { // next will be -refclip.  otherwise we directly use it
+			clipOnly->wasNegClipR = true; // set the clip flag
 			inputSampleR = ((-refclip * hardness) + (clipOnly->lastSampleR * softness));
 		}
 
@@ -177,8 +177,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

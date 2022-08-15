@@ -78,7 +78,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	purestConsole2Buss->biquadA[0] = 30000.0 / purestConsole2Buss->sampleRate;
 	purestConsole2Buss->biquadA[1] = 1.618033988749894848204586;
 
-	double K = tan(M_PI * purestConsole2Buss->biquadA[0]); //lowpass
+	double K = tan(M_PI * purestConsole2Buss->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / purestConsole2Buss->biquadA[1] + K * K);
 	purestConsole2Buss->biquadA[2] = K * K * norm;
 	purestConsole2Buss->biquadA[3] = 2.0 * purestConsole2Buss->biquadA[2];
@@ -98,38 +98,38 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			purestConsole2Buss->biquadA[7] = inputSampleL;
 			inputSampleL = tempSample;
 			purestConsole2Buss->biquadA[10] = purestConsole2Buss->biquadA[9];
-			purestConsole2Buss->biquadA[9] = inputSampleL; //DF1 left
+			purestConsole2Buss->biquadA[9] = inputSampleL; // DF1 left
 			tempSample = purestConsole2Buss->biquadA[2] * inputSampleR + purestConsole2Buss->biquadA[3] * purestConsole2Buss->biquadA[11] + purestConsole2Buss->biquadA[4] * purestConsole2Buss->biquadA[12] - purestConsole2Buss->biquadA[5] * purestConsole2Buss->biquadA[13] - purestConsole2Buss->biquadA[6] * purestConsole2Buss->biquadA[14];
 			purestConsole2Buss->biquadA[12] = purestConsole2Buss->biquadA[11];
 			purestConsole2Buss->biquadA[11] = inputSampleR;
 			inputSampleR = tempSample;
 			purestConsole2Buss->biquadA[14] = purestConsole2Buss->biquadA[13];
-			purestConsole2Buss->biquadA[13] = inputSampleR; //DF1 right
+			purestConsole2Buss->biquadA[13] = inputSampleR; // DF1 right
 		}
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		//without this, you can get a NaN condition where it spits out DC offset at full blast!
+		// without this, you can get a NaN condition where it spits out DC offset at full blast!
 
 		inputSampleL = asin(inputSampleL);
 		inputSampleR = asin(inputSampleR);
-		//amplitude aspect
+		// amplitude aspect
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		purestConsole2Buss->fpdL ^= purestConsole2Buss->fpdL << 13;
 		purestConsole2Buss->fpdL ^= purestConsole2Buss->fpdL >> 17;
 		purestConsole2Buss->fpdL ^= purestConsole2Buss->fpdL << 5;
-		inputSampleL += (((double)purestConsole2Buss->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) purestConsole2Buss->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		purestConsole2Buss->fpdR ^= purestConsole2Buss->fpdR << 13;
 		purestConsole2Buss->fpdR ^= purestConsole2Buss->fpdR >> 17;
 		purestConsole2Buss->fpdR ^= purestConsole2Buss->fpdR << 5;
-		inputSampleR += (((double)purestConsole2Buss->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) purestConsole2Buss->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -161,8 +161,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

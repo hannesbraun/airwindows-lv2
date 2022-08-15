@@ -105,9 +105,9 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	console7Crunch->biquadB[1] = 0.56116312;
 	console7Crunch->biquadC[1] = 0.70710678;
 	console7Crunch->biquadD[1] = 1.10134463;
-	console7Crunch->biquadE[1] = 3.19622661; //tenth order Butterworth out of five biquads
+	console7Crunch->biquadE[1] = 3.19622661; // tenth order Butterworth out of five biquads
 
-	double K = tan(M_PI * console7Crunch->biquadA[0]); //lowpass
+	double K = tan(M_PI * console7Crunch->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / console7Crunch->biquadA[1] + K * K);
 	console7Crunch->biquadA[2] = K * K * norm;
 	console7Crunch->biquadA[3] = 2.0 * console7Crunch->biquadA[2];
@@ -158,20 +158,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		console7Crunch->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Crunch->biquadA[10] = console7Crunch->biquadA[9];
-		console7Crunch->biquadA[9] = inputSampleL; //DF1 left
+		console7Crunch->biquadA[9] = inputSampleL; // DF1 left
 		double outSampleR = console7Crunch->biquadA[2] * inputSampleR + console7Crunch->biquadA[3] * console7Crunch->biquadA[11] + console7Crunch->biquadA[4] * console7Crunch->biquadA[12] - console7Crunch->biquadA[5] * console7Crunch->biquadA[13] - console7Crunch->biquadA[6] * console7Crunch->biquadA[14];
 		console7Crunch->biquadA[12] = console7Crunch->biquadA[11];
 		console7Crunch->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Crunch->biquadA[14] = console7Crunch->biquadA[13];
-		console7Crunch->biquadA[13] = inputSampleR; //DF1 right
+		console7Crunch->biquadA[13] = inputSampleR; // DF1 right
 
 		console7Crunch->chasespeed *= 0.9999;
 		console7Crunch->chasespeed -= 0.01;
 		if (console7Crunch->chasespeed < 64.0) console7Crunch->chasespeed = 64.0;
-		//we have our chase speed compensated for recent fader activity
+		// we have our chase speed compensated for recent fader activity
 		console7Crunch->gainchase = (((console7Crunch->gainchase * console7Crunch->chasespeed) + inputgain) / (console7Crunch->chasespeed + 1.0));
-		//gainchase is chasing the target, as a simple multiply gain factor
+		// gainchase is chasing the target, as a simple multiply gain factor
 		double cascade = console7Crunch->gainchase + (console7Crunch->gainchase * 0.62);
 
 		if (1.0 != cascade) {
@@ -184,20 +184,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Crunch->biquadB[2] * inputSampleL + console7Crunch->biquadB[3] * console7Crunch->biquadB[7] + console7Crunch->biquadB[4] * console7Crunch->biquadB[8] - console7Crunch->biquadB[5] * console7Crunch->biquadB[9] - console7Crunch->biquadB[6] * console7Crunch->biquadB[10];
 		console7Crunch->biquadB[8] = console7Crunch->biquadB[7];
 		console7Crunch->biquadB[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Crunch->biquadB[10] = console7Crunch->biquadB[9];
-		console7Crunch->biquadB[9] = inputSampleL; //DF1 left
+		console7Crunch->biquadB[9] = inputSampleL; // DF1 left
 		outSampleR = console7Crunch->biquadB[2] * inputSampleR + console7Crunch->biquadB[3] * console7Crunch->biquadB[11] + console7Crunch->biquadB[4] * console7Crunch->biquadB[12] - console7Crunch->biquadB[5] * console7Crunch->biquadB[13] - console7Crunch->biquadB[6] * console7Crunch->biquadB[14];
 		console7Crunch->biquadB[12] = console7Crunch->biquadB[11];
 		console7Crunch->biquadB[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Crunch->biquadB[14] = console7Crunch->biquadB[13];
-		console7Crunch->biquadB[13] = inputSampleR; //DF1 right
+		console7Crunch->biquadB[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -209,20 +209,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Crunch->biquadC[2] * inputSampleL + console7Crunch->biquadC[3] * console7Crunch->biquadC[7] + console7Crunch->biquadC[4] * console7Crunch->biquadC[8] - console7Crunch->biquadC[5] * console7Crunch->biquadC[9] - console7Crunch->biquadC[6] * console7Crunch->biquadC[10];
 		console7Crunch->biquadC[8] = console7Crunch->biquadC[7];
 		console7Crunch->biquadC[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Crunch->biquadC[10] = console7Crunch->biquadC[9];
-		console7Crunch->biquadC[9] = inputSampleL; //DF1 left
+		console7Crunch->biquadC[9] = inputSampleL; // DF1 left
 		outSampleR = console7Crunch->biquadC[2] * inputSampleR + console7Crunch->biquadC[3] * console7Crunch->biquadC[11] + console7Crunch->biquadC[4] * console7Crunch->biquadC[12] - console7Crunch->biquadC[5] * console7Crunch->biquadC[13] - console7Crunch->biquadC[6] * console7Crunch->biquadC[14];
 		console7Crunch->biquadC[12] = console7Crunch->biquadC[11];
 		console7Crunch->biquadC[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Crunch->biquadC[14] = console7Crunch->biquadC[13];
-		console7Crunch->biquadC[13] = inputSampleR; //DF1 right
+		console7Crunch->biquadC[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -234,20 +234,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Crunch->biquadD[2] * inputSampleL + console7Crunch->biquadD[3] * console7Crunch->biquadD[7] + console7Crunch->biquadD[4] * console7Crunch->biquadD[8] - console7Crunch->biquadD[5] * console7Crunch->biquadD[9] - console7Crunch->biquadD[6] * console7Crunch->biquadD[10];
 		console7Crunch->biquadD[8] = console7Crunch->biquadD[7];
 		console7Crunch->biquadD[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Crunch->biquadD[10] = console7Crunch->biquadD[9];
-		console7Crunch->biquadD[9] = inputSampleL; //DF1 left
+		console7Crunch->biquadD[9] = inputSampleL; // DF1 left
 		outSampleR = console7Crunch->biquadD[2] * inputSampleR + console7Crunch->biquadD[3] * console7Crunch->biquadD[11] + console7Crunch->biquadD[4] * console7Crunch->biquadD[12] - console7Crunch->biquadD[5] * console7Crunch->biquadD[13] - console7Crunch->biquadD[6] * console7Crunch->biquadD[14];
 		console7Crunch->biquadD[12] = console7Crunch->biquadD[11];
 		console7Crunch->biquadD[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Crunch->biquadD[14] = console7Crunch->biquadD[13];
-		console7Crunch->biquadD[13] = inputSampleR; //DF1 right
+		console7Crunch->biquadD[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -259,20 +259,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		outSampleL = console7Crunch->biquadE[2] * inputSampleL + console7Crunch->biquadE[3] * console7Crunch->biquadE[7] + console7Crunch->biquadE[4] * console7Crunch->biquadE[8] - console7Crunch->biquadE[5] * console7Crunch->biquadE[9] - console7Crunch->biquadE[6] * console7Crunch->biquadE[10];
 		console7Crunch->biquadE[8] = console7Crunch->biquadE[7];
 		console7Crunch->biquadE[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Crunch->biquadE[10] = console7Crunch->biquadE[9];
-		console7Crunch->biquadE[9] = inputSampleL; //DF1 left
+		console7Crunch->biquadE[9] = inputSampleL; // DF1 left
 		outSampleR = console7Crunch->biquadE[2] * inputSampleR + console7Crunch->biquadE[3] * console7Crunch->biquadE[11] + console7Crunch->biquadE[4] * console7Crunch->biquadE[12] - console7Crunch->biquadE[5] * console7Crunch->biquadE[13] - console7Crunch->biquadE[6] * console7Crunch->biquadE[14];
 		console7Crunch->biquadE[12] = console7Crunch->biquadE[11];
 		console7Crunch->biquadE[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Crunch->biquadE[14] = console7Crunch->biquadE[13];
-		console7Crunch->biquadE[13] = inputSampleR; //DF1 right
+		console7Crunch->biquadE[13] = inputSampleR; // DF1 right
 
 		if (1.0 != cascade) {
 			inputSampleL *= cascade;
@@ -284,27 +284,27 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
+		// Console7Channel distortion stage, with a simpler form of the gain boost: no extra accentuation, because it's repeated 5x
 
 		if (cascade > 1.0) {
 			inputSampleL /= cascade;
 			inputSampleR /= cascade;
 		}
-		//we re-amplify after the distortion relative to how much we cut back previously.
+		// we re-amplify after the distortion relative to how much we cut back previously.
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		console7Crunch->fpdL ^= console7Crunch->fpdL << 13;
 		console7Crunch->fpdL ^= console7Crunch->fpdL >> 17;
 		console7Crunch->fpdL ^= console7Crunch->fpdL << 5;
-		inputSampleL += (((double)console7Crunch->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) console7Crunch->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		console7Crunch->fpdR ^= console7Crunch->fpdR << 13;
 		console7Crunch->fpdR ^= console7Crunch->fpdR >> 17;
 		console7Crunch->fpdR ^= console7Crunch->fpdR << 5;
-		inputSampleR += (((double)console7Crunch->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) console7Crunch->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -336,8 +336,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

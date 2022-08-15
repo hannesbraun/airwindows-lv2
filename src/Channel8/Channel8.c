@@ -27,7 +27,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 	double iirSampleLA;
 	double iirSampleRA;
 	double iirSampleLB;
@@ -103,7 +103,7 @@ static void activate(LV2_Handle instance)
 	channel8->lastSampleCR = 0.0;
 	channel8->flip = false;
 	channel8->iirAmount = 0.005832;
-	channel8->threshold = 0.33362176; //instantiating with Neve values
+	channel8->threshold = 0.33362176; // instantiating with Neve values
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -116,21 +116,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out2 = channel8->output[1];
 
 	float consoletype = *channel8->consoletype;
-	switch ((int)consoletype) {
+	switch ((int) consoletype) {
 		case 1:
 			channel8->iirAmount = 0.004096;
 			channel8->threshold = 0.59969536;
-			break; //API
+			break; // API
 		case 2:
 		case 3:
 			channel8->iirAmount = 0.004913;
 			channel8->threshold = 0.84934656;
-			break; //SSL
+			break; // SSL
 		case 0:
 		default:
 			channel8->iirAmount = 0.005832;
 			channel8->threshold = 0.33362176;
-			break; //Neve
+			break; // Neve
 	}
 
 	float output = *channel8->outputGain;
@@ -139,13 +139,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	overallscale /= 44100.0;
 	overallscale *= channel8->sampleRate;
 	double localiirAmount = channel8->iirAmount / overallscale;
-	double localthreshold = channel8->threshold; //we've learned not to try and adjust threshold for sample rate
-	double density = *channel8->drive / 100.0; //0-2
+	double localthreshold = channel8->threshold; // we've learned not to try and adjust threshold for sample rate
+	double density = *channel8->drive / 100.0; // 0-2
 	double phattity = density - 1.0;
-	if (density > 1.0) density = 1.0; //max out at full wet for Spiral aspect
+	if (density > 1.0) density = 1.0; // max out at full wet for Spiral aspect
 	if (phattity < 0.0) phattity = 0.0;
-	double nonLin = 5.0 - density; //number is smaller for more intense, larger for more subtle
-
+	double nonLin = 5.0 - density; // number is smaller for more intense, larger for more subtle
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -167,7 +166,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			channel8->iirSampleRB = (channel8->iirSampleRB * (1.0 - (localiirAmount * dielectricScaleR))) + (inputSampleR * localiirAmount * dielectricScaleR);
 			inputSampleR = inputSampleR - channel8->iirSampleRB;
 		}
-		//highpass section
+		// highpass section
 		double drySampleL = inputSampleL;
 		double drySampleR = inputSampleR;
 
@@ -175,59 +174,59 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		double phatSampleL = sin(inputSampleL * 1.57079633);
 		inputSampleL *= 1.2533141373155;
-		//clip to 1.2533141373155 to reach maximum output, or 1.57079633 for pure sine 'phat' version
+		// clip to 1.2533141373155 to reach maximum output, or 1.57079633 for pure sine 'phat' version
 
 		double distSampleL = sin(inputSampleL * fabs(inputSampleL)) / ((fabs(inputSampleL) == 0.0) ? 1 : fabs(inputSampleL));
 
-		inputSampleL = distSampleL; //purest form is full Spiral
-		if (density < 1.0) inputSampleL = (drySampleL * (1 - density)) + (distSampleL * density); //fade Spiral aspect
-		if (phattity > 0.0) inputSampleL = (inputSampleL * (1 - phattity)) + (phatSampleL * phattity); //apply original Density on top
+		inputSampleL = distSampleL; // purest form is full Spiral
+		if (density < 1.0) inputSampleL = (drySampleL * (1 - density)) + (distSampleL * density); // fade Spiral aspect
+		if (phattity > 0.0) inputSampleL = (inputSampleL * (1 - phattity)) + (phatSampleL * phattity); // apply original Density on top
 
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
 		double phatSampleR = sin(inputSampleR * 1.57079633);
 		inputSampleR *= 1.2533141373155;
-		//clip to 1.2533141373155 to reach maximum output, or 1.57079633 for pure sine 'phat' version
+		// clip to 1.2533141373155 to reach maximum output, or 1.57079633 for pure sine 'phat' version
 
 		double distSampleR = sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR));
 
-		inputSampleR = distSampleR; //purest form is full Spiral
-		if (density < 1.0) inputSampleR = (drySampleR * (1 - density)) + (distSampleR * density); //fade Spiral aspect
-		if (phattity > 0.0) inputSampleR = (inputSampleR * (1 - phattity)) + (phatSampleR * phattity); //apply original Density on top
+		inputSampleR = distSampleR; // purest form is full Spiral
+		if (density < 1.0) inputSampleR = (drySampleR * (1 - density)) + (distSampleR * density); // fade Spiral aspect
+		if (phattity > 0.0) inputSampleR = (inputSampleR * (1 - phattity)) + (phatSampleR * phattity); // apply original Density on top
 
-		//begin L
+		// begin L
 		double clamp = (channel8->lastSampleBL - channel8->lastSampleCL) * 0.381966011250105;
 		clamp -= (channel8->lastSampleAL - channel8->lastSampleBL) * 0.6180339887498948482045;
-		clamp += inputSampleL - channel8->lastSampleAL; //regular slew clamping added
+		clamp += inputSampleL - channel8->lastSampleAL; // regular slew clamping added
 
 		channel8->lastSampleCL = channel8->lastSampleBL;
 		channel8->lastSampleBL = channel8->lastSampleAL;
-		channel8->lastSampleAL = inputSampleL; //now our output relates off lastSampleB
+		channel8->lastSampleAL = inputSampleL; // now our output relates off lastSampleB
 
 		if (clamp > localthreshold)
 			inputSampleL = channel8->lastSampleBL + localthreshold;
 		if (-clamp > localthreshold)
 			inputSampleL = channel8->lastSampleBL - localthreshold;
 
-		channel8->lastSampleAL = (channel8->lastSampleAL * 0.381966011250105) + (inputSampleL * 0.6180339887498948482045); //split the difference between raw and smoothed for buffer
-		//end L
+		channel8->lastSampleAL = (channel8->lastSampleAL * 0.381966011250105) + (inputSampleL * 0.6180339887498948482045); // split the difference between raw and smoothed for buffer
+		// end L
 
-		//begin R
+		// begin R
 		clamp = (channel8->lastSampleBR - channel8->lastSampleCR) * 0.381966011250105;
 		clamp -= (channel8->lastSampleAR - channel8->lastSampleBR) * 0.6180339887498948482045;
-		clamp += inputSampleR - channel8->lastSampleAR; //regular slew clamping added
+		clamp += inputSampleR - channel8->lastSampleAR; // regular slew clamping added
 
 		channel8->lastSampleCR = channel8->lastSampleBR;
 		channel8->lastSampleBR = channel8->lastSampleAR;
-		channel8->lastSampleAR = inputSampleR; //now our output relates off lastSampleB
+		channel8->lastSampleAR = inputSampleR; // now our output relates off lastSampleB
 
 		if (clamp > localthreshold)
 			inputSampleR = channel8->lastSampleBR + localthreshold;
 		if (-clamp > localthreshold)
 			inputSampleR = channel8->lastSampleBR - localthreshold;
 
-		channel8->lastSampleAR = (channel8->lastSampleAR * 0.381966011250105) + (inputSampleR * 0.6180339887498948482045); //split the difference between raw and smoothed for buffer
-		//end R
+		channel8->lastSampleAR = (channel8->lastSampleAR * 0.381966011250105) + (inputSampleR * 0.6180339887498948482045); // split the difference between raw and smoothed for buffer
+		// end R
 
 		channel8->flip = !channel8->flip;
 
@@ -236,19 +235,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR *= output;
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		channel8->fpdL ^= channel8->fpdL << 13;
 		channel8->fpdL ^= channel8->fpdL >> 17;
 		channel8->fpdL ^= channel8->fpdL << 5;
-		inputSampleL += (((double)channel8->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) channel8->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		channel8->fpdR ^= channel8->fpdR << 13;
 		channel8->fpdR ^= channel8->fpdR >> 17;
 		channel8->fpdR ^= channel8->fpdR << 5;
-		inputSampleR += (((double)channel8->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) channel8->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -280,8 +279,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -83,7 +83,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out1 = moNoam->output[0];
 	float* out2 = moNoam->output[1];
 
-	int processing = (int) * moNoam->monotor;
+	int processing = (int) *moNoam->monotor;
 	if (processing > 7) {
 		processing = 7;
 	} else if (processing < 0) {
@@ -117,19 +117,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR = *in2;
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		moNoam->fpdL ^= moNoam->fpdL << 13;
 		moNoam->fpdL ^= moNoam->fpdL >> 17;
 		moNoam->fpdL ^= moNoam->fpdL << 5;
-		inputSampleL += (((double)moNoam->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) moNoam->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		moNoam->fpdR ^= moNoam->fpdR << 13;
 		moNoam->fpdR ^= moNoam->fpdR >> 17;
 		moNoam->fpdR ^= moNoam->fpdR << 5;
-		inputSampleR += (((double)moNoam->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) moNoam->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -161,8 +161,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

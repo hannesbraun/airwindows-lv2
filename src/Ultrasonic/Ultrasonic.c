@@ -93,7 +93,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ultrasonic->biquadD[1] = 1.10134463;
 	ultrasonic->biquadE[1] = 3.19622661; // tenth order Butterworth out of five biquads
 
-	double K = tan(M_PI * ultrasonic->biquadA[0]); //lowpass
+	double K = tan(M_PI * ultrasonic->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / ultrasonic->biquadA[1] + K * K);
 	ultrasonic->biquadA[2] = K * K * norm;
 	ultrasonic->biquadA[3] = 2.0 * ultrasonic->biquadA[2];
@@ -209,19 +209,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		ultrasonic->biquadE[14] = ultrasonic->biquadE[13];
 		ultrasonic->biquadE[13] = inputSampleR; // DF1 right
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		ultrasonic->fpdL ^= ultrasonic->fpdL << 13;
 		ultrasonic->fpdL ^= ultrasonic->fpdL >> 17;
 		ultrasonic->fpdL ^= ultrasonic->fpdL << 5;
-		inputSampleL += (((double)ultrasonic->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) ultrasonic->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		ultrasonic->fpdR ^= ultrasonic->fpdR << 13;
 		ultrasonic->fpdR ^= ultrasonic->fpdR >> 17;
 		ultrasonic->fpdR ^= ultrasonic->fpdR << 5;
-		inputSampleR += (((double)ultrasonic->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) ultrasonic->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -253,8 +253,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

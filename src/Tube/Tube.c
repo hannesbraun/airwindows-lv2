@@ -91,17 +91,17 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	overallscale *= tube->sampleRate;
 
 	double gain = 1.0 + (tubeParam * 0.2246161992650486);
-	//this maxes out at +1.76dB, which is the exact difference between what a triangle/saw wave
-	//would be, and a sine (the fullest possible wave at the same peak amplitude). Why do this?
-	//Because the nature of this plugin is the 'more FAT TUUUUBE fatness!' knob, and because
-	//sticking to this amount maximizes that effect on a 'normal' sound that is itself unclipped
-	//while confining the resulting 'clipped' area to what is already 'fattened' into a flat
-	//and distorted region. You can always put a gain trim in front of it for more distortion,
-	//or cascade them in the DAW for more distortion.
+	// this maxes out at +1.76dB, which is the exact difference between what a triangle/saw wave
+	// would be, and a sine (the fullest possible wave at the same peak amplitude). Why do this?
+	// Because the nature of this plugin is the 'more FAT TUUUUBE fatness!' knob, and because
+	// sticking to this amount maximizes that effect on a 'normal' sound that is itself unclipped
+	// while confining the resulting 'clipped' area to what is already 'fattened' into a flat
+	// and distorted region. You can always put a gain trim in front of it for more distortion,
+	// or cascade them in the DAW for more distortion.
 	double iterations = 1.0 - tubeParam;
 	int powerfactor = (5.0 * iterations) + 1;
-	double gainscaling = 1.0 / (double)(powerfactor + 1);
-	double outputscaling = 1.0 + (1.0 / (double)(powerfactor));
+	double gainscaling = 1.0 / (double) (powerfactor + 1);
+	double outputscaling = 1.0 + (1.0 / (double) (powerfactor));
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -118,7 +118,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR += tube->previousSampleB;
 			tube->previousSampleB = stored;
 			inputSampleR *= 0.5;
-		} //for high sample rates on this plugin we are going to do a simple average
+		} // for high sample rates on this plugin we are going to do a simple average
 
 		inputSampleL *= gain;
 		inputSampleR *= gain;
@@ -128,27 +128,27 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
 
-		double factor = inputSampleL; //Left channel
+		double factor = inputSampleL; // Left channel
 
 		for (int x = 0; x < powerfactor; x++) factor *= inputSampleL;
-		//this applies more and more of a 'curve' to the transfer function
+		// this applies more and more of a 'curve' to the transfer function
 
 		if ((powerfactor % 2 == 1) && (inputSampleL != 0.0)) factor = (factor / inputSampleL) * fabs(inputSampleL);
-		//if we would've got an asymmetrical effect this undoes the last step, and then
-		//redoes it using an absolute value to make the effect symmetrical again
+		// if we would've got an asymmetrical effect this undoes the last step, and then
+		// redoes it using an absolute value to make the effect symmetrical again
 
 		factor *= gainscaling;
 		inputSampleL -= factor;
 		inputSampleL *= outputscaling;
 
-		factor = inputSampleR; //Right channel
+		factor = inputSampleR; // Right channel
 
 		for (int x = 0; x < powerfactor; x++) factor *= inputSampleR;
-		//this applies more and more of a 'curve' to the transfer function
+		// this applies more and more of a 'curve' to the transfer function
 
 		if ((powerfactor % 2 == 1) && (inputSampleR != 0.0)) factor = (factor / inputSampleR) * fabs(inputSampleR);
-		//if we would've got an asymmetrical effect this undoes the last step, and then
-		//redoes it using an absolute value to make the effect symmetrical again
+		// if we would've got an asymmetrical effect this undoes the last step, and then
+		// redoes it using an absolute value to make the effect symmetrical again
 
 		factor *= gainscaling;
 		inputSampleR -= factor;
@@ -170,21 +170,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR += tube->previousSampleD;
 			tube->previousSampleD = stored;
 			inputSampleR *= 0.5;
-		} //for high sample rates on this plugin we are going to do a simple average
+		} // for high sample rates on this plugin we are going to do a simple average
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		tube->fpdL ^= tube->fpdL << 13;
 		tube->fpdL ^= tube->fpdL >> 17;
 		tube->fpdL ^= tube->fpdL << 5;
-		inputSampleL += (((double)tube->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) tube->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		tube->fpdR ^= tube->fpdR << 13;
 		tube->fpdR ^= tube->fpdR >> 17;
 		tube->fpdR ^= tube->fpdR << 5;
-		inputSampleR += (((double)tube->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) tube->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -216,8 +216,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

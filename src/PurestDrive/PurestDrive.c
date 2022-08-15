@@ -21,7 +21,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 
 	double previousSampleL;
 	double previousSampleR;
@@ -97,38 +97,38 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		drySampleR = inputSampleR;
 
 		inputSampleL = sin(inputSampleL);
-		//basic distortion factor
+		// basic distortion factor
 		apply = (fabs(purestDrive->previousSampleL + inputSampleL) / 2.0) * intensity;
-		//saturate less if previous sample was undistorted and low level, or if it was
-		//inverse polarity. Lets through highs and brightness more.
+		// saturate less if previous sample was undistorted and low level, or if it was
+		// inverse polarity. Lets through highs and brightness more.
 		inputSampleL = (drySampleL * (1.0 - apply)) + (inputSampleL * apply);
-		//dry-wet control for intensity also has FM modulation to clean up highs
+		// dry-wet control for intensity also has FM modulation to clean up highs
 		purestDrive->previousSampleL = sin(drySampleL);
-		//apply the sine while storing previous sample
+		// apply the sine while storing previous sample
 
 		inputSampleR = sin(inputSampleR);
-		//basic distortion factor
+		// basic distortion factor
 		apply = (fabs(purestDrive->previousSampleR + inputSampleR) / 2.0) * intensity;
-		//saturate less if previous sample was undistorted and low level, or if it was
-		//inverse polarity. Lets through highs and brightness more.
+		// saturate less if previous sample was undistorted and low level, or if it was
+		// inverse polarity. Lets through highs and brightness more.
 		inputSampleR = (drySampleR * (1.0 - apply)) + (inputSampleR * apply);
-		//dry-wet control for intensity also has FM modulation to clean up highs
+		// dry-wet control for intensity also has FM modulation to clean up highs
 		purestDrive->previousSampleR = sin(drySampleR);
-		//apply the sine while storing previous sample
+		// apply the sine while storing previous sample
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		purestDrive->fpdL ^= purestDrive->fpdL << 13;
 		purestDrive->fpdL ^= purestDrive->fpdL >> 17;
 		purestDrive->fpdL ^= purestDrive->fpdL << 5;
-		inputSampleL += (((double)purestDrive->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) purestDrive->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		purestDrive->fpdR ^= purestDrive->fpdR << 13;
 		purestDrive->fpdR ^= purestDrive->fpdR >> 17;
 		purestDrive->fpdR ^= purestDrive->fpdR << 5;
-		inputSampleR += (((double)purestDrive->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) purestDrive->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -160,8 +160,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

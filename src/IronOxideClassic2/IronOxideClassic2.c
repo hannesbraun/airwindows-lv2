@@ -129,7 +129,6 @@ static void activate(LV2_Handle instance)
 	while (ironOxideClassic2->fpdL < 16386) ironOxideClassic2->fpdL = rand() * UINT32_MAX;
 	ironOxideClassic2->fpdR = 1.0;
 	while (ironOxideClassic2->fpdR < 16386) ironOxideClassic2->fpdR = rand() * UINT32_MAX;
-
 }
 
 static void run(LV2_Handle instance, uint32_t sampleFrames)
@@ -148,28 +147,28 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	int cycleEnd = floor(overallscale);
 	if (cycleEnd < 1) cycleEnd = 1;
 	if (cycleEnd > 4) cycleEnd = 4;
-	//this is going to be 2 for 88.1 or 96k, 3 for silly people, 4 for 176 or 192k
-	if (ironOxideClassic2->cycle > cycleEnd - 1) ironOxideClassic2->cycle = cycleEnd - 1; //sanity check
+	// this is going to be 2 for 88.1 or 96k, 3 for silly people, 4 for 176 or 192k
+	if (ironOxideClassic2->cycle > cycleEnd - 1) ironOxideClassic2->cycle = cycleEnd - 1; // sanity check
 
 	double inputgain = pow(10.0, *ironOxideClassic2->inputTrim / 20.0);
 	double outputgain = pow(10.0, *ironOxideClassic2->outputTrim / 20.0);
 	double ips = *ironOxideClassic2->tapeSpeed * 1.1;
-	//slight correction to dial in convincing ips settings
+	// slight correction to dial in convincing ips settings
 	if (ips < 1 || ips > 200) {
 		ips = 33.0;
 	}
-	//sanity checks are always key
-	double iirAmount = ips / 430.0; //for low leaning
+	// sanity checks are always key
+	double iirAmount = ips / 430.0; // for low leaning
 	double fastTaper = ips / 15.0;
 	double slowTaper = 2.0 / (ips * ips);
 
 	iirAmount /= overallscale;
 	fastTaper /= overallscale;
 	slowTaper /= overallscale;
-	//now that we have this, we must multiply it back up
+	// now that we have this, we must multiply it back up
 	fastTaper *= cycleEnd;
 	slowTaper *= cycleEnd;
-	//because we're only running that part one sample in two, or three, or four
+	// because we're only running that part one sample in two, or three, or four
 	fastTaper += 1.0;
 	slowTaper += 1.0;
 
@@ -178,7 +177,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ironOxideClassic2->biquadB[0] = 24000.0 / ironOxideClassic2->sampleRate;
 	ironOxideClassic2->biquadB[1] = 0.618033988749894848204586;
 
-	double K = tan(M_PI * ironOxideClassic2->biquadA[0]); //lowpass
+	double K = tan(M_PI * ironOxideClassic2->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / ironOxideClassic2->biquadA[1] + K * K);
 	ironOxideClassic2->biquadA[2] = K * K * norm;
 	ironOxideClassic2->biquadA[3] = 2.0 * ironOxideClassic2->biquadA[2];
@@ -186,14 +185,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	ironOxideClassic2->biquadA[5] = 2.0 * (K * K - 1.0) * norm;
 	ironOxideClassic2->biquadA[6] = (1.0 - K / ironOxideClassic2->biquadA[1] + K * K) * norm;
 
-	K = tan(M_PI * ironOxideClassic2->biquadB[0]); //lowpass
+	K = tan(M_PI * ironOxideClassic2->biquadB[0]); // lowpass
 	norm = 1.0 / (1.0 + K / ironOxideClassic2->biquadB[1] + K * K);
 	ironOxideClassic2->biquadB[2] = K * K * norm;
 	ironOxideClassic2->biquadB[3] = 2.0 * ironOxideClassic2->biquadB[2];
 	ironOxideClassic2->biquadB[4] = ironOxideClassic2->biquadB[2];
 	ironOxideClassic2->biquadB[5] = 2.0 * (K * K - 1.0) * norm;
 	ironOxideClassic2->biquadB[6] = (1.0 - K / ironOxideClassic2->biquadB[1] + K * K) * norm;
-
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -217,7 +215,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleL -= ironOxideClassic2->iirSampleBL;
 			inputSampleR -= ironOxideClassic2->iirSampleBR;
 		}
-		//do IIR highpass for leaning out
+		// do IIR highpass for leaning out
 
 		if (ironOxideClassic2->biquadA[0] < 0.49999) {
 			tempSample = ironOxideClassic2->biquadA[2] * inputSampleL + ironOxideClassic2->biquadA[3] * ironOxideClassic2->biquadA[7] + ironOxideClassic2->biquadA[4] * ironOxideClassic2->biquadA[8] - ironOxideClassic2->biquadA[5] * ironOxideClassic2->biquadA[9] - ironOxideClassic2->biquadA[6] * ironOxideClassic2->biquadA[10];
@@ -225,13 +223,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			ironOxideClassic2->biquadA[7] = inputSampleL;
 			inputSampleL = tempSample;
 			ironOxideClassic2->biquadA[10] = ironOxideClassic2->biquadA[9];
-			ironOxideClassic2->biquadA[9] = inputSampleL; //DF1 left
+			ironOxideClassic2->biquadA[9] = inputSampleL; // DF1 left
 			tempSample = ironOxideClassic2->biquadA[2] * inputSampleR + ironOxideClassic2->biquadA[3] * ironOxideClassic2->biquadA[11] + ironOxideClassic2->biquadA[4] * ironOxideClassic2->biquadA[12] - ironOxideClassic2->biquadA[5] * ironOxideClassic2->biquadA[13] - ironOxideClassic2->biquadA[6] * ironOxideClassic2->biquadA[14];
 			ironOxideClassic2->biquadA[12] = ironOxideClassic2->biquadA[11];
 			ironOxideClassic2->biquadA[11] = inputSampleR;
 			inputSampleR = tempSample;
 			ironOxideClassic2->biquadA[14] = ironOxideClassic2->biquadA[13];
-			ironOxideClassic2->biquadA[13] = inputSampleR; //DF1 right
+			ironOxideClassic2->biquadA[13] = inputSampleR; // DF1 right
 		}
 
 		if (inputgain != 1.0) {
@@ -244,22 +242,22 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		bridgerectifierL = sin(bridgerectifierL);
 		if (inputSampleL > 0.0) inputSampleL = bridgerectifierL;
 		else inputSampleL = -bridgerectifierL;
-		//preliminary gain stage using antialiasing
+		// preliminary gain stage using antialiasing
 
 		double bridgerectifierR = fabs(inputSampleR);
 		if (bridgerectifierR > 1.57079633) bridgerectifierR = 1.57079633;
 		bridgerectifierR = sin(bridgerectifierR);
 		if (inputSampleR > 0.0) inputSampleR = bridgerectifierR;
 		else inputSampleR = -bridgerectifierR;
-		//preliminary gain stage using antialiasing
+		// preliminary gain stage using antialiasing
 
 		ironOxideClassic2->cycle++;
-		if (ironOxideClassic2->cycle == cycleEnd) { //hit the end point and we do a tape sample
+		if (ironOxideClassic2->cycle == cycleEnd) { // hit the end point and we do a tape sample
 
-			//over to the Iron Oxide shaping code using inputsample
+			// over to the Iron Oxide shaping code using inputsample
 			if (ironOxideClassic2->gcount < 0 || ironOxideClassic2->gcount > 131) ironOxideClassic2->gcount = 131;
 			int count = ironOxideClassic2->gcount;
-			//increment the counter
+			// increment the counter
 
 			double temp;
 			ironOxideClassic2->dL[count + 131] = ironOxideClassic2->dL[count] = inputSampleL;
@@ -271,14 +269,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				ironOxideClassic2->fastIIRAL = ironOxideClassic2->fastIIRAL / fastTaper;
 				ironOxideClassic2->slowIIRAL = ironOxideClassic2->slowIIRAL / slowTaper;
 				ironOxideClassic2->fastIIRAL += ironOxideClassic2->dL[count];
-				//scale stuff down
+				// scale stuff down
 
 				if (fabs(ironOxideClassic2->fastIIRAR) < 1.18e-37) ironOxideClassic2->fastIIRAR = 0.0;
 				if (fabs(ironOxideClassic2->slowIIRAR) < 1.18e-37) ironOxideClassic2->slowIIRAR = 0.0;
 				ironOxideClassic2->fastIIRAR = ironOxideClassic2->fastIIRAR / fastTaper;
 				ironOxideClassic2->slowIIRAR = ironOxideClassic2->slowIIRAR / slowTaper;
 				ironOxideClassic2->fastIIRAR += ironOxideClassic2->dR[count];
-				//scale stuff down
+				// scale stuff down
 				count += 3;
 
 				temp = ironOxideClassic2->dL[count + 127];
@@ -316,7 +314,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				temp += ironOxideClassic2->dL[count + 3];
 				temp /= 2;
 				temp += ironOxideClassic2->dL[count + 2];
-				temp += ironOxideClassic2->dL[count + 1]; //end L
+				temp += ironOxideClassic2->dL[count + 1]; // end L
 				ironOxideClassic2->slowIIRAL += (temp / 128);
 
 				temp = ironOxideClassic2->dR[count + 127];
@@ -354,7 +352,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				temp += ironOxideClassic2->dR[count + 3];
 				temp /= 2;
 				temp += ironOxideClassic2->dR[count + 2];
-				temp += ironOxideClassic2->dR[count + 1]; //end R
+				temp += ironOxideClassic2->dR[count + 1]; // end R
 				ironOxideClassic2->slowIIRAR += (temp / 128);
 
 				inputSampleL = ironOxideClassic2->fastIIRAL - (ironOxideClassic2->slowIIRAL / slowTaper);
@@ -365,14 +363,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				ironOxideClassic2->fastIIRBL = ironOxideClassic2->fastIIRBL / fastTaper;
 				ironOxideClassic2->slowIIRBL = ironOxideClassic2->slowIIRBL / slowTaper;
 				ironOxideClassic2->fastIIRBL += ironOxideClassic2->dL[count];
-				//scale stuff down
+				// scale stuff down
 
 				if (fabs(ironOxideClassic2->fastIIRBR) < 1.18e-37) ironOxideClassic2->fastIIRBR = 0.0;
 				if (fabs(ironOxideClassic2->slowIIRBR) < 1.18e-37) ironOxideClassic2->slowIIRBR = 0.0;
 				ironOxideClassic2->fastIIRBR = ironOxideClassic2->fastIIRBR / fastTaper;
 				ironOxideClassic2->slowIIRBR = ironOxideClassic2->slowIIRBR / slowTaper;
 				ironOxideClassic2->fastIIRBR += ironOxideClassic2->dR[count];
-				//scale stuff down
+				// scale stuff down
 				count += 3;
 
 				temp = ironOxideClassic2->dL[count + 127];
@@ -456,63 +454,63 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			}
 
 			if (cycleEnd == 4) {
-				ironOxideClassic2->lastRefL[0] = ironOxideClassic2->lastRefL[4]; //start from previous last
-				ironOxideClassic2->lastRefL[2] = (ironOxideClassic2->lastRefL[0] + inputSampleL) / 2; //half
-				ironOxideClassic2->lastRefL[1] = (ironOxideClassic2->lastRefL[0] + ironOxideClassic2->lastRefL[2]) / 2; //one quarter
-				ironOxideClassic2->lastRefL[3] = (ironOxideClassic2->lastRefL[2] + inputSampleL) / 2; //three quarters
-				ironOxideClassic2->lastRefL[4] = inputSampleL; //full
-				ironOxideClassic2->lastRefR[0] = ironOxideClassic2->lastRefR[4]; //start from previous last
-				ironOxideClassic2->lastRefR[2] = (ironOxideClassic2->lastRefR[0] + inputSampleR) / 2; //half
-				ironOxideClassic2->lastRefR[1] = (ironOxideClassic2->lastRefR[0] + ironOxideClassic2->lastRefR[2]) / 2; //one quarter
-				ironOxideClassic2->lastRefR[3] = (ironOxideClassic2->lastRefR[2] + inputSampleR) / 2; //three quarters
-				ironOxideClassic2->lastRefR[4] = inputSampleR; //full
+				ironOxideClassic2->lastRefL[0] = ironOxideClassic2->lastRefL[4]; // start from previous last
+				ironOxideClassic2->lastRefL[2] = (ironOxideClassic2->lastRefL[0] + inputSampleL) / 2; // half
+				ironOxideClassic2->lastRefL[1] = (ironOxideClassic2->lastRefL[0] + ironOxideClassic2->lastRefL[2]) / 2; // one quarter
+				ironOxideClassic2->lastRefL[3] = (ironOxideClassic2->lastRefL[2] + inputSampleL) / 2; // three quarters
+				ironOxideClassic2->lastRefL[4] = inputSampleL; // full
+				ironOxideClassic2->lastRefR[0] = ironOxideClassic2->lastRefR[4]; // start from previous last
+				ironOxideClassic2->lastRefR[2] = (ironOxideClassic2->lastRefR[0] + inputSampleR) / 2; // half
+				ironOxideClassic2->lastRefR[1] = (ironOxideClassic2->lastRefR[0] + ironOxideClassic2->lastRefR[2]) / 2; // one quarter
+				ironOxideClassic2->lastRefR[3] = (ironOxideClassic2->lastRefR[2] + inputSampleR) / 2; // three quarters
+				ironOxideClassic2->lastRefR[4] = inputSampleR; // full
 			}
 			if (cycleEnd == 3) {
-				ironOxideClassic2->lastRefL[0] = ironOxideClassic2->lastRefL[3]; //start from previous last
-				ironOxideClassic2->lastRefL[2] = (ironOxideClassic2->lastRefL[0] + ironOxideClassic2->lastRefL[0] + inputSampleL) / 3; //third
-				ironOxideClassic2->lastRefL[1] = (ironOxideClassic2->lastRefL[0] + inputSampleL + inputSampleL) / 3; //two thirds
-				ironOxideClassic2->lastRefL[3] = inputSampleL; //full
-				ironOxideClassic2->lastRefR[0] = ironOxideClassic2->lastRefR[3]; //start from previous last
-				ironOxideClassic2->lastRefR[2] = (ironOxideClassic2->lastRefR[0] + ironOxideClassic2->lastRefR[0] + inputSampleR) / 3; //third
-				ironOxideClassic2->lastRefR[1] = (ironOxideClassic2->lastRefR[0] + inputSampleR + inputSampleR) / 3; //two thirds
-				ironOxideClassic2->lastRefR[3] = inputSampleR; //full
+				ironOxideClassic2->lastRefL[0] = ironOxideClassic2->lastRefL[3]; // start from previous last
+				ironOxideClassic2->lastRefL[2] = (ironOxideClassic2->lastRefL[0] + ironOxideClassic2->lastRefL[0] + inputSampleL) / 3; // third
+				ironOxideClassic2->lastRefL[1] = (ironOxideClassic2->lastRefL[0] + inputSampleL + inputSampleL) / 3; // two thirds
+				ironOxideClassic2->lastRefL[3] = inputSampleL; // full
+				ironOxideClassic2->lastRefR[0] = ironOxideClassic2->lastRefR[3]; // start from previous last
+				ironOxideClassic2->lastRefR[2] = (ironOxideClassic2->lastRefR[0] + ironOxideClassic2->lastRefR[0] + inputSampleR) / 3; // third
+				ironOxideClassic2->lastRefR[1] = (ironOxideClassic2->lastRefR[0] + inputSampleR + inputSampleR) / 3; // two thirds
+				ironOxideClassic2->lastRefR[3] = inputSampleR; // full
 			}
 			if (cycleEnd == 2) {
-				ironOxideClassic2->lastRefL[0] = ironOxideClassic2->lastRefL[2]; //start from previous last
-				ironOxideClassic2->lastRefL[1] = (ironOxideClassic2->lastRefL[0] + inputSampleL) / 2; //half
-				ironOxideClassic2->lastRefL[2] = inputSampleL; //full
-				ironOxideClassic2->lastRefR[0] = ironOxideClassic2->lastRefR[2]; //start from previous last
-				ironOxideClassic2->lastRefR[1] = (ironOxideClassic2->lastRefR[0] + inputSampleR) / 2; //half
-				ironOxideClassic2->lastRefR[2] = inputSampleR; //full
+				ironOxideClassic2->lastRefL[0] = ironOxideClassic2->lastRefL[2]; // start from previous last
+				ironOxideClassic2->lastRefL[1] = (ironOxideClassic2->lastRefL[0] + inputSampleL) / 2; // half
+				ironOxideClassic2->lastRefL[2] = inputSampleL; // full
+				ironOxideClassic2->lastRefR[0] = ironOxideClassic2->lastRefR[2]; // start from previous last
+				ironOxideClassic2->lastRefR[1] = (ironOxideClassic2->lastRefR[0] + inputSampleR) / 2; // half
+				ironOxideClassic2->lastRefR[2] = inputSampleR; // full
 			}
 			if (cycleEnd == 1) {
 				ironOxideClassic2->lastRefL[0] = inputSampleL;
 				ironOxideClassic2->lastRefR[0] = inputSampleR;
 			}
-			ironOxideClassic2->cycle = 0; //reset
+			ironOxideClassic2->cycle = 0; // reset
 			inputSampleL = ironOxideClassic2->lastRefL[ironOxideClassic2->cycle];
 			inputSampleR = ironOxideClassic2->lastRefR[ironOxideClassic2->cycle];
 		} else {
 			inputSampleL = ironOxideClassic2->lastRefL[ironOxideClassic2->cycle];
 			inputSampleR = ironOxideClassic2->lastRefR[ironOxideClassic2->cycle];
-			//we are going through our references now
+			// we are going through our references now
 		}
 
 		bridgerectifierL = fabs(inputSampleL);
 		if (bridgerectifierL > 1.57079633) bridgerectifierL = 1.57079633;
 		bridgerectifierL = sin(bridgerectifierL);
-		//can use as an output limiter
+		// can use as an output limiter
 		if (inputSampleL > 0.0) inputSampleL = bridgerectifierL;
 		else inputSampleL = -bridgerectifierL;
-		//second stage of overdrive to prevent overs and allow bloody loud extremeness
+		// second stage of overdrive to prevent overs and allow bloody loud extremeness
 
 		bridgerectifierR = fabs(inputSampleR);
 		if (bridgerectifierR > 1.57079633) bridgerectifierR = 1.57079633;
 		bridgerectifierR = sin(bridgerectifierR);
-		//can use as an output limiter
+		// can use as an output limiter
 		if (inputSampleR > 0.0) inputSampleR = bridgerectifierR;
 		else inputSampleR = -bridgerectifierR;
-		//second stage of overdrive to prevent overs and allow bloody loud extremeness
+		// second stage of overdrive to prevent overs and allow bloody loud extremeness
 
 		if (ironOxideClassic2->biquadB[0] < 0.49999) {
 			tempSample = ironOxideClassic2->biquadB[2] * inputSampleL + ironOxideClassic2->biquadB[3] * ironOxideClassic2->biquadB[7] + ironOxideClassic2->biquadB[4] * ironOxideClassic2->biquadB[8] - ironOxideClassic2->biquadB[5] * ironOxideClassic2->biquadB[9] - ironOxideClassic2->biquadB[6] * ironOxideClassic2->biquadB[10];
@@ -520,13 +518,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			ironOxideClassic2->biquadB[7] = inputSampleL;
 			inputSampleL = tempSample;
 			ironOxideClassic2->biquadB[10] = ironOxideClassic2->biquadB[9];
-			ironOxideClassic2->biquadB[9] = inputSampleL; //DF1 left
+			ironOxideClassic2->biquadB[9] = inputSampleL; // DF1 left
 			tempSample = ironOxideClassic2->biquadB[2] * inputSampleR + ironOxideClassic2->biquadB[3] * ironOxideClassic2->biquadB[11] + ironOxideClassic2->biquadB[4] * ironOxideClassic2->biquadB[12] - ironOxideClassic2->biquadB[5] * ironOxideClassic2->biquadB[13] - ironOxideClassic2->biquadB[6] * ironOxideClassic2->biquadB[14];
 			ironOxideClassic2->biquadB[12] = ironOxideClassic2->biquadB[11];
 			ironOxideClassic2->biquadB[11] = inputSampleR;
 			inputSampleR = tempSample;
 			ironOxideClassic2->biquadB[14] = ironOxideClassic2->biquadB[13];
-			ironOxideClassic2->biquadB[13] = inputSampleR; //DF1 right
+			ironOxideClassic2->biquadB[13] = inputSampleR; // DF1 right
 		}
 
 		if (outputgain != 1.0) {
@@ -535,19 +533,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		}
 		ironOxideClassic2->flip = !ironOxideClassic2->flip;
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		ironOxideClassic2->fpdL ^= ironOxideClassic2->fpdL << 13;
 		ironOxideClassic2->fpdL ^= ironOxideClassic2->fpdL >> 17;
 		ironOxideClassic2->fpdL ^= ironOxideClassic2->fpdL << 5;
-		inputSampleL += (((double)ironOxideClassic2->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) ironOxideClassic2->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		ironOxideClassic2->fpdR ^= ironOxideClassic2->fpdR << 13;
 		ironOxideClassic2->fpdR ^= ironOxideClassic2->fpdR >> 17;
 		ironOxideClassic2->fpdR ^= ironOxideClassic2->fpdR << 5;
-		inputSampleR += (((double)ironOxideClassic2->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) ironOxideClassic2->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -579,8 +577,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

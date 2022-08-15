@@ -28,7 +28,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 	double lastSampleL;
 	double lastSampleR;
 	float bL[22200];
@@ -125,7 +125,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double overallscale = 1.0;
 	overallscale /= 44100.0;
 	overallscale *= adclip7->sampleRate;
-	double fpOld = 0.618033988749894848204586; //golden ratio!
+	double fpOld = 0.618033988749894848204586; // golden ratio!
 	double fpNew = 1.0 - fpOld;
 	double inputGain = pow(10.0, (*adclip7->boost) / 20.0);
 	double softness = *adclip7->soften * fpNew;
@@ -137,7 +137,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double invcalibsubs = 1.0 - calibsubs;
 	double subs = 0.81 + (calibsubs * 2);
 	double bridgerectifier;
-	int mode = (int) * adclip7->mode + 1;
+	int mode = (int) *adclip7->mode + 1;
 	double overshootL;
 	double overshootR;
 	double offsetH1 = 1.84;
@@ -147,11 +147,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double offsetL1 = 612;
 	offsetL1 *= overallscale;
 	double offsetL2 = offsetL1 * 2.0;
-	int refH1 = (int)floor(offsetH1);
-	int refH2 = (int)floor(offsetH2);
-	int refH3 = (int)floor(offsetH3);
-	int refL1 = (int)floor(offsetL1);
-	int refL2 = (int)floor(offsetL2);
+	int refH1 = (int) floor(offsetH1);
+	int refH2 = (int) floor(offsetH2);
+	int refH3 = (int) floor(offsetH3);
+	int refL1 = (int) floor(offsetL1);
+	int refL2 = (int) floor(offsetL2);
 	int temp;
 	double fractionH1 = offsetH1 - floor(offsetH1);
 	double fractionH2 = offsetH2 - floor(offsetH2);
@@ -172,7 +172,6 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = adclip7->fpdL * 1.18e-17;
 		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = adclip7->fpdR * 1.18e-17;
 
-
 		if (inputGain != 1.0) {
 			inputSampleL *= inputGain;
 			inputSampleR *= inputGain;
@@ -192,65 +191,65 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		adclip7->gcount--;
 
 		if (highslift > 0.0) {
-			//we have a big pile of b[] which is overshoots
+			// we have a big pile of b[] which is overshoots
 			temp = count + refH3;
-			highsL = -(adclip7->bL[temp] * minusH3); //less as value moves away from .0
-			highsL -= adclip7->bL[temp + 1]; //we can assume always using this in one way or another?
-			highsL -= (adclip7->bL[temp + 2] * fractionH3); //greater as value moves away from .0
-			highsL += (((adclip7->bL[temp] - adclip7->bL[temp + 1]) - (adclip7->bL[temp + 1] - adclip7->bL[temp + 2])) / 50); //interpolation hacks 'r us
-			highsL *= adjust; //add in the kernel elements backwards saves multiplies
-			//stage 3 is a negative add
-			highsR = -(adclip7->bR[temp] * minusH3); //less as value moves away from .0
-			highsR -= adclip7->bR[temp + 1]; //we can assume always using this in one way or another?
-			highsR -= (adclip7->bR[temp + 2] * fractionH3); //greater as value moves away from .0
-			highsR += (((adclip7->bR[temp] - adclip7->bR[temp + 1]) - (adclip7->bR[temp + 1] - adclip7->bR[temp + 2])) / 50); //interpolation hacks 'r us
-			highsR *= adjust; //add in the kernel elements backwards saves multiplies
-			//stage 3 is a negative add
+			highsL = -(adclip7->bL[temp] * minusH3); // less as value moves away from .0
+			highsL -= adclip7->bL[temp + 1]; // we can assume always using this in one way or another?
+			highsL -= (adclip7->bL[temp + 2] * fractionH3); // greater as value moves away from .0
+			highsL += (((adclip7->bL[temp] - adclip7->bL[temp + 1]) - (adclip7->bL[temp + 1] - adclip7->bL[temp + 2])) / 50); // interpolation hacks 'r us
+			highsL *= adjust; // add in the kernel elements backwards saves multiplies
+			// stage 3 is a negative add
+			highsR = -(adclip7->bR[temp] * minusH3); // less as value moves away from .0
+			highsR -= adclip7->bR[temp + 1]; // we can assume always using this in one way or another?
+			highsR -= (adclip7->bR[temp + 2] * fractionH3); // greater as value moves away from .0
+			highsR += (((adclip7->bR[temp] - adclip7->bR[temp + 1]) - (adclip7->bR[temp + 1] - adclip7->bR[temp + 2])) / 50); // interpolation hacks 'r us
+			highsR *= adjust; // add in the kernel elements backwards saves multiplies
+			// stage 3 is a negative add
 			temp = count + refH2;
-			highsL += (adclip7->bL[temp] * minusH2); //less as value moves away from .0
-			highsL += adclip7->bL[temp + 1]; //we can assume always using this in one way or another?
-			highsL += (adclip7->bL[temp + 2] * fractionH2); //greater as value moves away from .0
-			highsL -= (((adclip7->bL[temp] - adclip7->bL[temp + 1]) - (adclip7->bL[temp + 1] - adclip7->bL[temp + 2])) / 50); //interpolation hacks 'r us
-			highsL *= adjust; //add in the kernel elements backwards saves multiplies
-			//stage 2 is a positive feedback of the overshoot
-			highsR += (adclip7->bR[temp] * minusH2); //less as value moves away from .0
-			highsR += adclip7->bR[temp + 1]; //we can assume always using this in one way or another?
-			highsR += (adclip7->bR[temp + 2] * fractionH2); //greater as value moves away from .0
-			highsR -= (((adclip7->bR[temp] - adclip7->bR[temp + 1]) - (adclip7->bR[temp + 1] - adclip7->bR[temp + 2])) / 50); //interpolation hacks 'r us
-			highsR *= adjust; //add in the kernel elements backwards saves multiplies
-			//stage 2 is a positive feedback of the overshoot
+			highsL += (adclip7->bL[temp] * minusH2); // less as value moves away from .0
+			highsL += adclip7->bL[temp + 1]; // we can assume always using this in one way or another?
+			highsL += (adclip7->bL[temp + 2] * fractionH2); // greater as value moves away from .0
+			highsL -= (((adclip7->bL[temp] - adclip7->bL[temp + 1]) - (adclip7->bL[temp + 1] - adclip7->bL[temp + 2])) / 50); // interpolation hacks 'r us
+			highsL *= adjust; // add in the kernel elements backwards saves multiplies
+			// stage 2 is a positive feedback of the overshoot
+			highsR += (adclip7->bR[temp] * minusH2); // less as value moves away from .0
+			highsR += adclip7->bR[temp + 1]; // we can assume always using this in one way or another?
+			highsR += (adclip7->bR[temp + 2] * fractionH2); // greater as value moves away from .0
+			highsR -= (((adclip7->bR[temp] - adclip7->bR[temp + 1]) - (adclip7->bR[temp + 1] - adclip7->bR[temp + 2])) / 50); // interpolation hacks 'r us
+			highsR *= adjust; // add in the kernel elements backwards saves multiplies
+			// stage 2 is a positive feedback of the overshoot
 			temp = count + refH1;
-			highsL -= (adclip7->bL[temp] * minusH1); //less as value moves away from .0
-			highsL -= adclip7->bL[temp + 1]; //we can assume always using this in one way or another?
-			highsL -= (adclip7->bL[temp + 2] * fractionH1); //greater as value moves away from .0
-			highsL += (((adclip7->bL[temp] - adclip7->bL[temp + 1]) - (adclip7->bL[temp + 1] - adclip7->bL[temp + 2])) / 50); //interpolation hacks 'r us
-			highsL *= adjust; //add in the kernel elements backwards saves multiplies
-			//stage 1 is a negative feedback of the overshoot
-			highsR -= (adclip7->bR[temp] * minusH1); //less as value moves away from .0
-			highsR -= adclip7->bR[temp + 1]; //we can assume always using this in one way or another?
-			highsR -= (adclip7->bR[temp + 2] * fractionH1); //greater as value moves away from .0
-			highsR += (((adclip7->bR[temp] - adclip7->bR[temp + 1]) - (adclip7->bR[temp + 1] - adclip7->bR[temp + 2])) / 50); //interpolation hacks 'r us
-			highsR *= adjust; //add in the kernel elements backwards saves multiplies
-			//stage 1 is a negative feedback of the overshoot
-			//done with interpolated mostly negative feedback of the overshoot
+			highsL -= (adclip7->bL[temp] * minusH1); // less as value moves away from .0
+			highsL -= adclip7->bL[temp + 1]; // we can assume always using this in one way or another?
+			highsL -= (adclip7->bL[temp + 2] * fractionH1); // greater as value moves away from .0
+			highsL += (((adclip7->bL[temp] - adclip7->bL[temp + 1]) - (adclip7->bL[temp + 1] - adclip7->bL[temp + 2])) / 50); // interpolation hacks 'r us
+			highsL *= adjust; // add in the kernel elements backwards saves multiplies
+			// stage 1 is a negative feedback of the overshoot
+			highsR -= (adclip7->bR[temp] * minusH1); // less as value moves away from .0
+			highsR -= adclip7->bR[temp + 1]; // we can assume always using this in one way or another?
+			highsR -= (adclip7->bR[temp + 2] * fractionH1); // greater as value moves away from .0
+			highsR += (((adclip7->bR[temp] - adclip7->bR[temp + 1]) - (adclip7->bR[temp + 1] - adclip7->bR[temp + 2])) / 50); // interpolation hacks 'r us
+			highsR *= adjust; // add in the kernel elements backwards saves multiplies
+			// stage 1 is a negative feedback of the overshoot
+			// done with interpolated mostly negative feedback of the overshoot
 		}
 
 		bridgerectifier = sin(fabs(highsL) * hardness);
-		//this will wrap around and is scaled back by softness
-		//wrap around is the same principle as Fracture: no top limit to sin()
+		// this will wrap around and is scaled back by softness
+		// wrap around is the same principle as Fracture: no top limit to sin()
 		if (highsL > 0) highsL = bridgerectifier;
 		else highsL = -bridgerectifier;
 
 		bridgerectifier = sin(fabs(highsR) * hardness);
-		//this will wrap around and is scaled back by softness
-		//wrap around is the same principle as Fracture: no top limit to sin()
+		// this will wrap around and is scaled back by softness
+		// wrap around is the same principle as Fracture: no top limit to sin()
 		if (highsR > 0) highsR = bridgerectifier;
 		else highsR = -bridgerectifier;
 
 		if (subslift > 0.0) {
 			adclip7->lowsL *= subs;
 			adclip7->lowsR *= subs;
-			//going in we'll reel back some of the swing
+			// going in we'll reel back some of the swing
 			temp = count + refL1;
 
 			adclip7->lowsL -= adclip7->bL[temp + 127];
@@ -285,7 +284,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			adclip7->lowsL -= adclip7->bL[temp + 3];
 			adclip7->lowsL -= adclip7->bL[temp + 2];
 			adclip7->lowsL -= adclip7->bL[temp + 1];
-			//initial negative lobe
+			// initial negative lobe
 
 			adclip7->lowsR -= adclip7->bR[temp + 127];
 			adclip7->lowsR -= adclip7->bR[temp + 113];
@@ -319,13 +318,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			adclip7->lowsR -= adclip7->bR[temp + 3];
 			adclip7->lowsR -= adclip7->bR[temp + 2];
 			adclip7->lowsR -= adclip7->bR[temp + 1];
-			//initial negative lobe
+			// initial negative lobe
 
 			adclip7->lowsL *= subs;
 			adclip7->lowsL *= subs;
 			adclip7->lowsR *= subs;
 			adclip7->lowsR *= subs;
-			//twice, to minimize the suckout in low boost situations
+			// twice, to minimize the suckout in low boost situations
 			temp = count + refL2;
 
 			adclip7->lowsL += adclip7->bL[temp + 127];
@@ -360,7 +359,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			adclip7->lowsL += adclip7->bL[temp + 3];
 			adclip7->lowsL += adclip7->bL[temp + 2];
 			adclip7->lowsL += adclip7->bL[temp + 1];
-			//followup positive lobe
+			// followup positive lobe
 
 			adclip7->lowsR += adclip7->bR[temp + 127];
 			adclip7->lowsR += adclip7->bR[temp + 113];
@@ -394,22 +393,22 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			adclip7->lowsR += adclip7->bR[temp + 3];
 			adclip7->lowsR += adclip7->bR[temp + 2];
 			adclip7->lowsR += adclip7->bR[temp + 1];
-			//followup positive lobe
+			// followup positive lobe
 
 			adclip7->lowsL *= subs;
 			adclip7->lowsR *= subs;
-			//now we have the lows content to use
+			// now we have the lows content to use
 		}
 
 		bridgerectifier = sin(fabs(adclip7->lowsL) * softness);
-		//this will wrap around and is scaled back by hardness: hard = less bass push, more treble
-		//wrap around is the same principle as Fracture: no top limit to sin()
+		// this will wrap around and is scaled back by hardness: hard = less bass push, more treble
+		// wrap around is the same principle as Fracture: no top limit to sin()
 		if (adclip7->lowsL > 0) adclip7->lowsL = bridgerectifier;
 		else adclip7->lowsL = -bridgerectifier;
 
 		bridgerectifier = sin(fabs(adclip7->lowsR) * softness);
-		//this will wrap around and is scaled back by hardness: hard = less bass push, more treble
-		//wrap around is the same principle as Fracture: no top limit to sin()
+		// this will wrap around and is scaled back by hardness: hard = less bass push, more treble
+		// wrap around is the same principle as Fracture: no top limit to sin()
 		if (adclip7->lowsR > 0) adclip7->lowsR = bridgerectifier;
 		else adclip7->lowsR = -bridgerectifier;
 
@@ -446,12 +445,12 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleL > adclip7->refclipL && adclip7->refclipL > 0.9) adclip7->refclipL -= 0.01;
 		if (inputSampleL < -adclip7->refclipL && adclip7->refclipL > 0.9) adclip7->refclipL -= 0.01;
 		if (adclip7->refclipL < 0.99) adclip7->refclipL += 0.00001;
-		//adjust clip level on the fly
+		// adjust clip level on the fly
 
 		if (inputSampleR > adclip7->refclipR && adclip7->refclipR > 0.9) adclip7->refclipR -= 0.01;
 		if (inputSampleR < -adclip7->refclipR && adclip7->refclipR > 0.9) adclip7->refclipR -= 0.01;
 		if (adclip7->refclipR < 0.99) adclip7->refclipR += 0.00001;
-		//adjust clip level on the fly
+		// adjust clip level on the fly
 
 		if (adclip7->lastSampleL >= adclip7->refclipL) {
 			if (inputSampleL < adclip7->refclipL) adclip7->lastSampleL = ((adclip7->refclipL * hardness) + (inputSampleL * softness));
@@ -499,25 +498,25 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			case 2:
 				inputSampleL /= inputGain;
 				inputSampleR /= inputGain;
-				break; //Gain Match
+				break; // Gain Match
 			case 3:
 			case 4:
 				inputSampleL = overshootL + highsL + adclip7->lowsL;
 				inputSampleR = overshootR + highsR + adclip7->lowsR;
-				break; //Clip Only
+				break; // Clip Only
 			case 1:
 			default:
-				break; //Normal
+				break; // Normal
 		}
-		//this is our output mode switch, showing the effects
+		// this is our output mode switch, showing the effects
 
 		if (inputSampleL > adclip7->refclipL) inputSampleL = adclip7->refclipL;
 		if (inputSampleL < -adclip7->refclipL) inputSampleL = -adclip7->refclipL;
 		if (inputSampleR > adclip7->refclipR) inputSampleR = adclip7->refclipR;
 		if (inputSampleR < -adclip7->refclipR) inputSampleR = -adclip7->refclipR;
-		//final iron bar
+		// final iron bar
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float) inputSampleL, &expon);
 		adclip7->fpdL ^= adclip7->fpdL << 13;
@@ -528,8 +527,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		adclip7->fpdR ^= adclip7->fpdR << 13;
 		adclip7->fpdR ^= adclip7->fpdR >> 17;
 		adclip7->fpdR ^= adclip7->fpdR << 5;
-		inputSampleR += (((double) adclip7->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) adclip7->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -561,8 +560,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

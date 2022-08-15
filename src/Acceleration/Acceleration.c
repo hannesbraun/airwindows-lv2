@@ -24,7 +24,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 	double ataLastOutL;
 	double s1L;
 	double s2L;
@@ -163,7 +163,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		acceleration->o1L = senseL;
 		if (acceleration->o2L > senseL) senseL = acceleration->o2L;
 		if (acceleration->o3L > senseL) senseL = acceleration->o3L;
-		//sense on the most intense
+		// sense on the most intense
 
 		acceleration->s3R = acceleration->s2R;
 		acceleration->s2R = acceleration->s1R;
@@ -178,7 +178,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		acceleration->o1R = senseR;
 		if (acceleration->o2R > senseR) senseR = acceleration->o2R;
 		if (acceleration->o3R > senseR) senseR = acceleration->o3R;
-		//sense on the most intense
+		// sense on the most intense
 
 		if (senseL > 1.0) senseL = 1.0;
 		if (senseR > 1.0) senseR = 1.0;
@@ -205,7 +205,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float) inputSampleL, &expon);
 		acceleration->fpdL ^= acceleration->fpdL << 13;
@@ -217,7 +217,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		acceleration->fpdR ^= acceleration->fpdR >> 17;
 		acceleration->fpdR ^= acceleration->fpdR << 5;
 		inputSampleR += (((double) acceleration->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -249,8 +249,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

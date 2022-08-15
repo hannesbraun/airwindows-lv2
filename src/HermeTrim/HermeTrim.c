@@ -120,21 +120,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		side *= sidegain;
 		inputSampleL = (mid + side) * leftgain;
 		inputSampleR = (mid - side) * rightgain;
-		//contains mastergain and the gain trim fixing the mid/side
+		// contains mastergain and the gain trim fixing the mid/side
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		hermetrim->fpdL ^= hermetrim->fpdL << 13;
 		hermetrim->fpdL ^= hermetrim->fpdL >> 17;
 		hermetrim->fpdL ^= hermetrim->fpdL << 5;
-		inputSampleL += (((double)hermetrim->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) hermetrim->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		hermetrim->fpdR ^= hermetrim->fpdR << 13;
 		hermetrim->fpdR ^= hermetrim->fpdR >> 17;
 		hermetrim->fpdR ^= hermetrim->fpdR << 5;
-		inputSampleR += (((double)hermetrim->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) hermetrim->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -166,8 +166,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

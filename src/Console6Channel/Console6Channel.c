@@ -82,14 +82,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = console6Channel->fpdL * 1.18e-17;
 		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = console6Channel->fpdR * 1.18e-17;
 
-
 		if (gain != 1.0) {
 			inputSampleL *= gain;
 			inputSampleR *= gain;
 		}
 
-		//encode/decode courtesy of torridgristle under the MIT license
-		//Inverse Square 1-(1-x)^2 and 1-(1-x)^0.5
+		// encode/decode courtesy of torridgristle under the MIT license
+		// Inverse Square 1-(1-x)^2 and 1-(1-x)^0.5
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		else if (inputSampleL > 0.0) inputSampleL = 1.0 - pow(1.0 - inputSampleL, 2.0);
@@ -103,20 +102,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
 		else if (inputSampleR < 0.0) inputSampleR = -1.0 + pow(1.0 + inputSampleR, 2.0);
 
-
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		console6Channel->fpdL ^= console6Channel->fpdL << 13;
 		console6Channel->fpdL ^= console6Channel->fpdL >> 17;
 		console6Channel->fpdL ^= console6Channel->fpdL << 5;
-		inputSampleL += (((double)console6Channel->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) console6Channel->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		console6Channel->fpdR ^= console6Channel->fpdR << 13;
 		console6Channel->fpdR ^= console6Channel->fpdR >> 17;
 		console6Channel->fpdR ^= console6Channel->fpdR << 5;
-		inputSampleR += (((double)console6Channel->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) console6Channel->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -148,8 +146,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -73,7 +73,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double inputSampleR;
 	double outputSampleL;
 	double outputSampleR;
-	double trim = 2.302585092994045684017991; //natural logarithm of 10
+	double trim = 2.302585092994045684017991; // natural logarithm of 10
 
 	while (sampleFrames-- > 0) {
 		inputSampleL = *in1;
@@ -120,8 +120,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -142,7 +142,7 @@ typedef struct {
 
 	double feedbackR;
 
-	//these are delay lengths and same for both sides
+	// these are delay lengths and same for both sides
 	int alpA, delayA;
 	int alpB, delayB;
 	int alpC, delayC;
@@ -460,7 +460,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	if (feedbacklevel > 0.25 && feedbacklevel <= 0.5) feedbacklevel = 0.25; //-12db
 	if (feedbacklevel > 0.5 && feedbacklevel <= 0.99) feedbacklevel = 0.5; //-6db
 	if (feedbacklevel > 0.99) feedbacklevel = 1.0;
-	//we're forcing even the feedback level to be Midiverb-ized
+	// we're forcing even the feedback level to be Midiverb-ized
 	const double gain = *mv->gain;
 	const double wet = *mv->drywet;
 
@@ -511,7 +511,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgAR = avgtemp;
 				}
-			//allpass filter A
+			// allpass filter A
 			case 25:
 				allpasstemp = mv->alpB - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayB) {
@@ -542,7 +542,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgBR = avgtemp;
 				}
-			//allpass filter B
+			// allpass filter B
 			case 24:
 				allpasstemp = mv->alpC - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayC) {
@@ -573,7 +573,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgCR = avgtemp;
 				}
-			//allpass filter C
+			// allpass filter C
 			case 23:
 				allpasstemp = mv->alpD - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayD) {
@@ -604,7 +604,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgDR = avgtemp;
 				}
-			//allpass filter D
+			// allpass filter D
 			case 22:
 				allpasstemp = mv->alpE - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayE) {
@@ -635,7 +635,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgER = avgtemp;
 				}
-			//allpass filter E
+			// allpass filter E
 			case 21:
 				allpasstemp = mv->alpF - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayF) {
@@ -666,7 +666,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgFR = avgtemp;
 				}
-			//allpass filter F
+			// allpass filter F
 			case 20:
 				allpasstemp = mv->alpG - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayG) {
@@ -697,7 +697,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgGR = avgtemp;
 				}
-			//allpass filter G
+			// allpass filter G
 			case 19:
 				allpasstemp = mv->alpH - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayH) {
@@ -728,7 +728,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgHR = avgtemp;
 				}
-			//allpass filter H
+			// allpass filter H
 			case 18:
 				allpasstemp = mv->alpI - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayI) {
@@ -759,7 +759,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgIR = avgtemp;
 				}
-			//allpass filter I
+			// allpass filter I
 			case 17:
 				allpasstemp = mv->alpJ - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayJ) {
@@ -790,7 +790,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgJR = avgtemp;
 				}
-			//allpass filter J
+			// allpass filter J
 			case 16:
 				allpasstemp = mv->alpK - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayK) {
@@ -821,7 +821,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgKR = avgtemp;
 				}
-			//allpass filter K
+			// allpass filter K
 			case 15:
 				allpasstemp = mv->alpL - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayL) {
@@ -852,7 +852,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgLR = avgtemp;
 				}
-			//allpass filter L
+			// allpass filter L
 			case 14:
 				allpasstemp = mv->alpM - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayM) {
@@ -883,7 +883,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgMR = avgtemp;
 				}
-			//allpass filter M
+			// allpass filter M
 			case 13:
 				allpasstemp = mv->alpN - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayN) {
@@ -914,7 +914,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgNR = avgtemp;
 				}
-			//allpass filter N
+			// allpass filter N
 			case 12:
 				allpasstemp = mv->alpO - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayO) {
@@ -945,7 +945,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgOR = avgtemp;
 				}
-			//allpass filter O
+			// allpass filter O
 			case 11:
 				allpasstemp = mv->alpP - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayP) {
@@ -976,7 +976,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgPR = avgtemp;
 				}
-			//allpass filter P
+			// allpass filter P
 			case 10:
 				allpasstemp = mv->alpQ - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayQ) {
@@ -1007,7 +1007,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgQR = avgtemp;
 				}
-			//allpass filter Q
+			// allpass filter Q
 			case 9:
 				allpasstemp = mv->alpR - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayR) {
@@ -1038,7 +1038,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgRR = avgtemp;
 				}
-			//allpass filter R
+			// allpass filter R
 			case 8:
 				allpasstemp = mv->alpS - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayS) {
@@ -1069,7 +1069,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgSR = avgtemp;
 				}
-			//allpass filter S
+			// allpass filter S
 			case 7:
 				allpasstemp = mv->alpT - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayT) {
@@ -1100,7 +1100,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgTR = avgtemp;
 				}
-			//allpass filter T
+			// allpass filter T
 			case 6:
 				allpasstemp = mv->alpU - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayU) {
@@ -1131,7 +1131,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgUR = avgtemp;
 				}
-			//allpass filter U
+			// allpass filter U
 			case 5:
 				allpasstemp = mv->alpV - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayV) {
@@ -1162,7 +1162,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgVR = avgtemp;
 				}
-			//allpass filter V
+			// allpass filter V
 			case 4:
 				allpasstemp = mv->alpW - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayW) {
@@ -1193,7 +1193,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgWR = avgtemp;
 				}
-			//allpass filter W
+			// allpass filter W
 			case 3:
 				allpasstemp = mv->alpX - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayX) {
@@ -1224,7 +1224,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgXR = avgtemp;
 				}
-			//allpass filter X
+			// allpass filter X
 			case 2:
 				allpasstemp = mv->alpY - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayY) {
@@ -1255,7 +1255,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgYR = avgtemp;
 				}
-			//allpass filter Y
+			// allpass filter Y
 			case 1:
 				allpasstemp = mv->alpZ - 1;
 				if (allpasstemp < 0 || allpasstemp > mv->delayZ) {
@@ -1286,7 +1286,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 					inputSampleR *= 0.5;
 					mv->avgZR = avgtemp;
 				}
-				//allpass filter Z
+				// allpass filter Z
 		}
 
 		mv->feedbackL = inputSampleL * feedbacklevel;
@@ -1296,37 +1296,36 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleL *= gain;
 			inputSampleR *= gain;
 		}
-		//we can pad with the gain to tame distortyness from the PurestConsole code
+		// we can pad with the gain to tame distortyness from the PurestConsole code
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		//without this, you can get a NaN condition where it spits out DC offset at full blast!
+		// without this, you can get a NaN condition where it spits out DC offset at full blast!
 
 		inputSampleL = asin(inputSampleL);
 		inputSampleR = asin(inputSampleR);
-
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
-		//Dry/Wet control, defaults to the last slider
+		// Dry/Wet control, defaults to the last slider
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		mv->fpdL ^= mv->fpdL << 13;
 		mv->fpdL ^= mv->fpdL >> 17;
 		mv->fpdL ^= mv->fpdL << 5;
-		inputSampleL += (((double)mv->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) mv->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		mv->fpdR ^= mv->fpdR << 13;
 		mv->fpdR ^= mv->fpdR >> 17;
 		mv->fpdR ^= mv->fpdR << 5;
-		inputSampleR += (((double)mv->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) mv->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -1358,8 +1357,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

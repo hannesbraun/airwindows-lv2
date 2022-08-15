@@ -20,7 +20,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 
 	double lastSampleL;
 	double lastOutSampleL;
@@ -101,7 +101,6 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double bridgerectifier;
 	double combsample;
 
-
 	double inputSampleL;
 	double inputSampleR;
 	double drySampleL;
@@ -115,10 +114,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		drySampleL = inputSampleL;
 		drySampleR = inputSampleR;
 
-		//begin L
+		// begin L
 		slew = inputSampleL - desk->lastSampleL;
 		desk->lastSampleL = inputSampleL;
-		//Set up direct reference for slew
+		// Set up direct reference for slew
 
 		bridgerectifier = fabs(slew * slewgain);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.0;
@@ -127,16 +126,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		else slew = -(bridgerectifier / slewgain);
 
 		inputSampleL = (desk->lastOutSampleL * balanceA) + (desk->lastSampleL * balanceB) + slew;
-		//go from last slewed, but include some raw values
+		// go from last slewed, but include some raw values
 		desk->lastOutSampleL = inputSampleL;
-		//Set up slewed reference
+		// Set up slewed reference
 
 		combsample = fabs(drySampleL * desk->lastSampleL);
 		if (combsample > 1.0) combsample = 1.0;
-		//bailout for very high input gains
+		// bailout for very high input gains
 		inputSampleL -= (desk->lastSlewL * combsample * prevslew);
 		desk->lastSlewL = slew;
-		//slew interaction with previous slew
+		// slew interaction with previous slew
 
 		inputSampleL *= gain;
 		bridgerectifier = fabs(inputSampleL);
@@ -145,14 +144,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		if (inputSampleL > 0) inputSampleL = bridgerectifier;
 		else inputSampleL = -bridgerectifier;
-		//drive section
+		// drive section
 		inputSampleL /= gain;
-		//end L
+		// end L
 
-		//begin R
+		// begin R
 		slew = inputSampleR - desk->lastSampleR;
 		desk->lastSampleR = inputSampleR;
-		//Set up direct reference for slew
+		// Set up direct reference for slew
 
 		bridgerectifier = fabs(slew * slewgain);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.0;
@@ -161,16 +160,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		else slew = -(bridgerectifier / slewgain);
 
 		inputSampleR = (desk->lastOutSampleR * balanceA) + (desk->lastSampleR * balanceB) + slew;
-		//go from last slewed, but include some raw values
+		// go from last slewed, but include some raw values
 		desk->lastOutSampleR = inputSampleR;
-		//Set up slewed reference
+		// Set up slewed reference
 
 		combsample = fabs(drySampleR * desk->lastSampleR);
 		if (combsample > 1.0) combsample = 1.0;
-		//bailout for very high input gains
+		// bailout for very high input gains
 		inputSampleR -= (desk->lastSlewR * combsample * prevslew);
 		desk->lastSlewR = slew;
-		//slew interaction with previous slew
+		// slew interaction with previous slew
 
 		inputSampleR *= gain;
 		bridgerectifier = fabs(inputSampleR);
@@ -179,23 +178,23 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		if (inputSampleR > 0) inputSampleR = bridgerectifier;
 		else inputSampleR = -bridgerectifier;
-		//drive section
+		// drive section
 		inputSampleR /= gain;
-		//end R
+		// end R
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		desk->fpdL ^= desk->fpdL << 13;
 		desk->fpdL ^= desk->fpdL >> 17;
 		desk->fpdL ^= desk->fpdL << 5;
-		inputSampleL += (((double)desk->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) desk->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		desk->fpdR ^= desk->fpdR << 13;
 		desk->fpdR ^= desk->fpdR >> 17;
 		desk->fpdR ^= desk->fpdR << 5;
-		inputSampleR += (((double)desk->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) desk->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -227,8 +226,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

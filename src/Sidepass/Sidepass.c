@@ -108,24 +108,24 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			sidepass->iirSampleB = (sidepass->iirSampleB * (1 - iirAmount)) + (side * iirAmount);
 			side -= sidepass->iirSampleB;
 		}
-		//highpass section
+		// highpass section
 
 		inputSampleL = (mid + side) / 2.0;
 		inputSampleR = (mid - side) / 2.0;
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		sidepass->fpdL ^= sidepass->fpdL << 13;
 		sidepass->fpdL ^= sidepass->fpdL >> 17;
 		sidepass->fpdL ^= sidepass->fpdL << 5;
-		inputSampleL += (((double)sidepass->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) sidepass->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		sidepass->fpdR ^= sidepass->fpdR << 13;
 		sidepass->fpdR ^= sidepass->fpdR >> 17;
 		sidepass->fpdR ^= sidepass->fpdR << 5;
-		inputSampleR += (((double)sidepass->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) sidepass->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -157,8 +157,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

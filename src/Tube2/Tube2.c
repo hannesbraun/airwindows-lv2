@@ -101,9 +101,9 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double inputPad = *tube2->inputPad;
 	double iterations = 1.0 - *tube2->tube;
 	int powerfactor = (9.0 * iterations) + 1;
-	double asymPad = (double)powerfactor;
-	double gainscaling = 1.0 / (double)(powerfactor + 1);
-	double outputscaling = 1.0 + (1.0 / (double)(powerfactor));
+	double asymPad = (double) powerfactor;
+	double gainscaling = 1.0 / (double) (powerfactor + 1);
+	double outputscaling = 1.0 + (1.0 / (double) (powerfactor));
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -125,41 +125,41 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR += tube2->previousSampleB;
 			tube2->previousSampleB = stored;
 			inputSampleR *= 0.5;
-		} //for high sample rates on this plugin we are going to do a simple average
+		} // for high sample rates on this plugin we are going to do a simple average
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
 
-		//flatten bottom, point top of sine waveshaper L
+		// flatten bottom, point top of sine waveshaper L
 		inputSampleL /= asymPad;
 		double sharpen = -inputSampleL;
 		if (sharpen > 0.0) sharpen = 1.0 + sqrt(sharpen);
 		else sharpen = 1.0 - sqrt(-sharpen);
 		inputSampleL -= inputSampleL * fabs(inputSampleL) * sharpen * 0.25;
-		//this will take input from exactly -1.0 to 1.0 max
+		// this will take input from exactly -1.0 to 1.0 max
 		inputSampleL *= asymPad;
-		//flatten bottom, point top of sine waveshaper R
+		// flatten bottom, point top of sine waveshaper R
 		inputSampleR /= asymPad;
 		sharpen = -inputSampleR;
 		if (sharpen > 0.0) sharpen = 1.0 + sqrt(sharpen);
 		else sharpen = 1.0 - sqrt(-sharpen);
 		inputSampleR -= inputSampleR * fabs(inputSampleR) * sharpen * 0.25;
-		//this will take input from exactly -1.0 to 1.0 max
+		// this will take input from exactly -1.0 to 1.0 max
 		inputSampleR *= asymPad;
-		//end first asym section: later boosting can mitigate the extreme
-		//softclipping of one side of the wave
-		//and we are asym clipping more when Tube is cranked, to compensate
+		// end first asym section: later boosting can mitigate the extreme
+		// softclipping of one side of the wave
+		// and we are asym clipping more when Tube is cranked, to compensate
 
-		//original Tube algorithm: powerfactor widens the more linear region of the wave
-		double factor = inputSampleL; //Left channel
+		// original Tube algorithm: powerfactor widens the more linear region of the wave
+		double factor = inputSampleL; // Left channel
 		for (int x = 0; x < powerfactor; x++) factor *= inputSampleL;
 		if ((powerfactor % 2 == 1) && (inputSampleL != 0.0)) factor = (factor / inputSampleL) * fabs(inputSampleL);
 		factor *= gainscaling;
 		inputSampleL -= factor;
 		inputSampleL *= outputscaling;
-		factor = inputSampleR; //Right channel
+		factor = inputSampleR; // Right channel
 		for (int x = 0; x < powerfactor; x++) factor *= inputSampleR;
 		if ((powerfactor % 2 == 1) && (inputSampleR != 0.0)) factor = (factor / inputSampleR) * fabs(inputSampleR);
 		factor *= gainscaling;
@@ -175,54 +175,54 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			inputSampleR += tube2->previousSampleD;
 			tube2->previousSampleD = stored;
 			inputSampleR *= 0.5;
-		} //for high sample rates on this plugin we are going to do a simple average
-		//end original Tube. Now we have a boosted fat sound peaking at 0dB exactly
+		} // for high sample rates on this plugin we are going to do a simple average
+		// end original Tube. Now we have a boosted fat sound peaking at 0dB exactly
 
-		//hysteresis and spiky fuzz L
+		// hysteresis and spiky fuzz L
 		double slew = tube2->previousSampleE - inputSampleL;
 		if (overallscale > 1.9) {
 			double stored = inputSampleL;
 			inputSampleL += tube2->previousSampleE;
 			tube2->previousSampleE = stored;
 			inputSampleL *= 0.5;
-		} else tube2->previousSampleE = inputSampleL; //for this, need previousSampleC always
+		} else tube2->previousSampleE = inputSampleL; // for this, need previousSampleC always
 		if (slew > 0.0) slew = 1.0 + (sqrt(slew) * 0.5);
 		else slew = 1.0 - (sqrt(-slew) * 0.5);
 		inputSampleL -= inputSampleL * fabs(inputSampleL) * slew * gainscaling;
-		//reusing gainscaling that's part of another algorithm
+		// reusing gainscaling that's part of another algorithm
 		if (inputSampleL > 0.52) inputSampleL = 0.52;
 		if (inputSampleL < -0.52) inputSampleL = -0.52;
 		inputSampleL *= 1.923076923076923;
-		//hysteresis and spiky fuzz R
+		// hysteresis and spiky fuzz R
 		slew = tube2->previousSampleF - inputSampleR;
 		if (overallscale > 1.9) {
 			double stored = inputSampleR;
 			inputSampleR += tube2->previousSampleF;
 			tube2->previousSampleF = stored;
 			inputSampleR *= 0.5;
-		} else tube2->previousSampleF = inputSampleR; //for this, need previousSampleC always
+		} else tube2->previousSampleF = inputSampleR; // for this, need previousSampleC always
 		if (slew > 0.0) slew = 1.0 + (sqrt(slew) * 0.5);
 		else slew = 1.0 - (sqrt(-slew) * 0.5);
 		inputSampleR -= inputSampleR * fabs(inputSampleR) * slew * gainscaling;
-		//reusing gainscaling that's part of another algorithm
+		// reusing gainscaling that's part of another algorithm
 		if (inputSampleR > 0.52) inputSampleR = 0.52;
 		if (inputSampleR < -0.52) inputSampleR = -0.52;
 		inputSampleR *= 1.923076923076923;
-		//end hysteresis and spiky fuzz section
+		// end hysteresis and spiky fuzz section
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		tube2->fpdL ^= tube2->fpdL << 13;
 		tube2->fpdL ^= tube2->fpdL >> 17;
 		tube2->fpdL ^= tube2->fpdL << 5;
-		inputSampleL += (((double)tube2->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) tube2->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		tube2->fpdR ^= tube2->fpdR << 13;
 		tube2->fpdR ^= tube2->fpdR >> 17;
 		tube2->fpdR ^= tube2->fpdR << 5;
-		inputSampleR += (((double)tube2->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) tube2->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -254,8 +254,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -79,7 +79,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	}
 	ultrasoniclite->biquadA[1] = 0.70710678;
 
-	double K = tan(M_PI * ultrasoniclite->biquadA[0]); //lowpass
+	double K = tan(M_PI * ultrasoniclite->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / ultrasoniclite->biquadA[1] + K * K);
 	ultrasoniclite->biquadA[2] = K * K * norm;
 	ultrasoniclite->biquadA[3] = 2.0 * ultrasoniclite->biquadA[2];
@@ -98,28 +98,28 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		ultrasoniclite->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		ultrasoniclite->biquadA[10] = ultrasoniclite->biquadA[9];
-		ultrasoniclite->biquadA[9] = inputSampleL; //DF1 left
+		ultrasoniclite->biquadA[9] = inputSampleL; // DF1 left
 
 		double outSampleR = ultrasoniclite->biquadA[2] * inputSampleR + ultrasoniclite->biquadA[3] * ultrasoniclite->biquadA[11] + ultrasoniclite->biquadA[4] * ultrasoniclite->biquadA[12] - ultrasoniclite->biquadA[5] * ultrasoniclite->biquadA[13] - ultrasoniclite->biquadA[6] * ultrasoniclite->biquadA[14];
 		ultrasoniclite->biquadA[12] = ultrasoniclite->biquadA[11];
 		ultrasoniclite->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		ultrasoniclite->biquadA[14] = ultrasoniclite->biquadA[13];
-		ultrasoniclite->biquadA[13] = inputSampleR; //DF1 right
+		ultrasoniclite->biquadA[13] = inputSampleR; // DF1 right
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		ultrasoniclite->fpdL ^= ultrasoniclite->fpdL << 13;
 		ultrasoniclite->fpdL ^= ultrasoniclite->fpdL >> 17;
 		ultrasoniclite->fpdL ^= ultrasoniclite->fpdL << 5;
-		inputSampleL += (((double)ultrasoniclite->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) ultrasoniclite->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		ultrasoniclite->fpdR ^= ultrasoniclite->fpdR << 13;
 		ultrasoniclite->fpdR ^= ultrasoniclite->fpdR >> 17;
 		ultrasoniclite->fpdR ^= ultrasoniclite->fpdR << 5;
-		inputSampleR += (((double)ultrasoniclite->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) ultrasoniclite->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -151,8 +151,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

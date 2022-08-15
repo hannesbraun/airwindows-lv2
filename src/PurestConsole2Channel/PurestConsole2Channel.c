@@ -79,7 +79,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	purestConsole2Channel->biquadA[0] = 30000.0 / purestConsole2Channel->sampleRate;
 	purestConsole2Channel->biquadA[1] = 0.618033988749894848204586;
 
-	double K = tan(M_PI * purestConsole2Channel->biquadA[0]); //lowpass
+	double K = tan(M_PI * purestConsole2Channel->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / purestConsole2Channel->biquadA[1] + K * K);
 	purestConsole2Channel->biquadA[2] = K * K * norm;
 	purestConsole2Channel->biquadA[3] = 2.0 * purestConsole2Channel->biquadA[2];
@@ -99,13 +99,13 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			purestConsole2Channel->biquadA[7] = inputSampleL;
 			inputSampleL = tempSample;
 			purestConsole2Channel->biquadA[10] = purestConsole2Channel->biquadA[9];
-			purestConsole2Channel->biquadA[9] = inputSampleL; //DF1 left
+			purestConsole2Channel->biquadA[9] = inputSampleL; // DF1 left
 			tempSample = purestConsole2Channel->biquadA[2] * inputSampleR + purestConsole2Channel->biquadA[3] * purestConsole2Channel->biquadA[11] + purestConsole2Channel->biquadA[4] * purestConsole2Channel->biquadA[12] - purestConsole2Channel->biquadA[5] * purestConsole2Channel->biquadA[13] - purestConsole2Channel->biquadA[6] * purestConsole2Channel->biquadA[14];
 			purestConsole2Channel->biquadA[12] = purestConsole2Channel->biquadA[11];
 			purestConsole2Channel->biquadA[11] = inputSampleR;
 			inputSampleR = tempSample;
 			purestConsole2Channel->biquadA[14] = purestConsole2Channel->biquadA[13];
-			purestConsole2Channel->biquadA[13] = inputSampleR; //DF1 right
+			purestConsole2Channel->biquadA[13] = inputSampleR; // DF1 right
 		}
 
 		if (inputSampleL > 1.57079633) inputSampleL = 1.57079633;
@@ -115,21 +115,21 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		inputSampleL = sin(inputSampleL);
 		inputSampleR = sin(inputSampleR);
-		//amplitude aspect
+		// amplitude aspect
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		purestConsole2Channel->fpdL ^= purestConsole2Channel->fpdL << 13;
 		purestConsole2Channel->fpdL ^= purestConsole2Channel->fpdL >> 17;
 		purestConsole2Channel->fpdL ^= purestConsole2Channel->fpdL << 5;
-		inputSampleL += (((double)purestConsole2Channel->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) purestConsole2Channel->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		purestConsole2Channel->fpdR ^= purestConsole2Channel->fpdR << 13;
 		purestConsole2Channel->fpdR ^= purestConsole2Channel->fpdR >> 17;
 		purestConsole2Channel->fpdR ^= purestConsole2Channel->fpdR << 5;
-		inputSampleR += (((double)purestConsole2Channel->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) purestConsole2Channel->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -161,8 +161,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

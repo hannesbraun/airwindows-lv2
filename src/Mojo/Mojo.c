@@ -89,24 +89,24 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		double mojo = pow(fabs(inputSampleL), 0.25);
 		if (mojo > 0.0) inputSampleL = (sin(inputSampleL * mojo * M_PI * 0.5) / mojo) * 0.987654321;
-		//mojo is the one that flattens WAAAAY out very softly before wavefolding
+		// mojo is the one that flattens WAAAAY out very softly before wavefolding
 		mojo = pow(fabs(inputSampleR), 0.25);
 		if (mojo > 0.0) inputSampleR = (sin(inputSampleR * mojo * M_PI * 0.5) / mojo) * 0.987654321;
-		//mojo is the one that flattens WAAAAY out very softly before wavefolding
+		// mojo is the one that flattens WAAAAY out very softly before wavefolding
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		mojoInstance->fpdL ^= mojoInstance->fpdL << 13;
 		mojoInstance->fpdL ^= mojoInstance->fpdL >> 17;
 		mojoInstance->fpdL ^= mojoInstance->fpdL << 5;
-		inputSampleL += (((double)mojoInstance->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) mojoInstance->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		mojoInstance->fpdR ^= mojoInstance->fpdR << 13;
 		mojoInstance->fpdR ^= mojoInstance->fpdR >> 17;
 		mojoInstance->fpdR ^= mojoInstance->fpdR << 5;
-		inputSampleR += (((double)mojoInstance->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) mojoInstance->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -138,8 +138,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

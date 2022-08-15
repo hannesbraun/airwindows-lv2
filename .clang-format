@@ -1,0 +1,16 @@
+﻿---
+AlignTrailingComments: false
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+BinPackArguments: false
+BreakBeforeBraces: Linux
+ColumnLimit: '0'
+ContinuationIndentWidth: '8'
+IndentCaseLabels: true
+IndentWidth: '8'
+Language: Cpp
+PointerAlignment: Left
+SpaceAfterCStyleCast: true
+UseTab: ForContinuationAndIndentation
+
+...

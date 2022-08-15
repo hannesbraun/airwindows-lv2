@@ -173,8 +173,8 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double nonLin = 1.0 + ((1.0 - *capacitor2->nonlin) * 6.0);
 	double nonLinTrim = 1.5 / cbrt(nonLin);
 	capacitor2->wetChase = *capacitor2->drywet;
-	//should not scale with sample rate, because values reaching 1 are important
-	//to its ability to bypass when set to max
+	// should not scale with sample rate, because values reaching 1 are important
+	// to its ability to bypass when set to max
 	double lowpassSpeed = 300 / (fabs(capacitor2->lastLowpass - capacitor2->lowpassChase) + 1.0);
 	double highpassSpeed = 300 / (fabs(capacitor2->lastHighpass - capacitor2->highpassChase) + 1.0);
 	double wetSpeed = 300 / (fabs(capacitor2->lastWet - capacitor2->wetChase) + 1.0);
@@ -194,16 +194,16 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		double dielectricScaleR = fabs(2.0 - ((inputSampleR + nonLin) / nonLin));
 
 		capacitor2->lowpassBaseAmount = (((capacitor2->lowpassBaseAmount * lowpassSpeed) + capacitor2->lowpassChase) / (lowpassSpeed + 1.0));
-		//positive voltage will mean lower capacitance when capacitor is barium titanate
-		//on the lowpass, higher pressure means positive swings/smaller cap/larger value for lowpassAmount
+		// positive voltage will mean lower capacitance when capacitor is barium titanate
+		// on the lowpass, higher pressure means positive swings/smaller cap/larger value for lowpassAmount
 		double lowpassAmountL = capacitor2->lowpassBaseAmount * dielectricScaleL;
 		double invLowpassL = 1.0 - lowpassAmountL;
 		double lowpassAmountR = capacitor2->lowpassBaseAmount * dielectricScaleR;
 		double invLowpassR = 1.0 - lowpassAmountR;
 
 		capacitor2->highpassBaseAmount = (((capacitor2->highpassBaseAmount * highpassSpeed) + capacitor2->highpassChase) / (highpassSpeed + 1.0));
-		//positive voltage will mean lower capacitance when capacitor is barium titanate
-		//on the highpass, higher pressure means positive swings/smaller cap/larger value for highpassAmount
+		// positive voltage will mean lower capacitance when capacitor is barium titanate
+		// on the highpass, higher pressure means positive swings/smaller cap/larger value for highpassAmount
 		double highpassAmountL = capacitor2->highpassBaseAmount * dielectricScaleL;
 		double invHighpassL = 1.0 - highpassAmountL;
 		double highpassAmountR = capacitor2->highpassBaseAmount * dielectricScaleR;
@@ -371,25 +371,25 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				inputSampleR = capacitor2->iirLowpassFR;
 				break;
 		}
-		//Highpass Filter chunk. This is three poles of IIR highpass, with a 'gearbox' that progressively
-		//steepens the filter after minimizing artifacts.
+		// Highpass Filter chunk. This is three poles of IIR highpass, with a 'gearbox' that progressively
+		// steepens the filter after minimizing artifacts.
 
 		inputSampleL = (drySampleL * (1.0 - capacitor2->wet)) + (inputSampleL * nonLinTrim * capacitor2->wet);
 		inputSampleR = (drySampleR * (1.0 - capacitor2->wet)) + (inputSampleR * nonLinTrim * capacitor2->wet);
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		capacitor2->fpdL ^= capacitor2->fpdL << 13;
 		capacitor2->fpdL ^= capacitor2->fpdL >> 17;
 		capacitor2->fpdL ^= capacitor2->fpdL << 5;
-		inputSampleL += (((double)capacitor2->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) capacitor2->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		capacitor2->fpdR ^= capacitor2->fpdR << 13;
 		capacitor2->fpdR ^= capacitor2->fpdR >> 17;
 		capacitor2->fpdR ^= capacitor2->fpdR << 5;
-		inputSampleR += (((double)capacitor2->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) capacitor2->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -421,8 +421,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

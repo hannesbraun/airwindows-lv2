@@ -28,8 +28,8 @@ typedef struct {
 	const float* fmDepth;
 	const float* invWet;
 
-	double pL[16386]; //this is processed, not raw incoming samples
-	double pR[16386]; //this is processed, not raw incoming samples
+	double pL[16386]; // this is processed, not raw incoming samples
+	double pR[16386]; // this is processed, not raw incoming samples
 	double sweep;
 	double sweepB;
 	int gcount;
@@ -136,7 +136,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	double speedB = pow(0.1 + *vibrato->fmSpeed, 6);
 	double depthB = pow(*vibrato->fmDepth, 3) / sqrt(speedB);
 	double tupi = 3.141592653589793238 * 2.0;
-	double wet = *vibrato->invWet; //note: inv/dry/wet
+	double wet = *vibrato->invWet; // note: inv/dry/wet
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -175,7 +175,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		inputSampleR += vibrato->airFactorR;
 
 		vibrato->flip = !vibrato->flip;
-		//air, compensates for loss of highs in the interpolation
+		// air, compensates for loss of highs in the interpolation
 
 		if (vibrato->gcount < 1 || vibrato->gcount > 8192) {
 			vibrato->gcount = 8192;
@@ -185,18 +185,18 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		vibrato->pR[count + 8192] = vibrato->pR[count] = inputSampleR;
 
 		double offset = depth + (depth * sin(vibrato->sweep));
-		count += (int)floor(offset);
+		count += (int) floor(offset);
 
-		inputSampleL = vibrato->pL[count] * (1.0 - (offset - floor(offset))); //less as value moves away from .0
-		inputSampleL += vibrato->pL[count + 1]; //we can assume always using this in one way or another?
-		inputSampleL += vibrato->pL[count + 2] * (offset - floor(offset)); //greater as value moves away from .0
-		inputSampleL -= ((vibrato->pL[count] - vibrato->pL[count + 1]) - (vibrato->pL[count + 1] - vibrato->pL[count + 2])) / 50.0; //interpolation hacks 'r us
+		inputSampleL = vibrato->pL[count] * (1.0 - (offset - floor(offset))); // less as value moves away from .0
+		inputSampleL += vibrato->pL[count + 1]; // we can assume always using this in one way or another?
+		inputSampleL += vibrato->pL[count + 2] * (offset - floor(offset)); // greater as value moves away from .0
+		inputSampleL -= ((vibrato->pL[count] - vibrato->pL[count + 1]) - (vibrato->pL[count + 1] - vibrato->pL[count + 2])) / 50.0; // interpolation hacks 'r us
 		inputSampleL *= 0.5; // gain trim
 
-		inputSampleR = vibrato->pR[count] * (1.0 - (offset - floor(offset))); //less as value moves away from .0
-		inputSampleR += vibrato->pR[count + 1]; //we can assume always using this in one way or another?
-		inputSampleR += vibrato->pR[count + 2] * (offset - floor(offset)); //greater as value moves away from .0
-		inputSampleR -= ((vibrato->pR[count] - vibrato->pR[count + 1]) - (vibrato->pR[count + 1] - vibrato->pR[count + 2])) / 50.0; //interpolation hacks 'r us
+		inputSampleR = vibrato->pR[count] * (1.0 - (offset - floor(offset))); // less as value moves away from .0
+		inputSampleR += vibrato->pR[count + 1]; // we can assume always using this in one way or another?
+		inputSampleR += vibrato->pR[count + 2] * (offset - floor(offset)); // greater as value moves away from .0
+		inputSampleR -= ((vibrato->pR[count] - vibrato->pR[count + 1]) - (vibrato->pR[count + 1] - vibrato->pR[count + 2])) / 50.0; // interpolation hacks 'r us
 		inputSampleR *= 0.5; // gain trim
 
 		vibrato->sweep += (speed + (speedB * sin(vibrato->sweepB) * depthB));
@@ -205,33 +205,33 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			vibrato->sweep -= tupi;
 		}
 		if (vibrato->sweep < 0.0) {
-			vibrato->sweep += tupi;       //through zero FM
+			vibrato->sweep += tupi; // through zero FM
 		}
 		if (vibrato->sweepB > tupi) {
 			vibrato->sweepB -= tupi;
 		}
 		vibrato->gcount--;
-		//still scrolling through the samples, remember
+		// still scrolling through the samples, remember
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - fabs(wet)));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - fabs(wet)));
 		}
-		//Inv/Dry/Wet control
+		// Inv/Dry/Wet control
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		vibrato->fpdL ^= vibrato->fpdL << 13;
 		vibrato->fpdL ^= vibrato->fpdL >> 17;
 		vibrato->fpdL ^= vibrato->fpdL << 5;
-		inputSampleL += (((double)vibrato->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) vibrato->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		vibrato->fpdR ^= vibrato->fpdR << 13;
 		vibrato->fpdR ^= vibrato->fpdR >> 17;
 		vibrato->fpdR ^= vibrato->fpdR << 5;
-		inputSampleR += (((double)vibrato->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) vibrato->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -263,8 +263,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -121,39 +121,39 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out2 = srsly2->output[1];
 
 	double sampleRate = srsly2->sampleRate;
-	if (sampleRate < 22000) sampleRate = 22000; //keep biquads in range
+	if (sampleRate < 22000) sampleRate = 22000; // keep biquads in range
 	double tempSample;
 
-	srsly2->biquadM2[0] = 2000 / sampleRate; //up
-	srsly2->biquadM7[0] = 7000 / sampleRate; //down
-	srsly2->biquadM10[0] = 10000 / sampleRate; //down
+	srsly2->biquadM2[0] = 2000 / sampleRate; // up
+	srsly2->biquadM7[0] = 7000 / sampleRate; // down
+	srsly2->biquadM10[0] = 10000 / sampleRate; // down
 
-	srsly2->biquadL3[0] = 3000 / sampleRate; //up
-	srsly2->biquadL7[0] = 7000 / sampleRate; //way up
-	srsly2->biquadR3[0] = 3000 / sampleRate; //up
-	srsly2->biquadR7[0] = 7000 / sampleRate; //way up
+	srsly2->biquadL3[0] = 3000 / sampleRate; // up
+	srsly2->biquadL7[0] = 7000 / sampleRate; // way up
+	srsly2->biquadR3[0] = 3000 / sampleRate; // up
+	srsly2->biquadR7[0] = 7000 / sampleRate; // way up
 
-	srsly2->biquadS3[0] = 3000 / sampleRate; //up
-	srsly2->biquadS5[0] = 5000 / sampleRate; //way down
+	srsly2->biquadS3[0] = 3000 / sampleRate; // up
+	srsly2->biquadS5[0] = 5000 / sampleRate; // way down
 
 	double focusM = 15.0 - (*srsly2->center * 10.0);
 	double focusS = 21.0 - (*srsly2->space * 15.0);
-	double Q = *srsly2->q + 0.25; //add Q control: from half to double intensity
+	double Q = *srsly2->q + 0.25; // add Q control: from half to double intensity
 	double gainM = *srsly2->center * 2.0;
 	double gainS = *srsly2->space * 2.0;
 	if (gainS > 1.0) gainM /= gainS;
 	if (gainM > 1.0) gainM = 1.0;
 
-	srsly2->biquadM2[1] = focusM * 0.25 * Q; //Q, mid 2K boost is much broader
-	srsly2->biquadM7[1] = focusM * Q; //Q
-	srsly2->biquadM10[1] = focusM * Q; //Q
-	srsly2->biquadS3[1] = focusM * Q; //Q
-	srsly2->biquadS5[1] = focusM * Q; //Q
+	srsly2->biquadM2[1] = focusM * 0.25 * Q; // Q, mid 2K boost is much broader
+	srsly2->biquadM7[1] = focusM * Q; // Q
+	srsly2->biquadM10[1] = focusM * Q; // Q
+	srsly2->biquadS3[1] = focusM * Q; // Q
+	srsly2->biquadS5[1] = focusM * Q; // Q
 
-	srsly2->biquadL3[1] = focusS * Q; //Q
-	srsly2->biquadL7[1] = focusS * Q; //Q
-	srsly2->biquadR3[1] = focusS * Q; //Q
-	srsly2->biquadR7[1] = focusS * Q; //Q
+	srsly2->biquadL3[1] = focusS * Q; // Q
+	srsly2->biquadL7[1] = focusS * Q; // Q
+	srsly2->biquadR3[1] = focusS * Q; // Q
+	srsly2->biquadR7[1] = focusS * Q; // Q
 
 	double K = tan(M_PI * srsly2->biquadM2[0]);
 	double norm = 1.0 / (1.0 + K / srsly2->biquadM2[1] + K * K);
@@ -218,12 +218,14 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	srsly2->biquadS5[5] = 2.0 * (K * K - 1.0) * norm;
 	srsly2->biquadS5[6] = (1.0 - K / srsly2->biquadS5[1] + K * K) * norm;
 
-	double depthM = pow(*srsly2->center, 2) * 2.0;; //proportion to mix in the filtered stuff
-	double depthS = pow(*srsly2->space, 2) * 2.0;; //proportion to mix in the filtered stuff
-	double level = *srsly2->level; //output pad
-	double wet = *srsly2->dryWet; //dry/wet
+	double depthM = pow(*srsly2->center, 2) * 2.0;
+	; // proportion to mix in the filtered stuff
+	double depthS = pow(*srsly2->space, 2) * 2.0;
+	; // proportion to mix in the filtered stuff
+	double level = *srsly2->level; // output pad
+	double wet = *srsly2->dryWet; // dry/wet
 
-	//biquad contains these values:
+	// biquad contains these values:
 	//[0] is frequency: 0.000001 to 0.499999 is near-zero to near-Nyquist
 	//[1] is resonance, 0.7071 is Butterworth. Also can't be zero
 	//[2] is a0 but you need distinct ones for additional biquad instances so it's here
@@ -246,90 +248,89 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		inputSampleL = sin(inputSampleL);
 		inputSampleR = sin(inputSampleR);
-		//encode Console5: good cleanness
+		// encode Console5: good cleanness
 
 		double mid = inputSampleL + inputSampleR;
-		double rawmid = mid * 0.5; //we'll use this to isolate L&R a little
+		double rawmid = mid * 0.5; // we'll use this to isolate L&R a little
 		double side = inputSampleL - inputSampleR;
 		double boostside = side * depthS;
-		//assign mid and side.Between these sections, you can do mid/side processing
+		// assign mid and side.Between these sections, you can do mid/side processing
 
 		tempSample = (mid * srsly2->biquadM2[2]) + srsly2->biquadM2[7];
 		srsly2->biquadM2[7] = (-tempSample * srsly2->biquadM2[5]) + srsly2->biquadM2[8];
 		srsly2->biquadM2[8] = (mid * srsly2->biquadM2[4]) - (tempSample * srsly2->biquadM2[6]);
-		double M2Sample = tempSample; //like mono AU, 7 and 8 store L channel
+		double M2Sample = tempSample; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (mid * srsly2->biquadM7[2]) + srsly2->biquadM7[7];
 		srsly2->biquadM7[7] = (-tempSample * srsly2->biquadM7[5]) + srsly2->biquadM7[8];
 		srsly2->biquadM7[8] = (mid * srsly2->biquadM7[4]) - (tempSample * srsly2->biquadM7[6]);
-		double M7Sample = -tempSample * 2.0; //like mono AU, 7 and 8 store L channel
+		double M7Sample = -tempSample * 2.0; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (mid * srsly2->biquadM10[2]) + srsly2->biquadM10[7];
 		srsly2->biquadM10[7] = (-tempSample * srsly2->biquadM10[5]) + srsly2->biquadM10[8];
 		srsly2->biquadM10[8] = (mid * srsly2->biquadM10[4]) - (tempSample * srsly2->biquadM10[6]);
-		double M10Sample = -tempSample * 2.0; //like mono AU, 7 and 8 store L channel
-		//mid
+		double M10Sample = -tempSample * 2.0; // like mono AU, 7 and 8 store L channel
+		// mid
 
 		tempSample = (side * srsly2->biquadS3[2]) + srsly2->biquadS3[7];
 		srsly2->biquadS3[7] = (-tempSample * srsly2->biquadS3[5]) + srsly2->biquadS3[8];
 		srsly2->biquadS3[8] = (side * srsly2->biquadS3[4]) - (tempSample * srsly2->biquadS3[6]);
-		double S3Sample = tempSample * 2.0; //like mono AU, 7 and 8 store L channel
+		double S3Sample = tempSample * 2.0; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (side * srsly2->biquadS5[2]) + srsly2->biquadS5[7];
 		srsly2->biquadS5[7] = (-tempSample * srsly2->biquadS5[5]) + srsly2->biquadS5[8];
 		srsly2->biquadS5[8] = (side * srsly2->biquadS5[4]) - (tempSample * srsly2->biquadS5[6]);
-		double S5Sample = -tempSample * 5.0; //like mono AU, 7 and 8 store L channel
+		double S5Sample = -tempSample * 5.0; // like mono AU, 7 and 8 store L channel
 
 		mid = (M2Sample + M7Sample + M10Sample) * depthM;
 		side = (S3Sample + S5Sample + boostside) * depthS;
 
 		double msOutSampleL = (mid + side) / 2.0;
 		double msOutSampleR = (mid - side) / 2.0;
-		//unassign mid and side
+		// unassign mid and side
 
 		double isoSampleL = inputSampleL - rawmid;
-		double isoSampleR = inputSampleR - rawmid; //trying to isolate L and R a little
+		double isoSampleR = inputSampleR - rawmid; // trying to isolate L and R a little
 
 		tempSample = (isoSampleL * srsly2->biquadL3[2]) + srsly2->biquadL3[7];
 		srsly2->biquadL3[7] = (-tempSample * srsly2->biquadL3[5]) + srsly2->biquadL3[8];
 		srsly2->biquadL3[8] = (isoSampleL * srsly2->biquadL3[4]) - (tempSample * srsly2->biquadL3[6]);
-		double L3Sample = tempSample; //like mono AU, 7 and 8 store L channel
+		double L3Sample = tempSample; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (isoSampleR * srsly2->biquadR3[2]) + srsly2->biquadR3[9];
 		srsly2->biquadR3[9] = (-tempSample * srsly2->biquadR3[5]) + srsly2->biquadR3[10];
 		srsly2->biquadR3[10] = (isoSampleR * srsly2->biquadR3[4]) - (tempSample * srsly2->biquadR3[6]);
-		double R3Sample = tempSample; //note: 9 and 10 store the R channel
+		double R3Sample = tempSample; // note: 9 and 10 store the R channel
 
 		tempSample = (isoSampleL * srsly2->biquadL7[2]) + srsly2->biquadL7[7];
 		srsly2->biquadL7[7] = (-tempSample * srsly2->biquadL7[5]) + srsly2->biquadL7[8];
 		srsly2->biquadL7[8] = (isoSampleL * srsly2->biquadL7[4]) - (tempSample * srsly2->biquadL7[6]);
-		double L7Sample = tempSample * 3.0; //like mono AU, 7 and 8 store L channel
+		double L7Sample = tempSample * 3.0; // like mono AU, 7 and 8 store L channel
 
 		tempSample = (isoSampleR * srsly2->biquadR7[2]) + srsly2->biquadR7[9];
 		srsly2->biquadR7[9] = (-tempSample * srsly2->biquadR7[5]) + srsly2->biquadR7[10];
 		srsly2->biquadR7[10] = (isoSampleR * srsly2->biquadR7[4]) - (tempSample * srsly2->biquadR7[6]);
-		double R7Sample = tempSample * 3.0; //note: 9 and 10 store the R channel
+		double R7Sample = tempSample * 3.0; // note: 9 and 10 store the R channel
 
 		double processingL = msOutSampleL + ((L3Sample + L7Sample) * depthS);
 		double processingR = msOutSampleR + ((R3Sample + R7Sample) * depthS);
-		//done with making filters, now we apply them
+		// done with making filters, now we apply them
 
 		mid = inputSampleL + inputSampleR;
 		side = inputSampleL - inputSampleR;
-		//re-assign mid and side.Between these sections, you can do mid/side processing
+		// re-assign mid and side.Between these sections, you can do mid/side processing
 
 		mid *= gainM;
 		side *= gainS;
-		//we crank things up more than a bit, or cut them in line with how the hardware box works
+		// we crank things up more than a bit, or cut them in line with how the hardware box works
 		if (side > 1.57079633) side = 1.57079633;
 		if (side < -1.57079633) side = -1.57079633;
 		side = sin(side);
 		side *= gainS;
 
-
 		inputSampleL = ((mid + side) / 2.0) + processingL;
 		inputSampleR = ((mid - side) / 2.0) + processingR;
-		//unassign mid and side
+		// unassign mid and side
 
 		if (level < 1.0) {
 			inputSampleL *= level;
@@ -340,29 +341,29 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		//without this, you can get a NaN condition where it spits out DC offset at full blast!
+		// without this, you can get a NaN condition where it spits out DC offset at full blast!
 		inputSampleL = asin(inputSampleL);
 		inputSampleR = asin(inputSampleR);
-		//amplitude aspect
+		// amplitude aspect
 
 		if (wet < 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		srsly2->fpdL ^= srsly2->fpdL << 13;
 		srsly2->fpdL ^= srsly2->fpdL >> 17;
 		srsly2->fpdL ^= srsly2->fpdL << 5;
-		inputSampleL += (((double)srsly2->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) srsly2->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		srsly2->fpdR ^= srsly2->fpdR << 13;
 		srsly2->fpdR ^= srsly2->fpdR >> 17;
 		srsly2->fpdR ^= srsly2->fpdR << 5;
-		inputSampleR += (((double)srsly2->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) srsly2->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -394,8 +395,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

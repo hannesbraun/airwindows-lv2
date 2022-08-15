@@ -20,7 +20,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 	int gcount;
 
 	double dL[20];
@@ -108,7 +108,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 	double intensity = 0.02198359;
 	double depthA = 3.0;
-	int offsetA = (int)(depthA * overallscale);
+	int offsetA = (int) (depthA * overallscale);
 	if (offsetA < 1) offsetA = 1;
 	if (offsetA > 8) offsetA = 8;
 
@@ -141,12 +141,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		drySampleL = inputSampleL;
 		drySampleR = inputSampleR;
 
-
 		if (transDesk->gcount < 0 || transDesk->gcount > 9) {
 			transDesk->gcount = 9;
 		}
 
-		//begin L
+		// begin L
 		transDesk->dL[transDesk->gcount + 9] = transDesk->dL[transDesk->gcount] = fabs(inputSampleL) * intensity;
 		transDesk->controlL += (transDesk->dL[transDesk->gcount] / offsetA);
 		transDesk->controlL -= (transDesk->dL[transDesk->gcount + offsetA] / offsetA);
@@ -162,49 +161,49 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (clamp < 0.5) {
 			clamp = 0.5;
 		}
-		//control = 0 to 1
+		// control = 0 to 1
 		thickness = ((1.0 - transDesk->controlL) * 2.0) - 1.0;
 		out = fabs(thickness);
 		bridgerectifier = fabs(inputSampleL);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-		//max value for sine function
+		// max value for sine function
 		if (thickness > 0) bridgerectifier = sin(bridgerectifier);
 		else bridgerectifier = 1 - cos(bridgerectifier);
-		//produce either boosted or starved version
+		// produce either boosted or starved version
 		if (inputSampleL > 0) inputSampleL = (inputSampleL * (1 - out)) + (bridgerectifier * out);
 		else inputSampleL = (inputSampleL * (1 - out)) - (bridgerectifier * out);
-		//blend according to density control
+		// blend according to density control
 		inputSampleL *= clamp;
 		slew = inputSampleL - transDesk->lastSampleL;
 		transDesk->lastSampleL = inputSampleL;
-		//Set up direct reference for slew
+		// Set up direct reference for slew
 		bridgerectifier = fabs(slew * slewgain);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.0;
 		else bridgerectifier = sin(bridgerectifier);
 		if (slew > 0) slew = bridgerectifier / slewgain;
 		else slew = -(bridgerectifier / slewgain);
 		inputSampleL = (transDesk->lastOutSampleL * balanceA) + (transDesk->lastSampleL * balanceB) + slew;
-		//go from last slewed, but include some raw values
+		// go from last slewed, but include some raw values
 		transDesk->lastOutSampleL = inputSampleL;
-		//Set up slewed reference
+		// Set up slewed reference
 		combSample = fabs(drySampleL * transDesk->lastSampleL);
 		if (combSample > 1.0) combSample = 1.0;
-		//bailout for very high input gains
+		// bailout for very high input gains
 		inputSampleL -= (transDesk->lastSlewL * combSample * prevslew);
 		transDesk->lastSlewL = slew;
-		//slew interaction with previous slew
+		// slew interaction with previous slew
 		inputSampleL *= gain;
 		bridgerectifier = fabs(inputSampleL);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.0;
 		else bridgerectifier = sin(bridgerectifier);
 		if (inputSampleL > 0) inputSampleL = bridgerectifier;
 		else inputSampleL = -bridgerectifier;
-		//drive section
+		// drive section
 		inputSampleL /= gain;
-		//end of Desk section
-		//end L
+		// end of Desk section
+		// end L
 
-		//begin R
+		// begin R
 		transDesk->dR[transDesk->gcount + 9] = transDesk->dR[transDesk->gcount] = fabs(inputSampleR) * intensity;
 		transDesk->controlR += (transDesk->dR[transDesk->gcount] / offsetA);
 		transDesk->controlR -= (transDesk->dR[transDesk->gcount + offsetA] / offsetA);
@@ -220,63 +219,63 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (clamp < 0.5) {
 			clamp = 0.5;
 		}
-		//control = 0 to 1
+		// control = 0 to 1
 		thickness = ((1.0 - transDesk->controlR) * 2.0) - 1.0;
 		out = fabs(thickness);
 		bridgerectifier = fabs(inputSampleR);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-		//max value for sine function
+		// max value for sine function
 		if (thickness > 0) bridgerectifier = sin(bridgerectifier);
 		else bridgerectifier = 1 - cos(bridgerectifier);
-		//produce either boosted or starved version
+		// produce either boosted or starved version
 		if (inputSampleR > 0) inputSampleR = (inputSampleR * (1 - out)) + (bridgerectifier * out);
 		else inputSampleR = (inputSampleR * (1 - out)) - (bridgerectifier * out);
-		//blend according to density control
+		// blend according to density control
 		inputSampleR *= clamp;
 		slew = inputSampleR - transDesk->lastSampleR;
 		transDesk->lastSampleR = inputSampleR;
-		//Set up direct reference for slew
+		// Set up direct reference for slew
 		bridgerectifier = fabs(slew * slewgain);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.0;
 		else bridgerectifier = sin(bridgerectifier);
 		if (slew > 0) slew = bridgerectifier / slewgain;
 		else slew = -(bridgerectifier / slewgain);
 		inputSampleR = (transDesk->lastOutSampleR * balanceA) + (transDesk->lastSampleR * balanceB) + slew;
-		//go from last slewed, but include some raw values
+		// go from last slewed, but include some raw values
 		transDesk->lastOutSampleR = inputSampleR;
-		//Set up slewed reference
+		// Set up slewed reference
 		combSample = fabs(drySampleR * transDesk->lastSampleR);
 		if (combSample > 1.0) combSample = 1.0;
-		//bailout for very high input gains
+		// bailout for very high input gains
 		inputSampleR -= (transDesk->lastSlewR * combSample * prevslew);
 		transDesk->lastSlewR = slew;
-		//slew interaction with previous slew
+		// slew interaction with previous slew
 		inputSampleR *= gain;
 		bridgerectifier = fabs(inputSampleR);
 		if (bridgerectifier > 1.57079633) bridgerectifier = 1.0;
 		else bridgerectifier = sin(bridgerectifier);
 		if (inputSampleR > 0) inputSampleR = bridgerectifier;
 		else inputSampleR = -bridgerectifier;
-		//drive section
+		// drive section
 		inputSampleR /= gain;
-		//end of Desk section
-		//end R
+		// end of Desk section
+		// end R
 
 		transDesk->gcount--;
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		transDesk->fpdL ^= transDesk->fpdL << 13;
 		transDesk->fpdL ^= transDesk->fpdL >> 17;
 		transDesk->fpdL ^= transDesk->fpdL << 5;
-		inputSampleL += (((double)transDesk->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) transDesk->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		transDesk->fpdR ^= transDesk->fpdR << 13;
 		transDesk->fpdR ^= transDesk->fpdR >> 17;
 		transDesk->fpdR ^= transDesk->fpdR << 5;
-		inputSampleR += (((double)transDesk->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) transDesk->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -308,8 +307,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

@@ -27,7 +27,7 @@ typedef struct {
 
 	uint32_t fpdL;
 	uint32_t fpdR;
-	//default stuff
+	// default stuff
 	double trebleAL[9];
 	double trebleBL[9];
 	double bassAL[9];
@@ -189,11 +189,11 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (output != 1.0) {
 			inputSampleL *= output;
 			inputSampleR *= output;
-		}//gain trim in front of plugin, in case Console stage clips
+		} // gain trim in front of plugin, in case Console stage clips
 
 		inputSampleL = sin(inputSampleL);
 		inputSampleR = sin(inputSampleR);
-		//encode Console5: good cleanness
+		// encode Console5: good cleanness
 
 		double trebleSampleL;
 		double bassSampleL;
@@ -241,24 +241,24 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		trebleSampleL *= trebleGain;
 		bassSampleL *= bassGain;
-		inputSampleL = bassSampleL + trebleSampleL; //interleaved biquad
+		inputSampleL = bassSampleL + trebleSampleL; // interleaved biquad
 		trebleSampleR *= trebleGain;
 		bassSampleR *= bassGain;
-		inputSampleR = bassSampleR + trebleSampleR; //interleaved biquad
+		inputSampleR = bassSampleR + trebleSampleR; // interleaved biquad
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
-		//without this, you can get a NaN condition where it spits out DC offset at full blast!
+		// without this, you can get a NaN condition where it spits out DC offset at full blast!
 		inputSampleL = asin(inputSampleL);
-		//amplitude aspect
+		// amplitude aspect
 
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		//without this, you can get a NaN condition where it spits out DC offset at full blast!
+		// without this, you can get a NaN condition where it spits out DC offset at full blast!
 		inputSampleR = asin(inputSampleR);
-		//amplitude aspect
+		// amplitude aspect
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
 		frexpf((float) inputSampleL, &expon);
 		baxandall->fpdL ^= baxandall->fpdL << 13;
@@ -270,7 +270,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		baxandall->fpdR ^= baxandall->fpdR >> 17;
 		baxandall->fpdR ^= baxandall->fpdR << 5;
 		inputSampleR += (((double) baxandall->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -302,8 +302,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

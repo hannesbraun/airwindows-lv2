@@ -87,10 +87,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out2 = console7Channel->output[1];
 
 	double inputgain = *console7Channel->fader * 1.272019649514069;
-	//which is, in fact, the square root of 1.618033988749894848204586...
-	//this happens to give us a boost factor where the track continues to get louder even
-	//as it saturates and loses a bit of peak energy. Console7Channel channels go to 12! (.272,etc)
-	//Neutral gain through the whole system with a full scale sine ia 0.772 on the gain knob
+	// which is, in fact, the square root of 1.618033988749894848204586...
+	// this happens to give us a boost factor where the track continues to get louder even
+	// as it saturates and loses a bit of peak energy. Console7Channel channels go to 12! (.272,etc)
+	// Neutral gain through the whole system with a full scale sine ia 0.772 on the gain knob
 	if (console7Channel->gainchase != inputgain) console7Channel->chasespeed *= 2.0;
 	if (console7Channel->chasespeed > sampleFrames) console7Channel->chasespeed = sampleFrames;
 	if (console7Channel->gainchase < 0.0) console7Channel->gainchase = inputgain;
@@ -98,7 +98,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	console7Channel->biquadA[0] = 20000.0 / console7Channel->sampleRate;
 	console7Channel->biquadA[1] = 1.618033988749894848204586;
 
-	double K = tan(M_PI * console7Channel->biquadA[0]); //lowpass
+	double K = tan(M_PI * console7Channel->biquadA[0]); // lowpass
 	double norm = 1.0 / (1.0 + K / console7Channel->biquadA[1] + K * K);
 	console7Channel->biquadA[2] = K * K * norm;
 	console7Channel->biquadA[3] = 2.0 * console7Channel->biquadA[2];
@@ -117,28 +117,28 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		console7Channel->biquadA[7] = inputSampleL;
 		inputSampleL = outSampleL;
 		console7Channel->biquadA[10] = console7Channel->biquadA[9];
-		console7Channel->biquadA[9] = inputSampleL; //DF1 left
+		console7Channel->biquadA[9] = inputSampleL; // DF1 left
 
 		double outSampleR = console7Channel->biquadA[2] * inputSampleR + console7Channel->biquadA[3] * console7Channel->biquadA[11] + console7Channel->biquadA[4] * console7Channel->biquadA[12] - console7Channel->biquadA[5] * console7Channel->biquadA[13] - console7Channel->biquadA[6] * console7Channel->biquadA[14];
 		console7Channel->biquadA[12] = console7Channel->biquadA[11];
 		console7Channel->biquadA[11] = inputSampleR;
 		inputSampleR = outSampleR;
 		console7Channel->biquadA[14] = console7Channel->biquadA[13];
-		console7Channel->biquadA[13] = inputSampleR; //DF1 right
+		console7Channel->biquadA[13] = inputSampleR; // DF1 right
 
 		console7Channel->chasespeed *= 0.9999;
 		console7Channel->chasespeed -= 0.01;
 		if (console7Channel->chasespeed < 64.0) console7Channel->chasespeed = 64.0;
-		//we have our chase speed compensated for recent fader activity
+		// we have our chase speed compensated for recent fader activity
 		console7Channel->gainchase = (((console7Channel->gainchase * console7Channel->chasespeed) + inputgain) / (console7Channel->chasespeed + 1.0));
-		//gainchase is chasing the target, as a simple multiply gain factor
+		// gainchase is chasing the target, as a simple multiply gain factor
 		if (1.0 != console7Channel->gainchase) {
 			inputSampleL *= pow(console7Channel->gainchase, 3);
 			inputSampleR *= pow(console7Channel->gainchase, 3);
 		}
-		//this trim control cuts back extra hard because we will amplify after the distortion
-		//that will shift the distortion/antidistortion curve, in order to make faded settings
-		//slightly 'expanded' and fall back in the soundstage, subtly
+		// this trim control cuts back extra hard because we will amplify after the distortion
+		// that will shift the distortion/antidistortion curve, in order to make faded settings
+		// slightly 'expanded' and fall back in the soundstage, subtly
 
 		if (inputSampleL > 1.097) inputSampleL = 1.097;
 		if (inputSampleL < -1.097) inputSampleL = -1.097;
@@ -146,28 +146,28 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputSampleR > 1.097) inputSampleR = 1.097;
 		if (inputSampleR < -1.097) inputSampleR = -1.097;
 		inputSampleR = ((sin(inputSampleR * fabs(inputSampleR)) / ((fabs(inputSampleR) == 0.0) ? 1 : fabs(inputSampleR))) * 0.8) + (sin(inputSampleR) * 0.2);
-		//this is a version of Spiral blended 80/20 with regular Density ConsoleChannel.
-		//It's blending between two different harmonics in the overtones of the algorithm
+		// this is a version of Spiral blended 80/20 with regular Density ConsoleChannel.
+		// It's blending between two different harmonics in the overtones of the algorithm
 
 		if (1.0 != console7Channel->gainchase && 0.0 != console7Channel->gainchase) {
 			inputSampleL /= console7Channel->gainchase;
 			inputSampleR /= console7Channel->gainchase;
 		}
-		//we re-amplify after the distortion relative to how much we cut back previously.
+		// we re-amplify after the distortion relative to how much we cut back previously.
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		console7Channel->fpdL ^= console7Channel->fpdL << 13;
 		console7Channel->fpdL ^= console7Channel->fpdL >> 17;
 		console7Channel->fpdL ^= console7Channel->fpdL << 5;
-		inputSampleL += (((double)console7Channel->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) console7Channel->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		console7Channel->fpdR ^= console7Channel->fpdR << 13;
 		console7Channel->fpdR ^= console7Channel->fpdR >> 17;
 		console7Channel->fpdR ^= console7Channel->fpdR << 5;
-		inputSampleR += (((double)console7Channel->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) console7Channel->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -199,8 +199,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {

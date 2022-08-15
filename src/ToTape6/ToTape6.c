@@ -253,10 +253,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (inputgain < 1.0) {
 			inputSampleL *= inputgain;
 			inputSampleR *= inputgain;
-		} //gain cut before plugin
+		} // gain cut before plugin
 
-		double flutterrandy = (double)toTape6->fpdL / UINT32_MAX;
-		//now we've got a random flutter, so we're messing with the pitch before tape effects go on
+		double flutterrandy = (double) toTape6->fpdL / UINT32_MAX;
+		// now we've got a random flutter, so we're messing with the pitch before tape effects go on
 		if (toTape6->gcount < 0 || toTape6->gcount > 499) {
 			toTape6->gcount = 499;
 		}
@@ -267,7 +267,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 			double offset = depth + (depth * pow(toTape6->rateof, 2) * sin(toTape6->sweep));
 
-			count += (int)floor(offset);
+			count += (int) floor(offset);
 			inputSampleL = (toTape6->dL[count - ((count > 499) ? 500 : 0)] * (1 - (offset - floor(offset))));
 			inputSampleR = (toTape6->dR[count - ((count > 499) ? 500 : 0)] * (1 - (offset - floor(offset))));
 			inputSampleL += (toTape6->dL[count + 1 - ((count + 1 > 499) ? 500 : 0)] * (offset - floor(offset)));
@@ -280,7 +280,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 				toTape6->sweep -= M_PI;
 				toTape6->nextmax = 0.24 + (flutterrandy * 0.74);
 			}
-			//apply to input signal only when flutter is present, interpolate samples
+			// apply to input signal only when flutter is present, interpolate samples
 		}
 		toTape6->gcount--;
 
@@ -310,7 +310,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (toTape6->iirHeadBumpAL * toTape6->biquadAL[2]) + toTape6->biquadAL[7];
 			toTape6->biquadAL[7] = (toTape6->iirHeadBumpAL * toTape6->biquadAL[3]) - (tempSample * toTape6->biquadAL[5]) + toTape6->biquadAL[8];
 			toTape6->biquadAL[8] = (toTape6->iirHeadBumpAL * toTape6->biquadAL[4]) - (tempSample * toTape6->biquadAL[6]);
-			toTape6->iirHeadBumpAL = tempSample; //interleaved biquad
+			toTape6->iirHeadBumpAL = tempSample; // interleaved biquad
 			if (toTape6->iirHeadBumpAL > 1.0) toTape6->iirHeadBumpAL = 1.0;
 			if (toTape6->iirHeadBumpAL < -1.0) toTape6->iirHeadBumpAL = -1.0;
 			toTape6->iirHeadBumpAL = asin(toTape6->iirHeadBumpAL);
@@ -318,7 +318,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (toTape6->iirHeadBumpAR * toTape6->biquadAR[2]) + toTape6->biquadAR[7];
 			toTape6->biquadAR[7] = (toTape6->iirHeadBumpAR * toTape6->biquadAR[3]) - (tempSample * toTape6->biquadAR[5]) + toTape6->biquadAR[8];
 			toTape6->biquadAR[8] = (toTape6->iirHeadBumpAR * toTape6->biquadAR[4]) - (tempSample * toTape6->biquadAR[6]);
-			toTape6->iirHeadBumpAR = tempSample; //interleaved biquad
+			toTape6->iirHeadBumpAR = tempSample; // interleaved biquad
 			if (toTape6->iirHeadBumpAR > 1.0) toTape6->iirHeadBumpAR = 1.0;
 			if (toTape6->iirHeadBumpAR < -1.0) toTape6->iirHeadBumpAR = -1.0;
 			toTape6->iirHeadBumpAR = asin(toTape6->iirHeadBumpAR);
@@ -327,7 +327,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (inputSampleL * toTape6->biquadCL[2]) + toTape6->biquadCL[7];
 			toTape6->biquadCL[7] = (inputSampleL * toTape6->biquadCL[3]) - (tempSample * toTape6->biquadCL[5]) + toTape6->biquadCL[8];
 			toTape6->biquadCL[8] = (inputSampleL * toTape6->biquadCL[4]) - (tempSample * toTape6->biquadCL[6]);
-			inputSampleL = tempSample; //interleaved biquad
+			inputSampleL = tempSample; // interleaved biquad
 			if (inputSampleL > 1.0) inputSampleL = 1.0;
 			if (inputSampleL < -1.0) inputSampleL = -1.0;
 			inputSampleL = asin(inputSampleL);
@@ -336,7 +336,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (inputSampleR * toTape6->biquadCR[2]) + toTape6->biquadCR[7];
 			toTape6->biquadCR[7] = (inputSampleR * toTape6->biquadCR[3]) - (tempSample * toTape6->biquadCR[5]) + toTape6->biquadCR[8];
 			toTape6->biquadCR[8] = (inputSampleR * toTape6->biquadCR[4]) - (tempSample * toTape6->biquadCR[6]);
-			inputSampleR = tempSample; //interleaved biquad
+			inputSampleR = tempSample; // interleaved biquad
 			if (inputSampleR > 1.0) inputSampleR = 1.0;
 			if (inputSampleR < -1.0) inputSampleR = -1.0;
 			inputSampleR = asin(inputSampleR);
@@ -358,7 +358,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (toTape6->iirHeadBumpBL * toTape6->biquadBL[2]) + toTape6->biquadBL[7];
 			toTape6->biquadBL[7] = (toTape6->iirHeadBumpBL * toTape6->biquadBL[3]) - (tempSample * toTape6->biquadBL[5]) + toTape6->biquadBL[8];
 			toTape6->biquadBL[8] = (toTape6->iirHeadBumpBL * toTape6->biquadBL[4]) - (tempSample * toTape6->biquadBL[6]);
-			toTape6->iirHeadBumpBL = tempSample; //interleaved biquad
+			toTape6->iirHeadBumpBL = tempSample; // interleaved biquad
 			if (toTape6->iirHeadBumpBL > 1.0) toTape6->iirHeadBumpBL = 1.0;
 			if (toTape6->iirHeadBumpBL < -1.0) toTape6->iirHeadBumpBL = -1.0;
 			toTape6->iirHeadBumpBL = asin(toTape6->iirHeadBumpBL);
@@ -366,7 +366,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (toTape6->iirHeadBumpBR * toTape6->biquadBR[2]) + toTape6->biquadBR[7];
 			toTape6->biquadBR[7] = (toTape6->iirHeadBumpBR * toTape6->biquadBR[3]) - (tempSample * toTape6->biquadBR[5]) + toTape6->biquadBR[8];
 			toTape6->biquadBR[8] = (toTape6->iirHeadBumpBR * toTape6->biquadBR[4]) - (tempSample * toTape6->biquadBR[6]);
-			toTape6->iirHeadBumpBR = tempSample; //interleaved biquad
+			toTape6->iirHeadBumpBR = tempSample; // interleaved biquad
 			if (toTape6->iirHeadBumpBR > 1.0) toTape6->iirHeadBumpBR = 1.0;
 			if (toTape6->iirHeadBumpBR < -1.0) toTape6->iirHeadBumpBR = -1.0;
 			toTape6->iirHeadBumpBR = asin(toTape6->iirHeadBumpBR);
@@ -375,7 +375,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (inputSampleL * toTape6->biquadDL[2]) + toTape6->biquadDL[7];
 			toTape6->biquadDL[7] = (inputSampleL * toTape6->biquadDL[3]) - (tempSample * toTape6->biquadDL[5]) + toTape6->biquadDL[8];
 			toTape6->biquadDL[8] = (inputSampleL * toTape6->biquadDL[4]) - (tempSample * toTape6->biquadDL[6]);
-			inputSampleL = tempSample; //interleaved biquad
+			inputSampleL = tempSample; // interleaved biquad
 			if (inputSampleL > 1.0) inputSampleL = 1.0;
 			if (inputSampleL < -1.0) inputSampleL = -1.0;
 			inputSampleL = asin(inputSampleL);
@@ -384,15 +384,15 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			tempSample = (inputSampleR * toTape6->biquadDR[2]) + toTape6->biquadDR[7];
 			toTape6->biquadDR[7] = (inputSampleR * toTape6->biquadDR[3]) - (tempSample * toTape6->biquadDR[5]) + toTape6->biquadDR[8];
 			toTape6->biquadDR[8] = (inputSampleR * toTape6->biquadDR[4]) - (tempSample * toTape6->biquadDR[6]);
-			inputSampleR = tempSample; //interleaved biquad
+			inputSampleR = tempSample; // interleaved biquad
 			if (inputSampleR > 1.0) inputSampleR = 1.0;
 			if (inputSampleR < -1.0) inputSampleR = -1.0;
 			inputSampleR = asin(inputSampleR);
 		}
 		toTape6->flip = !toTape6->flip;
 
-		double groundSampleL = vibDrySampleL - inputSampleL; //set up UnBox on fluttered audio
-		double groundSampleR = vibDrySampleR - inputSampleR; //set up UnBox on fluttered audio
+		double groundSampleL = vibDrySampleL - inputSampleL; // set up UnBox on fluttered audio
+		double groundSampleR = vibDrySampleR - inputSampleR; // set up UnBox on fluttered audio
 
 		if (inputgain > 1.0) {
 			inputSampleL *= inputgain;
@@ -404,46 +404,46 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		applySoften = 1 - cos(applySoften);
 		if (HighsSampleL > 0) inputSampleL -= applySoften;
 		if (HighsSampleL < 0) inputSampleL += applySoften;
-		//apply Soften depending on polarity
+		// apply Soften depending on polarity
 		applySoften = fabs(HighsSampleR) * 1.57079633;
 		if (applySoften > 1.57079633) applySoften = 1.57079633;
 		applySoften = 1 - cos(applySoften);
 		if (HighsSampleR > 0) inputSampleR -= applySoften;
 		if (HighsSampleR < 0) inputSampleR += applySoften;
-		//apply Soften depending on polarity
+		// apply Soften depending on polarity
 
 		double suppress = (1.0 - fabs(inputSampleL)) * 0.00013;
 		if (toTape6->iirHeadBumpAL > suppress) toTape6->iirHeadBumpAL -= suppress;
 		if (toTape6->iirHeadBumpAL < -suppress) toTape6->iirHeadBumpAL += suppress;
 		if (toTape6->iirHeadBumpBL > suppress) toTape6->iirHeadBumpBL -= suppress;
 		if (toTape6->iirHeadBumpBL < -suppress) toTape6->iirHeadBumpBL += suppress;
-		//restrain resonant quality of head bump algorithm
+		// restrain resonant quality of head bump algorithm
 		suppress = (1.0 - fabs(inputSampleR)) * 0.00013;
 		if (toTape6->iirHeadBumpAR > suppress) toTape6->iirHeadBumpAR -= suppress;
 		if (toTape6->iirHeadBumpAR < -suppress) toTape6->iirHeadBumpAR += suppress;
 		if (toTape6->iirHeadBumpBR > suppress) toTape6->iirHeadBumpBR -= suppress;
 		if (toTape6->iirHeadBumpBR < -suppress) toTape6->iirHeadBumpBR += suppress;
-		//restrain resonant quality of head bump algorithm
+		// restrain resonant quality of head bump algorithm
 
 		inputSampleL += ((toTape6->iirHeadBumpAL + toTape6->iirHeadBumpBL) * HeadBumpControl);
 		inputSampleR += ((toTape6->iirHeadBumpAR + toTape6->iirHeadBumpBR) * HeadBumpControl);
-		//apply Fatten.
+		// apply Fatten.
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
 		double mojo;
 		mojo = pow(fabs(inputSampleL), 0.25);
 		if (mojo > 0.0) inputSampleL = (sin(inputSampleL * mojo * M_PI * 0.5) / mojo);
-		//mojo is the one that flattens WAAAAY out very softly before wavefolding
+		// mojo is the one that flattens WAAAAY out very softly before wavefolding
 
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
 		mojo = pow(fabs(inputSampleR), 0.25);
 		if (mojo > 0.0) inputSampleR = (sin(inputSampleR * mojo * M_PI * 0.5) / mojo);
-		//mojo is the one that flattens WAAAAY out very softly before wavefolding
+		// mojo is the one that flattens WAAAAY out very softly before wavefolding
 
-		inputSampleL += groundSampleL; //apply UnBox processing
-		inputSampleR += groundSampleR; //apply UnBox processing
+		inputSampleL += groundSampleL; // apply UnBox processing
+		inputSampleR += groundSampleR; // apply UnBox processing
 
 		if (outputgain != 1.0) {
 			inputSampleL *= outputgain;
@@ -469,8 +469,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			if (toTape6->lastSampleL > -refclip) inputSampleL = ((-refclip * softness) + (toTape6->lastSampleL * (1.0 - softness)));
 			else inputSampleL = -refclip;
 		}
-		toTape6->lastSampleL = inputSampleL; //end ADClip L
-
+		toTape6->lastSampleL = inputSampleL; // end ADClip L
 
 		if (toTape6->lastSampleR >= refclip) {
 			if (inputSampleR < refclip) toTape6->lastSampleR = ((refclip * softness) + (inputSampleR * (1.0 - softness)));
@@ -491,33 +490,33 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 			if (toTape6->lastSampleR > -refclip) inputSampleR = ((-refclip * softness) + (toTape6->lastSampleR * (1.0 - softness)));
 			else inputSampleR = -refclip;
 		}
-		toTape6->lastSampleR = inputSampleR; //end ADClip R
+		toTape6->lastSampleR = inputSampleR; // end ADClip R
 
 		if (inputSampleL > refclip) inputSampleL = refclip;
 		if (inputSampleL < -refclip) inputSampleL = -refclip;
-		//final iron bar
+		// final iron bar
 		if (inputSampleR > refclip) inputSampleR = refclip;
 		if (inputSampleR < -refclip) inputSampleR = -refclip;
-		//final iron bar
+		// final iron bar
 
 		if (wet != 1.0) {
 			inputSampleL = (inputSampleL * wet) + (drySampleL * (1.0 - wet));
 			inputSampleR = (inputSampleR * wet) + (drySampleR * (1.0 - wet));
 		}
 
-		//begin 32 bit stereo floating point dither
+		// begin 32 bit stereo floating point dither
 		int expon;
-		frexpf((float)inputSampleL, &expon);
+		frexpf((float) inputSampleL, &expon);
 		toTape6->fpdL ^= toTape6->fpdL << 13;
 		toTape6->fpdL ^= toTape6->fpdL >> 17;
 		toTape6->fpdL ^= toTape6->fpdL << 5;
-		inputSampleL += (((double)toTape6->fpdL - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		frexpf((float)inputSampleR, &expon);
+		inputSampleL += (((double) toTape6->fpdL - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		frexpf((float) inputSampleR, &expon);
 		toTape6->fpdR ^= toTape6->fpdR << 13;
 		toTape6->fpdR ^= toTape6->fpdR >> 17;
 		toTape6->fpdR ^= toTape6->fpdR << 5;
-		inputSampleR += (((double)toTape6->fpdR - (uint32_t)0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
-		//end 32 bit stereo floating point dither
+		inputSampleR += (((double) toTape6->fpdR - (uint32_t) 0x7fffffff) * 5.5e-36l * pow(2, expon + 62));
+		// end 32 bit stereo floating point dither
 
 		*out1 = (float) inputSampleL;
 		*out2 = (float) inputSampleR;
@@ -549,8 +548,7 @@ static const LV2_Descriptor descriptor = {
 	run,
 	deactivate,
 	cleanup,
-	extension_data
-};
+	extension_data};
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {
