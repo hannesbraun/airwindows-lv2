@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- SideDull 2.0
 
 ## [7.0] - 2022-07-02
 ### Added

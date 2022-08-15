@@ -64,6 +64,7 @@ plugins = [
   'PurestDrive',
   'PurestGain',
   'RightoMono',
+  'SideDull',
   'Sidepass',
   'Slew',
   'SlewOnly',
