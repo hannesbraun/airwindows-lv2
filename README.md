@@ -6,11 +6,20 @@ Have a look at https://www.airwindows.com for a detailed description of all the 
 
 ## Building
 
+Meson, LV2 and a C compiler are required to build this project. Setup the build directory as follows:
+
 ```bash
-mkdir build
-cd build
-cmake ..
-make
+meson setup build
+
+# Alternative: use a custom LV2 directoy
+# For installing the plugins into the user library on macOS:
+meson setup build -Dlv2dir=/Users/<username>/Library/Audio/Plug-Ins/LV2
+```
+
+Compile and install the plugins:
+```bash
+meson compile -C build
+meson install -C build
 ```
 
 ## License
