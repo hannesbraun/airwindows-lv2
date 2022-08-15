@@ -22,6 +22,6 @@ jobs:
     - name: Compile
       run: meson compile -C build
     - name: Install
-      run: meson install -C build
+      run: sudo meson install -C build
     - name: Test with lv2bench
       run: lv2bench
