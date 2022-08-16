@@ -7,8 +7,7 @@ on:
     branches: '*'
 
 jobs:
-  formatting-check:
-    name: Check with clang-format
+  clang-format:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
