@@ -90,7 +90,7 @@ if lv2dir == ''
   if target_machine.system() == 'darwin' and prefix == '/'
     lv2dir = '/Library/Audio/Plug-Ins/LV2'
   elif target_machine.system() == 'windows' and prefix == 'C:/'
-    lv2dir = 'C:/Program Files/Common/LV2'
+    lv2dir = 'C:/Program Files/Common Files/LV2'
   else
     lv2dir = prefix / get_option('libdir') / 'lv2'
   endif
