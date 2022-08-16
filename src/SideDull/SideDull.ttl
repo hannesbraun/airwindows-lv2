@@ -3,7 +3,6 @@
 @prefix lv2:	<http://lv2plug.in/ns/lv2core#> .
 @prefix pprops:	<http://lv2plug.in/ns/ext/port-props#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
-@prefix units:	<http://lv2plug.in/ns/extensions/units#> .
 
 <https://hannesbraun.net/ns/lv2/airwindows/sidedull>
 	a lv2:Plugin ,
