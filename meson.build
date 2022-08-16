@@ -8,7 +8,7 @@ project(
     'optimization=3'
   ],
   license : 'MIT',
-  version : '7.0'
+  version : '9.0'
 )
 bundle_name = 'Airwindows.lv2'
 
@@ -35,6 +35,7 @@ plugins = [
   'Console7Cascade',
   'Console7Channel',
   'Console7Crunch',
+  'curve',
   'DCVoltage',
   'DeBess',
   'Desk',
