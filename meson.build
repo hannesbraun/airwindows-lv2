@@ -64,6 +64,7 @@ plugins = [
   'PurestConsole2Channel',
   'PurestDrive',
   'PurestGain',
+  'Recurve',
   'RightoMono',
   'SideDull',
   'Sidepass',
