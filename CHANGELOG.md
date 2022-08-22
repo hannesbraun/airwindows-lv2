@@ -2,13 +2,13 @@
 
 ## [Unreleased]
 ### Added
+- curve 2.0
+- Recurve 2.0
 - SideDull 2.0
 
 ## [7.0] - 2022-07-02
 ### Added
-- curve 2.0
 - IronOxideClassic2 2.0
-- Recurve 2.0
 
 ## [5.0] - 2022-05-28
 ### Added
