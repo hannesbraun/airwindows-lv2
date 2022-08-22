@@ -42,6 +42,7 @@ plugins = [
   'Dyno',
   'EdIsDim',
   'EveryTrim',
+  'Facet',
   'Focus',
   'Galactic',
   'HermeTrim',
