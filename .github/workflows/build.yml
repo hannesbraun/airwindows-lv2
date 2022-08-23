@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-ubuntu:
+    name: Ubuntu 22.04 (amd64)
     runs-on: ubuntu-22.04
 
     steps:
@@ -31,6 +32,7 @@ jobs:
         path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
 
   build-macos:
+    name: macOS 12 (amd64)
     runs-on: macos-12
 
     steps:
@@ -53,7 +55,8 @@ jobs:
         name: macos
         path: /usr/local/lib/lv2/Airwindows.lv2
 
-  build-windows:
+  build-windows64:
+    name: Windows (64-Bit)
     runs-on: windows-latest
     defaults:
       run:
@@ -83,3 +86,35 @@ jobs:
       with:
         name: win64
         path: D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2
+
+  build-windows32:
+    name: Windows (32-bit)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-i686-gcc
+          mingw-w64-i686-meson
+          mingw-w64-i686-lv2
+          mingw-w64-i686-ninja
+          mingw-w64-i686-pkg-config
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup build directory
+      env:
+        CC: i686-w64-mingw32-gcc
+      run: /mingw32/bin/meson.exe setup build
+    - name: Compile
+      run: /mingw32/bin/meson.exe compile -C build
+    - name: Install
+      run: /mingw32/bin/meson.exe install -C build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: win32
+        path: D:/a/_temp/msys64/mingw32/lib/lv2/Airwindows.lv2
