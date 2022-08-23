@@ -86,7 +86,7 @@
 - UltrasonicMed 2.0
 
 [Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v9.0...dev
-[7.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v7.0...v9.0
+[9.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v7.0...v9.0
 [7.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v5.0...v7.0
 [5.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v3.0...v5.0
 [3.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...v3.0
