@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- Compresaturator 2.0
 - curve 2.0
 - Facet 2.0
 - PhaseNudge 2.0
