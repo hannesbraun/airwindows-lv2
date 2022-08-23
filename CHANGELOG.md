@@ -4,6 +4,7 @@
 ### Added
 - curve 2.0
 - Facet 2.0
+- PhaseNudge 2.0
 - Recurve 2.0
 - SideDull 2.0
 

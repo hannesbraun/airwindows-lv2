@@ -57,6 +57,7 @@ plugins = [
   'MoNoam',
   'MV',
   'Nikola',
+  'PhaseNudge',
   'PocketVerbs',
   'Pressure5',
   'PurestConsoleBuss',
