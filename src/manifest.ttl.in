@@ -146,6 +146,11 @@
 	lv2:binary <HermeTrim@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <HermeTrim.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/highglossdither>
+	a lv2:Plugin ;
+	lv2:binary <HighGlossDither@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <HighGlossDither.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/hypersonic>
 	a lv2:Plugin ;
 	lv2:binary <Hypersonic@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

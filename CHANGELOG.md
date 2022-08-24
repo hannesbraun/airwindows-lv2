@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- HighGlossDither 2.0
 
 ## [9.0] - 2022-08-23
 ### Added

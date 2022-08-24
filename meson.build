@@ -47,6 +47,7 @@ plugins = [
   'Focus',
   'Galactic',
   'HermeTrim',
+  'HighGlossDither',
   'Hypersonic',
   'Infrasonic',
   'Interstage',
