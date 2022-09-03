@@ -28,10 +28,16 @@ jobs:
       run: lv2bench
     - name: Check presence of installation
       run: test -d /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-amd64-linux
+        cp -r /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2 airwindows-lv2-amd64-linux
+        cp LICENSE airwindows-lv2-amd64-linux
+        tar -cvzf airwindows-lv2-amd64-linux.tar.gz airwindows-lv2-amd64-linux
     - uses: actions/upload-artifact@v3
       with:
-        name: linux-amd64
-        path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+        name: amd64-linux
+        path: airwindows-lv2-amd64-linux.tar.gz
 
   build-ubuntu-i686:
     name: Ubuntu 22.04 (i686)
@@ -54,10 +60,16 @@ jobs:
       run: lv2bench
     - name: Check presence of installation
       run: test -d /usr/local/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-i686-linux
+        cp -r /usr/local/lib/lv2/Airwindows.lv2 airwindows-lv2-i686-linux
+        cp LICENSE airwindows-lv2-i686-linux
+        tar -cvzf airwindows-lv2-i686-linux.tar.gz airwindows-lv2-i686-linux
     - uses: actions/upload-artifact@v3
       with:
-        name: linux-i686
-        path: /usr/local/lib/lv2/Airwindows.lv2
+        name: i686-linux
+        path: airwindows-lv2-i686-linux.tar.gz
 
   build-ubuntu-aarch64:
     name: Ubuntu 22.04 (aarch64)
@@ -78,10 +90,16 @@ jobs:
       run: sudo meson install -C build
     - name: Check presence of installation
       run: test -d /usr/local/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-aarch64-linux
+        cp -r /usr/local/lib/lv2/Airwindows.lv2 airwindows-lv2-aarch64-linux
+        cp LICENSE airwindows-lv2-aarch64-linux
+        tar -cvzf airwindows-lv2-aarch64-linux.tar.gz airwindows-lv2-aarch64-linux
     - uses: actions/upload-artifact@v3
       with:
-        name: linux-aarch64
-        path: /usr/local/lib/lv2/Airwindows.lv2
+        name: aarch64-linux
+        path: airwindows-lv2-aarch64-linux.tar.gz
 
   build-ubuntu-armhf:
     name: Ubuntu 22.04 (armhf)
@@ -102,10 +120,16 @@ jobs:
       run: sudo meson install -C build
     - name: Check presence of installation
       run: test -d /usr/local/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-armhf-linux
+        cp -r /usr/local/lib/lv2/Airwindows.lv2 airwindows-lv2-armhf-linux
+        cp LICENSE airwindows-lv2-armhf-linux
+        tar -cvzf airwindows-lv2-armhf-linux.tar.gz airwindows-lv2-armhf-linux
     - uses: actions/upload-artifact@v3
       with:
-        name: linux-armhf
-        path: /usr/local/lib/lv2/Airwindows.lv2
+        name: armhf-linux
+        path: airwindows-lv2-armhf-linux.tar.gz
 
   build-macos-amd64:
     name: macOS 12 (amd64)
@@ -128,13 +152,19 @@ jobs:
       run: lv2bench
     - name: Check presence of installation
       run: test -d /usr/local/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-amd64-macos
+        cp -r /usr/local/lib/lv2/Airwindows.lv2 airwindows-lv2-amd64-macos
+        cp LICENSE airwindows-lv2-amd64-macos
+        tar -cvzf airwindows-lv2-amd64-macos.tar.gz airwindows-lv2-amd64-macos
     - uses: actions/upload-artifact@v3
       with:
-        name: macos-amd64
-        path: /usr/local/lib/lv2/Airwindows.lv2
+        name: amd64-macos
+        path: airwindows-lv2-amd64-macos.tar.gz
 
-  build-macos-arm64:
-    name: macOS 12 (arm64)
+  build-macos-aarch64:
+    name: macOS 12 (aarch64)
     runs-on: macos-12
 
     steps:
@@ -145,20 +175,26 @@ jobs:
     - name: Validate Turtle files
       run: lv2_validate src/manifest.ttl.in src/*/*.ttl
     - name: Setup build directory
-      run: meson setup build --cross-file cross/macos-arm64.txt
+      run: meson setup build --cross-file cross/macos-aarch64.txt
     - name: Compile
       run: meson compile -C build
     - name: Install
       run: sudo meson install -C build
     - name: Check presence of installation
       run: test -d /usr/local/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-aarch64-macos
+        cp -r /usr/local/lib/lv2/Airwindows.lv2 airwindows-lv2-aarch64-macos
+        cp LICENSE airwindows-lv2-aarch64-macos
+        tar -cvzf airwindows-lv2-aarch64-macos.tar.gz airwindows-lv2-aarch64-macos
     - uses: actions/upload-artifact@v3
       with:
-        name: macos-arm64
-        path: /usr/local/lib/lv2/Airwindows.lv2
+        name: aarch64-macos
+        path: airwindows-lv2-aarch64-macos.tar.gz
 
-  build-windows64:
-    name: Windows (64-Bit)
+  build-windows-amd64:
+    name: Windows (amd64)
     runs-on: windows-latest
     defaults:
       run:
@@ -174,6 +210,7 @@ jobs:
           mingw-w64-x86_64-lv2
           mingw-w64-x86_64-ninja
           mingw-w64-x86_64-pkg-config
+          zip
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup build directory
@@ -186,13 +223,20 @@ jobs:
       run: meson install -C build
     - name: Check presence of installation
       run: test -d D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-amd64-windows
+        cp -r D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2 airwindows-lv2-amd64-windows
+        rm airwindows-lv2-amd64-windows/Airwindows.lv2/*.a
+        cp LICENSE airwindows-lv2-amd64-windows
+        zip -v -r airwindows-lv2-amd64-windows.zip airwindows-lv2-amd64-windows
     - uses: actions/upload-artifact@v3
       with:
-        name: win64
-        path: D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2
+        name: amd64-windows
+        path: airwindows-lv2-amd64-windows.zip
 
-  build-windows32:
-    name: Windows (32-Bit)
+  build-windows-i686:
+    name: Windows (i686)
     runs-on: windows-latest
     defaults:
       run:
@@ -208,6 +252,7 @@ jobs:
           mingw-w64-i686-lv2
           mingw-w64-i686-ninja
           mingw-w64-i686-pkg-config
+          zip
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup build directory
@@ -220,7 +265,14 @@ jobs:
       run: /mingw32/bin/meson.exe install -C build
     - name: Check presence of installation
       run: test -d D:/a/_temp/msys64/mingw32/lib/lv2/Airwindows.lv2
+    - name: Package
+      run: |
+        mkdir airwindows-lv2-i686-windows
+        cp -r D:/a/_temp/msys64/mingw32/lib/lv2/Airwindows.lv2 airwindows-lv2-i686-windows
+        rm airwindows-lv2-i686-windows/Airwindows.lv2/*.a
+        cp LICENSE airwindows-lv2-i686-windows
+        zip -v -r airwindows-lv2-i686-windows.zip airwindows-lv2-i686-windows
     - uses: actions/upload-artifact@v3
       with:
-        name: win32
-        path: D:/a/_temp/msys64/mingw32/lib/lv2/Airwindows.lv2
+        name: i686-windows
+        path: airwindows-lv2-i686-windows.zip
