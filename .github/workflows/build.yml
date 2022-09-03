@@ -3,6 +3,7 @@ name: Build
 on:
   push:
     branches: '*'
+    tags: 'v*'
   pull_request:
     branches: '*'
 
@@ -276,3 +277,37 @@ jobs:
       with:
         name: i686-windows
         path: airwindows-lv2-i686-windows.zip
+
+  release:
+    name: Create release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - build-ubuntu-amd64
+      - build-ubuntu-i686
+      - build-ubuntu-aarch64
+      - build-ubuntu-armhf
+      - build-macos-amd64
+      - build-macos-aarch64
+      - build-windows-amd64
+      - build-windows-i686
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+      - name: Parse release name
+        id: parse-release-name
+        run: echo ::set-output name=rname::$(echo ${{ github.ref_name }} | cut -c 2-)
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ steps.parse-release-name.outputs.rname }}
+          files: |
+            amd64-linux/airwindows-lv2-amd64-linux.tar.gz
+            i686-linux/airwindows-lv2-i686-linux.tar.gz
+            aarch64-linux/airwindows-lv2-aarch64-linux.tar.gz
+            armhf-linux/airwindows-lv2-armhf-linux.tar.gz
+            amd64-macos/airwindows-lv2-amd64-macos.tar.gz
+            aarch64-macos/airwindows-lv2-aarch64-macos.tar.gz
+            amd64-windows/airwindows-lv2-amd64-windows.zip
+            i686-windows/airwindows-lv2-i686-windows.zip
