@@ -26,6 +26,8 @@ jobs:
       run: sudo meson install -C build
     - name: Test with lv2bench
       run: lv2bench
+    - name: Check presence of installation
+      run: test -d /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: linux-amd64
@@ -50,6 +52,8 @@ jobs:
       run: sudo meson install -C build
     - name: Test with lv2bench
       run: lv2bench
+    - name: Check presence of installation
+      run: test -d /usr/local/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: linux-i686
@@ -72,6 +76,8 @@ jobs:
       run: meson compile -C build
     - name: Install
       run: sudo meson install -C build
+    - name: Check presence of installation
+      run: test -d /usr/local/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: linux-aarch64
@@ -94,6 +100,8 @@ jobs:
       run: meson compile -C build
     - name: Install
       run: sudo meson install -C build
+    - name: Check presence of installation
+      run: test -d /usr/local/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: linux-armhf
@@ -118,6 +126,8 @@ jobs:
       run: sudo meson install -C build
     - name: Test with lv2bench
       run: lv2bench
+    - name: Check presence of installation
+      run: test -d /usr/local/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: macos-amd64
@@ -140,6 +150,8 @@ jobs:
       run: meson compile -C build
     - name: Install
       run: sudo meson install -C build
+    - name: Check presence of installation
+      run: test -d /usr/local/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: macos-arm64
@@ -172,6 +184,8 @@ jobs:
       run: meson compile -C build
     - name: Install
       run: meson install -C build
+    - name: Check presence of installation
+      run: test -d D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: win64
@@ -204,6 +218,8 @@ jobs:
       run: /mingw32/bin/meson.exe compile -C build
     - name: Install
       run: /mingw32/bin/meson.exe install -C build
+    - name: Check presence of installation
+      run: test -d D:/a/_temp/msys64/mingw32/lib/lv2/Airwindows.lv2
     - uses: actions/upload-artifact@v3
       with:
         name: win32
