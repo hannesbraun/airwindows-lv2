@@ -1,0 +1,16 @@
+[binaries]
+c = 'clang'
+ar = 'ar'
+ld = 'ld'
+strip = 'strip'
+pkgconfig = 'pkg-config'
+
+[host_machine]
+system = 'darwin'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
+
+[built-in options]
+c_args = ['--target=arm64-apple-macos11']
+c_link_args = ['--target=arm64-apple-macos11']
