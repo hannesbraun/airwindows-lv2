@@ -7,7 +7,7 @@ on:
     branches: '*'
 
 jobs:
-  build-ubuntu:
+  build-ubuntu-amd64:
     name: Ubuntu 22.04 (amd64)
     runs-on: ubuntu-22.04
 
@@ -28,7 +28,81 @@ jobs:
       run: lv2bench
     - uses: actions/upload-artifact@v3
       with:
-        name: linux
+        name: linux-amd64
+        path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+
+  build-ubuntu-i686:
+    name: Ubuntu 22.04 (i686)
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install dependencies
+      run: sudo apt-get install -y gcc-i686-linux-gnu lilv-utils lv2-dev meson sordi
+    - name: Validate Turtle files
+      run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
+    - name: Setup build directory
+      env:
+        CC: i686-linux-gnu-gcc
+      run: meson setup build
+    - name: Compile
+      run: meson compile -C build
+    - name: Install
+      run: sudo meson install -C build
+    - name: Test with lv2bench
+      run: lv2bench
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux-i686
+        path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+
+  build-ubuntu-aarch64:
+    name: Ubuntu 22.04 (aarch64)
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install dependencies
+      run: sudo apt-get install -y gcc-aarch64-linux-gnu lilv-utils lv2-dev meson sordi
+    - name: Validate Turtle files
+      run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
+    - name: Setup build directory
+      env:
+        CC: aarch64-linux-gnu-gcc
+      run: meson setup build
+    - name: Compile
+      run: meson compile -C build
+    - name: Install
+      run: sudo meson install -C build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux-aarch64
+        path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+
+  build-ubuntu-armhf:
+    name: Ubuntu 22.04 (armhf)
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install dependencies
+      run: sudo apt-get install -y gcc-arm-linux-gnueabihf lilv-utils lv2-dev meson sordi
+    - name: Validate Turtle files
+      run: /usr/bin/lv2_validate src/manifest.ttl.in src/*/*.ttl
+    - name: Setup build directory
+      env:
+        CC: arm-linux-gnueabihf-gcc
+      run: meson setup build
+    - name: Compile
+      run: meson compile -C build
+    - name: Install
+      run: sudo meson install -C build
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux-armhf
         path: /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
 
   build-macos:
@@ -88,7 +162,7 @@ jobs:
         path: D:/a/_temp/msys64/mingw64/lib/lv2/Airwindows.lv2
 
   build-windows32:
-    name: Windows (32-bit)
+    name: Windows (32-Bit)
     runs-on: windows-latest
     defaults:
       run:
