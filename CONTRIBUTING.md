@@ -22,7 +22,7 @@ Within the Turtle file:
 - Replace the plugin name (`doap:name`).
 - Replace the plugin description (`rdfs:comment`) with the corresponding description from the `what.txt` that is bundled with the binary releases. The "<PluginName> is" part is usually omitted. Have a look at the plugins that were already ported to see some examples.
 - Adjust the control ports of the plugin. There is already one control port template at the end of the file.
-	- The symbol should be a lowercase version of the port name. Also, remove any spaces and special characters.
+	- The symbol should be a camel case version of the port name. Also, remove any spaces and special characters.
 	- `lv2:default`, `lv2:minimum` and `lv2:maximum` should be quite self-explanatory. These are the values being displayed. In contrast to the VST version, those values are being passed into the processing of the plugin directly. For values not ranging from 0 to 1, you probably need to adjust the according part in the `run` function.
 	- Also, parameters whose sliders don't map linearly to their values due to extra code added (usually in `<PluginName>.cpp`) should be adjusted to have a linear mapping. (If there will be an option built into LV2 to do this properly, this might be an option for the future.) An example of this can be found in Compresaturator (see the parameter "Expand"). Check out the difference between the VST and the LV2 version.
 	- Values ranging from 0 to 1 usually don't have a unit. Otherwise, choose the appropriate unit. If it is not available, create it yourself. There is an example of this for the unit "ips" in [IronOxideClassic2](src/IronOxideClassic2/IronOxideClassic2.ttl).
