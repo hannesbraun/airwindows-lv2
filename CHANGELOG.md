@@ -5,6 +5,7 @@
 - BussColors4 2.0
 - HighGlossDither 2.0
 - XBandpass 2.0
+- XNotch 2.0
 
 ## [9.0] - 2022-08-23
 ### Added

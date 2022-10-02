@@ -89,6 +89,7 @@ plugins = [
   'UltrasonicMed',
   'Vibrato',
   'XBandpass',
+  'XNotch',
 ]
 
 # Figure out install_dir
