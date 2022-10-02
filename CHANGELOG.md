@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- BussColors4 2.0
 - HighGlossDither 2.0
 
 ## [9.0] - 2022-08-23

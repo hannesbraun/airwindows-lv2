@@ -23,6 +23,7 @@ plugins = [
   'ADClip7',
   'Baxandall',
   'BitShiftGain',
+  'BussColors4',
   'Capacitor',
   'Capacitor2',
   'Channel8',
