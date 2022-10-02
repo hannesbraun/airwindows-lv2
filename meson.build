@@ -90,6 +90,7 @@ plugins = [
   'Vibrato',
   'XBandpass',
   'XNotch',
+  'XRegion',
 ]
 
 # Figure out install_dir
