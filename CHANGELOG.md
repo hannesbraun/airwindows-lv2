@@ -4,6 +4,7 @@
 ### Added
 - BussColors4 2.0
 - HighGlossDither 2.0
+- Verbity 2.0
 - XBandpass 2.0
 - XNotch 2.0
 - XRegion 2.0

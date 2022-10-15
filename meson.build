@@ -87,6 +87,7 @@ plugins = [
   'Ultrasonic',
   'UltrasonicLite',
   'UltrasonicMed',
+  'Verbity',
   'Vibrato',
   'XBandpass',
   'XNotch',
