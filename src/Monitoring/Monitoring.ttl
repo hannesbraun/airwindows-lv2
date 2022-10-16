@@ -1,0 +1,109 @@
+@prefix doap:	<http://usefulinc.com/ns/doap#> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix lv2:	<http://lv2plug.in/ns/lv2core#> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/monitoring>
+	a lv2:Plugin ,
+		lv2:UtilityPlugin ,
+		doap:Project ;
+	doap:name "Monitoring" ;
+	rdfs:comment "one-stop shop for final 2-buss work" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
+	doap:maintainer [
+		foaf:name "Hannes Braun" ;
+		foaf:homepage <https://hannesbraun.net/>
+	] ;
+
+	lv2:minorVersion 2 ;
+	lv2:microVersion 0 ;
+
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "inL" ;
+		lv2:name "In L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 1 ;
+		lv2:symbol "inR" ;
+		lv2:name "In R"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 2 ;
+		lv2:symbol "outL" ;
+		lv2:name "Out L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 3 ;
+		lv2:symbol "outR" ;
+		lv2:name "Out R"
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "monitor" ;
+		lv2:name "Monitor" ;
+		lv2:default 0 ;
+		lv2:minimum 0 ;
+		lv2:maximum 17 ;
+		lv2:scalePoint [
+			rdfs:label "Out24" ;
+			rdf:value 0
+		] , [
+			rdfs:label "Out16" ;
+			rdf:value 1
+		] , [
+			rdfs:label "Peaks" ;
+			rdf:value 2
+		] , [
+			rdfs:label "Slew" ;
+			rdf:value 3
+		] , [
+			rdfs:label "Subs" ;
+			rdf:value 4
+		] , [
+			rdfs:label "Mono" ;
+			rdf:value 5
+		] , [
+			rdfs:label "Side" ;
+			rdf:value 6
+		] , [
+			rdfs:label "Vinyl" ;
+			rdf:value 7
+		] , [
+			rdfs:label "Aurat" ;
+			rdf:value 8
+		] , [
+			rdfs:label "MonoRat" ;
+			rdf:value 9
+		] , [
+			rdfs:label "MonoLat" ;
+			rdf:value 10
+		] , [
+			rdfs:label "Phone" ;
+			rdf:value 11
+		] , [
+			rdfs:label "Cans A" ;
+			rdf:value 12
+		] , [
+			rdfs:label "Cans B" ;
+			rdf:value 13
+		] , [
+			rdfs:label "Cans C" ;
+			rdf:value 14
+		] , [
+			rdfs:label "Cans D" ;
+			rdf:value 15
+		] , [
+			rdfs:label "V Trick" ;
+			rdf:value 16
+		] ;
+		lv2:portProperty lv2:enumeration
+	] .

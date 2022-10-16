@@ -4,6 +4,7 @@
 ### Added
 - Distance2 2.0
 - DrumSlam 2.0
+- Monitoring 2.0
 
 ## [11.0] - 2022-10-15
 ### Added

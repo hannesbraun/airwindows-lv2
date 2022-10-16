@@ -206,6 +206,11 @@
 	lv2:binary <Mojo@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Mojo.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/monitoring>
+	a lv2:Plugin ;
+	lv2:binary <Monitoring@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Monitoring.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/monoam>
 	a lv2:Plugin ;
 	lv2:binary <MoNoam@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

@@ -59,6 +59,7 @@ plugins = [
   'Mackity',
   'MidSide',
   'Mojo',
+  'Monitoring',
   'MoNoam',
   'MV',
   'Nikola',
