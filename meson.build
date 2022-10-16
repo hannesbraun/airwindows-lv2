@@ -42,6 +42,7 @@ plugins = [
   'DeBess',
   'Desk',
   'Distance2',
+  'DrumSlam',
   'Dyno',
   'EdIsDim',
   'EveryTrim',
