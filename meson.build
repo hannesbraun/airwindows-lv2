@@ -41,6 +41,7 @@ plugins = [
   'DCVoltage',
   'DeBess',
   'Desk',
+  'Distance2',
   'Dyno',
   'EdIsDim',
   'EveryTrim',
