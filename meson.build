@@ -48,6 +48,7 @@ plugins = [
   'EveryTrim',
   'Facet',
   'Focus',
+  'Fracture',
   'Galactic',
   'HermeTrim',
   'HighGlossDither',

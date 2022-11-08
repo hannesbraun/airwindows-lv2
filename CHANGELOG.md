@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Fracture 2.0
 
 ## [12.0] - 2022-10-16
 ### Added
