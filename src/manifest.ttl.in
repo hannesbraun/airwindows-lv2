@@ -201,6 +201,11 @@
 	lv2:binary <Mackity@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Mackity.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/matrixverb>
+	a lv2:Plugin ;
+	lv2:binary <MatrixVerb@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <MatrixVerb.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/midside>
 	a lv2:Plugin ;
 	lv2:binary <MidSide@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

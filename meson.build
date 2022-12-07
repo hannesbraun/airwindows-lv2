@@ -58,6 +58,7 @@ plugins = [
   'IronOxideClassic2',
   'LeftoMono',
   'Mackity',
+  'MatrixVerb',
   'MidSide',
   'Mojo',
   'Monitoring',
