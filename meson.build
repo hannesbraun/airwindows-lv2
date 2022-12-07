@@ -53,6 +53,7 @@ plugins = [
   'HermeTrim',
   'HighGlossDither',
   'Hypersonic',
+  'Infinity',
   'Infinity2',
   'Infrasonic',
   'Interstage',

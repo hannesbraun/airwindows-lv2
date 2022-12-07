@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Fracture 2.0
+- Infinity 2.0
 - Infinity2 2.0
 - MatrixVerb 2.0
 

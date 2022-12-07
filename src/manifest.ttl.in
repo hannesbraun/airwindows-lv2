@@ -176,6 +176,11 @@
 	lv2:binary <Hypersonic@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Hypersonic.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/infinity>
+	a lv2:Plugin ;
+	lv2:binary <Infinity@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Infinity.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/infinity2>
 	a lv2:Plugin ;
 	lv2:binary <Infinity2@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
