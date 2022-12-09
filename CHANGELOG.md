@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [14.0] - 2022-12-08
 ### Added
 - Fracture 2.0
 - Infinity 2.0
@@ -105,7 +107,8 @@
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
 
-[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v12.0...dev
+[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v14.0...dev
+[14.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v12.0...v14.0
 [12.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v11.0...v12.0
 [11.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v9.0...v11.0
 [9.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v7.0...v9.0
