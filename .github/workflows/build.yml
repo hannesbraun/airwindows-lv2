@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Update package lists
+      run: sudo apt-get update -y
     - name: Install dependencies
       run: sudo apt-get install -y lilv-utils lv2-dev meson sordi
     - name: Validate Turtle files
@@ -47,6 +49,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Update package lists
+      run: sudo apt-get update -y
     - name: Install dependencies
       run: sudo apt-get install -y gcc-i686-linux-gnu lilv-utils lv2-dev meson sordi
     - name: Validate Turtle files
@@ -79,6 +83,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Update package lists
+      run: sudo apt-get update -y
     - name: Install dependencies
       run: sudo apt-get install -y gcc-aarch64-linux-gnu lilv-utils lv2-dev meson sordi
     - name: Validate Turtle files
@@ -109,6 +115,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Update package lists
+      run: sudo apt-get update -y
     - name: Install dependencies
       run: sudo apt-get install -y gcc-arm-linux-gnueabihf lilv-utils lv2-dev meson sordi
     - name: Validate Turtle files
