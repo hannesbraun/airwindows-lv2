@@ -69,6 +69,7 @@ plugins = [
   'Nikola',
   'PhaseNudge',
   'PocketVerbs',
+  'PowerSag',
   'Pressure5',
   'PurestConsoleBuss',
   'PurestConsoleChannel',
