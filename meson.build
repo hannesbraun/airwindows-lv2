@@ -70,6 +70,7 @@ plugins = [
   'PhaseNudge',
   'PocketVerbs',
   'PowerSag',
+  'PowerSag2',
   'Pressure5',
   'PurestConsoleBuss',
   'PurestConsoleChannel',

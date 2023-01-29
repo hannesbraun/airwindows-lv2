@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - PowerSag 2.0
+- PowerSag2 2.0
 
 ## [14.0] - 2022-12-08
 ### Added
