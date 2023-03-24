@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Golem 2.0
 
 ## [16.0] - 2023-02-01
 ### Added
