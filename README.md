@@ -60,4 +60,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 Copyright (c) 2018-2022 Chris Johnson
 
-Copyright (c) 2022 Hannes Braun
+Copyright (c) 2023 Hannes Braun
