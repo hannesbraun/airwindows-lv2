@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [18.0] - 2023-04-03
 ### Added
 - Golem 2.0
 
@@ -114,7 +116,8 @@
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
 
-[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v16.0...dev
+[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v18.0...dev
+[18.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v16.0...v18.0
 [16.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v14.0...v16.0
 [14.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v12.0...v14.0
 [12.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v11.0...v12.0
