@@ -71,6 +71,7 @@ plugins = [
   'MoNoam',
   'MV',
   'Nikola',
+  'PitchNasty',
   'PhaseNudge',
   'PocketVerbs',
   'PowerSag',
