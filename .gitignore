@@ -6,3 +6,5 @@ cmake-build-release
 .cache
 airwindows-lv2-*-*.tar.gz
 airwindows-lv2-*-*.zip
+/what.txt
+.vscode
