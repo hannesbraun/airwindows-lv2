@@ -9,7 +9,7 @@
 		lv2:ReverbPlugin ,
 		doap:Project ;
 	doap:name "Verbity" ;
-	rdfs:comment "Reverb, which uses feedforward reverb topology" ;
+	rdfs:comment "Dual mono reverb, which uses feedforward reverb topology" ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Hannes Braun" ;
@@ -17,7 +17,7 @@
 	] ;
 
 	lv2:minorVersion 2 ;
-	lv2:microVersion 0 ;
+	lv2:microVersion 2 ;
 
 	lv2:optionalFeature lv2:hardRTCapable ;
 	lv2:port [
