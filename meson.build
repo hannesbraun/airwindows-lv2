@@ -25,6 +25,7 @@ plugins = [
   'BitShiftGain',
   'BrightAmbience',
   'BrightAmbience2',
+  'BrightAmbience3',
   'BussColors4',
   'Capacitor',
   'Capacitor2',

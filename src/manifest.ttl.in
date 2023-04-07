@@ -36,6 +36,11 @@
 	lv2:binary <BrightAmbience2@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <BrightAmbience2.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/brightambience3>
+	a lv2:Plugin ;
+	lv2:binary <BrightAmbience3@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <BrightAmbience3.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/busscolors4>
 	a lv2:Plugin ;
 	lv2:binary <BussColors4@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
