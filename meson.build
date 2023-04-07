@@ -85,6 +85,7 @@ plugins = [
   'PurestGain',
   'Recurve',
   'RightoMono',
+  'SampleDelay',
   'SideDull',
   'Sidepass',
   'Slew',
