@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define M_PI 3.14159265358979323846264338327950288
+
 #define CHANNEL9_URI "https://hannesbraun.net/ns/lv2/airwindows/channel9"
 
 typedef enum {

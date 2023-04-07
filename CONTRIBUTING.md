@@ -47,6 +47,10 @@ std::set< std::string > _canDo;
 - Prepend `<pluginName>->` to the variables that are contained in the plugin struct.
 - Adjust the part of the code that retrieves the port/parameter values. You need to replace `A` (...) with the dereferenced value of the corresponding parameter.
 - Port all other C++ constructs to C. Usually, this is nothing more than a few casts.
+- If the plugin is making use of `M_PI`, you need to add the following `#define` to the top of the file in order to be compliant with the C99 standard:
+```c
+#define M_PI 3.14159265358979323846264338327950288
+```
 
 ## Getting the plugin ready for testing
 

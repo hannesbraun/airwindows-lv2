@@ -2,7 +2,7 @@ project(
   'airwindows-lv2',
   'c',
   default_options : [
-    'c_std=gnu99',
+    'c_std=c99',
     'default_library=static',
     'buildtype=release',
     'optimization=3'
