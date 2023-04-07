@@ -73,6 +73,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 Copyright (c) 2018-2023 Chris Johnson
 
-Copyright (c) 2023 Hannes Braun
+Copyright (c) 2022-2023 Hannes Braun
 
 [airwindows-lv2-devel mailing list]: mailto:~hannes/airwindows-lv2-devel@lists.sr.ht
