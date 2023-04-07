@@ -4,3 +4,5 @@ cmake-build-release
 .idea
 .DS_Store
 .cache
+airwindows-lv2-*-*.tar.gz
+airwindows-lv2-*-*.zip
