@@ -1,30 +1,28 @@
 # Changelog
 
-## [Unreleased]
-
-## [18.0] - 2023-04-03
+## 18.0 - 2023-04-03
 ### Added
 - Golem 2.0
 
-## [16.0] - 2023-02-01
+## 16.0 - 2023-02-01
 ### Added
 - PowerSag 2.0
 - PowerSag2 2.0
 
-## [14.0] - 2022-12-08
+## 14.0 - 2022-12-08
 ### Added
 - Fracture 2.0
 - Infinity 2.0
 - Infinity2 2.0
 - MatrixVerb 2.0
 
-## [12.0] - 2022-10-16
+## 12.0 - 2022-10-16
 ### Added
 - Distance2 2.0
 - DrumSlam 2.0
 - Monitoring 2.0
 
-## [11.0] - 2022-10-15
+## 11.0 - 2022-10-15
 ### Added
 - BussColors4 2.0
 - HighGlossDither 2.0
@@ -33,7 +31,7 @@
 - XNotch 2.0
 - XRegion 2.0
 
-## [9.0] - 2022-08-23
+## 9.0 - 2022-08-23
 ### Added
 - Compresaturator 2.0
 - curve 2.0
@@ -42,11 +40,11 @@
 - Recurve 2.0
 - SideDull 2.0
 
-## [7.0] - 2022-07-02
+## 7.0 - 2022-07-02
 ### Added
 - IronOxideClassic2 2.0
 
-## [5.0] - 2022-05-28
+## 5.0 - 2022-05-28
 ### Added
 - Console6Buss 2.0
 - Console6Channel 2.0
@@ -60,7 +58,7 @@
 - Tube2 2.0
 - TubeDesk 2.0
 
-## [3.0] - 2022-04-29
+## 3.0 - 2022-04-29
 ### Added
 - Channel9 2.0
 - MoNoam 2.0
@@ -68,7 +66,7 @@
 - PurestConsole2Channel 2.0
 - Vibrato 2.0
 
-## [1.0] - 2022-04-20
+## 1.0 - 2022-04-20
 ### Added
 - Acceleration 2.0
 - Acceleration2 2.0
@@ -115,15 +113,3 @@
 - Ultrasonic 2.0
 - UltrasonicLite 2.0
 - UltrasonicMed 2.0
-
-[Unreleased]: https://github.com/hannesbraun/airwindows-lv2/compare/v18.0...dev
-[18.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v16.0...v18.0
-[16.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v14.0...v16.0
-[14.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v12.0...v14.0
-[12.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v11.0...v12.0
-[11.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v9.0...v11.0
-[9.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v7.0...v9.0
-[7.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v5.0...v7.0
-[5.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v3.0...v5.0
-[3.0]: https://github.com/hannesbraun/airwindows-lv2/compare/v1.0...v3.0
-[1.0]: https://github.com/hannesbraun/airwindows-lv2/releases/tag/v1.0

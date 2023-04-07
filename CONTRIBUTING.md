@@ -72,6 +72,6 @@ Now, it's time for a null test.
 
 ## Submit the plugin
 
-If the null test was successful, finally add an entry to the Changelog. Submit the pull request, and I'll review it as soon as I've got time. Limit a pull request to one plugin to make the reviewing process easier.
+If the null test was successful, finally add an entry to the Changelog. Submit the patch, and I'll review it as soon as I've got time. Limit a commit to one plugin port to make the reviewing process easier. For a tutorial on how to send patches by email, visit https://git-send-email.io.
 
 Thanks.

@@ -1,0 +1,29 @@
+image: ubuntu/next
+packages:
+  - clang-format
+  - lilv-utils
+  - lv2-dev
+  - meson
+  - pkg-config
+  - sordi
+sources:
+  - https://git.sr.ht/~hannes/airwindows-lv2
+tasks:
+  - validate-turtle: |
+      cd airwindows-lv2
+      lv2_validate src/manifest.ttl.in src/*/*.ttl
+  - check-formatting: |
+      cd airwindows-lv2
+      clang-format --dry-run --Werror src/*/*.c
+  - setup-build: |
+      cd airwindows-lv2
+      meson setup build
+  - compile: |
+      cd airwindows-lv2
+      meson compile -C build
+  - install: |
+      cd airwindows-lv2
+      sudo meson install -C build
+  - test: |
+      test -d /usr/local/lib/x86_64-linux-gnu/lv2/Airwindows.lv2
+      LV2_PATH=/usr/local/lib/x86_64-linux-gnu/lv2 lv2bench
