@@ -26,6 +26,11 @@
 	lv2:binary <BitShiftGain@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <BitShiftGain.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/brightambience>
+	a lv2:Plugin ;
+	lv2:binary <BrightAmbience@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <BrightAmbience.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/busscolors4>
 	a lv2:Plugin ;
 	lv2:binary <BussColors4@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
