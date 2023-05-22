@@ -23,6 +23,7 @@ plugins = [
   'ADClip7',
   'Baxandall',
   'BitShiftGain',
+  'BitShiftPan',
   'BrightAmbience',
   'BrightAmbience2',
   'BrightAmbience3',
