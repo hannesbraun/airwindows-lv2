@@ -35,6 +35,7 @@ plugins = [
   'ClipOnly',
   'ClipOnly2',
   'Compresaturator',
+  'Console0Channel',
   'Console6Buss',
   'Console6Channel',
   'Console7Buss',
