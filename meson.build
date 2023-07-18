@@ -94,6 +94,7 @@ plugins = [
   'Slew',
   'SlewOnly',
   'Spiral',
+  'Spiral2',
   'Srsly2',
   'StarChild',
   'SubsOnly',
