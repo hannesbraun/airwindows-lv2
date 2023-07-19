@@ -34,6 +34,7 @@ plugins = [
   'Channel9',
   'ClipOnly',
   'ClipOnly2',
+  'ClipSoftly',
   'Compresaturator',
   'Console0Buss',
   'Console0Channel',
