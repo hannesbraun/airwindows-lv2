@@ -52,6 +52,7 @@ plugins = [
   'DrumSlam',
   'Dyno',
   'EdIsDim',
+  'EQ',
   'EveryTrim',
   'Facet',
   'Focus',
