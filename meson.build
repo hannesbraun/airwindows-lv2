@@ -79,6 +79,7 @@ plugins = [
   'Nikola',
   'PitchNasty',
   'PhaseNudge',
+  'PlatinumSlew',
   'PocketVerbs',
   'PowerSag',
   'PowerSag2',
