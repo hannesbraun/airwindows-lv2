@@ -58,6 +58,7 @@ plugins = [
   'Focus',
   'Fracture',
   'Galactic',
+  'GoldenSlew',
   'Golem',
   'HermeTrim',
   'HighGlossDither',
