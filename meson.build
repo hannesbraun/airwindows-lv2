@@ -70,6 +70,7 @@ plugins = [
   'Interstage',
   'IronOxideClassic2',
   'LeftoMono',
+  'LilAmp',
   'Mackity',
   'MatrixVerb',
   'MidSide',
