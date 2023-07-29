@@ -45,6 +45,7 @@ plugins = [
   'Console7Channel',
   'Console7Crunch',
   'Console8BussIn',
+  'Console8BussOut',
   'curve',
   'DCVoltage',
   'DeBess',
