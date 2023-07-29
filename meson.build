@@ -44,6 +44,7 @@ plugins = [
   'Console7Cascade',
   'Console7Channel',
   'Console7Crunch',
+  'Console8BussHype',
   'Console8BussIn',
   'Console8BussOut',
   'Console8ChannelIn',
