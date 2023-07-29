@@ -44,6 +44,7 @@ plugins = [
   'Console7Cascade',
   'Console7Channel',
   'Console7Crunch',
+  'Console8BussIn',
   'curve',
   'DCVoltage',
   'DeBess',
