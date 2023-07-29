@@ -50,6 +50,7 @@ plugins = [
   'Console8ChannelHype',
   'Console8ChannelIn',
   'Console8ChannelOut',
+  'Console8SubHype',
   'Console8SubIn',
   'Console8SubOut',
   'curve',
