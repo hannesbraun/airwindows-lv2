@@ -47,6 +47,7 @@ plugins = [
   'Console8BussIn',
   'Console8BussOut',
   'Console8SubIn',
+  'Console8SubOut',
   'curve',
   'DCVoltage',
   'DeBess',
