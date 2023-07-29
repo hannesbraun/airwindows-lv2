@@ -161,6 +161,11 @@
 	lv2:binary <Console8ChannelOut@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Console8ChannelOut.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/console8litebuss>
+	a lv2:Plugin ;
+	lv2:binary <Console8LiteBuss@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Console8LiteBuss.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/console8subhype>
 	a lv2:Plugin ;
 	lv2:binary <Console8SubHype@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
