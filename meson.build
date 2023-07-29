@@ -47,6 +47,7 @@ plugins = [
   'Console8BussHype',
   'Console8BussIn',
   'Console8BussOut',
+  'Console8ChannelHype',
   'Console8ChannelIn',
   'Console8ChannelOut',
   'Console8SubIn',
