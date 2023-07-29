@@ -47,6 +47,7 @@ plugins = [
   'Console8BussIn',
   'Console8BussOut',
   'Console8ChannelIn',
+  'Console8ChannelOut',
   'Console8SubIn',
   'Console8SubOut',
   'curve',
