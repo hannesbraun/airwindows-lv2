@@ -51,6 +51,7 @@ plugins = [
   'Console8ChannelIn',
   'Console8ChannelOut',
   'Console8LiteBuss',
+  'Console8LiteChannel',
   'Console8SubHype',
   'Console8SubIn',
   'Console8SubOut',
