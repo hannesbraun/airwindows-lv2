@@ -64,6 +64,7 @@ plugins = [
   'Dyno',
   'EdIsDim',
   'EQ',
+  'EverySlew',
   'EveryTrim',
   'Facet',
   'Focus',
