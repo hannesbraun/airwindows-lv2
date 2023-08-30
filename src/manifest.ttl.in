@@ -301,6 +301,11 @@
 	lv2:binary <Infinity2@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Infinity2.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/inflamer>
+	a lv2:Plugin ;
+	lv2:binary <Inflamer@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Inflamer.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/infrasonic>
 	a lv2:Plugin ;
 	lv2:binary <Infrasonic@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

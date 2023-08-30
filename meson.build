@@ -78,6 +78,7 @@ plugins = [
   'Hypersonic',
   'Infinity',
   'Infinity2',
+  'Inflamer',
   'Infrasonic',
   'Interstage',
   'IronOxideClassic2',
