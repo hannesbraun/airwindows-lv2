@@ -117,6 +117,7 @@ plugins = [
   'Srsly2',
   'StarChild',
   'SubsOnly',
+  'ToTape5',
   'ToTape6',
   'TransDesk',
   'Tube',
