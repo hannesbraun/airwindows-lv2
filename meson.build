@@ -96,6 +96,7 @@ plugins = [
   'PhaseNudge',
   'PlatinumSlew',
   'PocketVerbs',
+  'Point',
   'PowerSag',
   'PowerSag2',
   'Pressure5',

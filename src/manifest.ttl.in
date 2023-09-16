@@ -391,6 +391,11 @@
 	lv2:binary <PocketVerbs@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <PocketVerbs.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/point>
+	a lv2:Plugin ;
+	lv2:binary <Point@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Point.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/powersag>
 	a lv2:Plugin ;
 	lv2:binary <PowerSag@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
