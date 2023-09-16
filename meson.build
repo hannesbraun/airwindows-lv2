@@ -55,6 +55,7 @@ plugins = [
   'Console8SubHype',
   'Console8SubIn',
   'Console8SubOut',
+  'Creature',
   'curve',
   'DCVoltage',
   'DeBess',
