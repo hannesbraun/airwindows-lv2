@@ -108,6 +108,7 @@ plugins = [
   'PurestDrive',
   'PurestGain',
   'Recurve',
+  'ResEQ2',
   'RightoMono',
   'SampleDelay',
   'SideDull',

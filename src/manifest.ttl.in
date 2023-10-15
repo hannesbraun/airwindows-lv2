@@ -451,6 +451,11 @@
 	lv2:binary <Recurve@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Recurve.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/reseq2>
+	a lv2:Plugin ;
+	lv2:binary <ResEQ2@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <ResEQ2.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/rightomono>
 	a lv2:Plugin ;
 	lv2:binary <RightoMono@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
