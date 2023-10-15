@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define M_PI_2 1.57079632679489661923132169163975144
+#define M_PI_4 0.785398163397448309615660845819875721
+
 #define RESEQ2_URI "https://hannesbraun.net/ns/lv2/airwindows/reseq2"
 
 typedef enum {
