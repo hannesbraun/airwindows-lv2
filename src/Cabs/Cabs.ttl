@@ -1,0 +1,127 @@
+@prefix doap:	<http://usefulinc.com/ns/doap#> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix lv2:	<http://lv2plug.in/ns/lv2core#> .
+@prefix pprops:	<http://lv2plug.in/ns/ext/port-props#> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/cabs>
+	a lv2:Plugin ,
+		lv2:SimulatorPlugin ,
+		doap:Project ;
+	doap:name "Cabs" ;
+	rdfs:comment "Airwindows guitar speaker cabinet simulator" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
+	doap:maintainer [
+		foaf:name "Hannes Braun" ;
+		foaf:homepage <https://hannesbraun.net/>
+	] ;
+
+	lv2:minorVersion 2 ;
+	lv2:microVersion 0 ;
+
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "inL" ;
+		lv2:name "In L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 1 ;
+		lv2:symbol "inR" ;
+		lv2:name "In R"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 2 ;
+		lv2:symbol "outL" ;
+		lv2:name "Out L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 3 ;
+		lv2:symbol "outR" ;
+		lv2:name "Out R"
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "cabType" ;
+		lv2:name "CabType" ;
+		lv2:default 0 ;
+		lv2:minimum 0 ;
+		lv2:maximum 6 ;
+		lv2:scalePoint [
+			rdfs:label "HPStack" ;
+			rdf:value 0
+		] , [
+			rdfs:label "Vintage" ;
+			rdf:value 1
+		] , [
+			rdfs:label "Boutiqe" ;
+			rdf:value 2
+		] , [
+			rdfs:label "Large C" ;
+			rdf:value 3
+		] , [
+			rdfs:label "Small C" ;
+			rdf:value 4
+		] , [
+			rdfs:label "BassAmp" ;
+			rdf:value 5
+		] ;
+		lv2:portProperty lv2:enumeration
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 5 ;
+		lv2:symbol "intense" ;
+		lv2:name "Intense" ;
+		lv2:default 0.66 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		lv2:portProperty pprops:hasStrictBounds
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 6 ;
+		lv2:symbol "rmLoud" ;
+		lv2:name "Rm Loud" ;
+		lv2:default 0.33 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		lv2:portProperty pprops:hasStrictBounds
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 7 ;
+		lv2:symbol "cabSize" ;
+		lv2:name "Cab Size" ;
+		lv2:default 0.66 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		lv2:portProperty pprops:hasStrictBounds
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 8 ;
+		lv2:symbol "offAxis" ;
+		lv2:name "OffAxsis" ;
+		lv2:default 0.33 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		lv2:portProperty pprops:hasStrictBounds
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 9 ;
+		lv2:symbol "output" ;
+		lv2:name "Output" ;
+		lv2:default 0.5 ;
+		lv2:minimum 0.0 ;
+		lv2:maximum 1.0 ;
+		lv2:portProperty pprops:hasStrictBounds
+	] .

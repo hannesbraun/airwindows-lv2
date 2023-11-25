@@ -28,6 +28,7 @@ plugins = [
   'BrightAmbience2',
   'BrightAmbience3',
   'BussColors4',
+  'Cabs',
   'Capacitor',
   'Capacitor2',
   'Channel8',
