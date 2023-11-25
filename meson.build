@@ -115,6 +115,7 @@ plugins = [
   'SampleDelay',
   'SideDull',
   'Sidepass',
+  'Sinew',
   'Slew',
   'SlewOnly',
   'Spiral',
