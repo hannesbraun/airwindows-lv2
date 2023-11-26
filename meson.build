@@ -78,6 +78,7 @@ plugins = [
   'GlitchShifter',
   'GoldenSlew',
   'Golem',
+  'GrindAmp',
   'HermeTrim',
   'HighGlossDither',
   'Hypersonic',
