@@ -271,6 +271,11 @@
 	lv2:binary <Facet@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Facet.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/flipity>
+	a lv2:Plugin ;
+	lv2:binary <Flipity@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <Flipity.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/focus>
 	a lv2:Plugin ;
 	lv2:binary <Focus@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
