@@ -89,6 +89,7 @@ plugins = [
   'Infrasonic',
   'Interstage',
   'IronOxideClassic2',
+  'LeadAmp',
   'LeftoMono',
   'LilAmp',
   'Mackity',
