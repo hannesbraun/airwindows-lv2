@@ -25,6 +25,7 @@ plugins = [
   'BassDrive',
   'BassKit',
   'Baxandall',
+  'BigAmp',
   'BitShiftGain',
   'BitShiftPan',
   'BrightAmbience',
