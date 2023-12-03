@@ -73,6 +73,7 @@ plugins = [
   'EverySlew',
   'EveryTrim',
   'Facet',
+  'FireAmp',
   'Flipity',
   'Focus',
   'Fracture',
