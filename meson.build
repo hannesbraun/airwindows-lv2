@@ -96,6 +96,7 @@ plugins = [
   'LilAmp',
   'Mackity',
   'MatrixVerb',
+  'MidAmp',
   'MidSide',
   'Mojo',
   'Monitoring',
