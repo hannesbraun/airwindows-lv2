@@ -16,6 +16,21 @@ typedef enum {
 	OUTPUT_R = 3
 } PortIndex;
 
+enum {
+	fix_freq,
+	fix_reso,
+	fix_a0,
+	fix_a1,
+	fix_a2,
+	fix_b1,
+	fix_b2,
+	fix_sL1,
+	fix_sL2,
+	fix_sR1,
+	fix_sR2,
+	fix_total
+}; // fixed frequency biquad filter for ultrasonics, stereo
+
 typedef struct {
 	double sampleRate;
 	const float* input[2];
@@ -27,20 +42,6 @@ typedef struct {
 	double iirAR;
 	double iirBR;
 	bool hsr;
-	enum {
-		fix_freq,
-		fix_reso,
-		fix_a0,
-		fix_a1,
-		fix_a2,
-		fix_b1,
-		fix_b2,
-		fix_sL1,
-		fix_sL2,
-		fix_sR1,
-		fix_sR2,
-		fix_total
-	}; // fixed frequency biquad filter for ultrasonics, stereo
 	double fix[fix_total];
 	double softL[11];
 	double softR[11];
