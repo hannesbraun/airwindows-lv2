@@ -2,7 +2,7 @@
 c = 'arm-linux-gnueabihf-gcc'
 ar = 'arm-linux-gnueabihf-gcc-ar'
 strip = 'arm-linux-gnueabihf-strip'
-pkgconfig = 'pkg-config'
+pkg-config = 'pkg-config'
 
 [host_machine]
 system = 'linux'

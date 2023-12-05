@@ -3,7 +3,7 @@ c = 'clang'
 ar = 'ar'
 ld = 'ld'
 strip = 'strip'
-pkgconfig = 'pkg-config'
+pkg-config = 'pkg-config'
 
 [host_machine]
 system = 'darwin'

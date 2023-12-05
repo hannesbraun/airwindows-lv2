@@ -2,7 +2,7 @@
 c = 'aarch64-linux-gnu-gcc'
 ar = 'aarch64-linux-gnu-gcc-ar'
 strip = 'aarch64-linux-gnu-strip'
-pkgconfig = 'pkg-config'
+pkg-config = 'pkg-config'
 
 [host_machine]
 system = 'linux'

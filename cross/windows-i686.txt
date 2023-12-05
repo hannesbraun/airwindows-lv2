@@ -3,7 +3,7 @@ c = 'i686-w64-mingw32-gcc'
 ar = 'i686-w64-mingw32-ar'
 ld = 'i686-w64-mingw32-ld'
 strip = 'i686-w64-mingw32-strip'
-pkgconfig = 'pkg-config'
+pkg-config = 'pkg-config'
 
 [host_machine]
 system = 'windows'
