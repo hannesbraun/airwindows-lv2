@@ -5,6 +5,15 @@
 
 #define FLIPITY_URI "https://hannesbraun.net/ns/lv2/airwindows/flipity"
 
+#define K_DRY 0
+#define K_FLIP_L 1
+#define K_FLIP_R 2
+#define K_FLIP_LR 3
+#define K_SWAP 4
+#define K_SWIP_L 5
+#define K_SWIP_R 6
+#define K_SWIP_LR 7
+
 typedef enum {
 	INPUT_L = 0,
 	INPUT_R = 1,
@@ -74,14 +83,6 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out2 = flipityInstance->output[1];
 
 	int flipity = (int) (*flipityInstance->flipity);
-	static const int kDry = 0;
-	static const int kFlipL = 1;
-	static const int kFlipR = 2;
-	static const int kFlipLR = 3;
-	static const int kSwap = 4;
-	static const int kSwipL = 5;
-	static const int kSwipR = 6;
-	static const int kSwipLR = 7;
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -89,34 +90,34 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		double temp;
 
 		switch (flipity) {
-			case kDry:
+			case K_DRY:
 				break;
-			case kFlipL:
+			case K_FLIP_L:
 				inputSampleL = -inputSampleL;
 				break;
-			case kFlipR:
+			case K_FLIP_R:
 				inputSampleR = -inputSampleR;
 				break;
-			case kFlipLR:
+			case K_FLIP_LR:
 				inputSampleL = -inputSampleL;
 				inputSampleR = -inputSampleR;
 				break;
-			case kSwap:
+			case K_SWAP:
 				temp = inputSampleL;
 				inputSampleL = inputSampleR;
 				inputSampleR = temp;
 				break;
-			case kSwipL:
+			case K_SWIP_L:
 				temp = inputSampleL;
 				inputSampleL = -inputSampleR;
 				inputSampleR = temp;
 				break;
-			case kSwipR:
+			case K_SWIP_R:
 				temp = inputSampleL;
 				inputSampleL = inputSampleR;
 				inputSampleR = -temp;
 				break;
-			case kSwipLR:
+			case K_SWIP_LR:
 			default:
 				temp = inputSampleL;
 				inputSampleL = -inputSampleR;
