@@ -145,6 +145,7 @@ plugins = [
   'Verbity',
   'Vibrato',
   'XBandpass',
+  'XLowpass',
   'XNotch',
   'XRegion',
 ]

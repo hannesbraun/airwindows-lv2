@@ -636,6 +636,11 @@
 	lv2:binary <XBandpass@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <XBandpass.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/xlowpass>
+	a lv2:Plugin ;
+	lv2:binary <XLowpass@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <XLowpass.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/xnotch>
 	a lv2:Plugin ;
 	lv2:binary <XNotch@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
