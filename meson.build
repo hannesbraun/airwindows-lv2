@@ -134,6 +134,7 @@ plugins = [
   'SubsOnly',
   'ToTape5',
   'ToTape6',
+  'TPDFDither',
   'TransDesk',
   'Tube',
   'Tube2',
