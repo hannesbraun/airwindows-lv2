@@ -94,6 +94,7 @@ plugins = [
   'LeadAmp',
   'LeftoMono',
   'LilAmp',
+  'Luxor',
   'Mackity',
   'MatrixVerb',
   'MidAmp',
