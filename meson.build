@@ -117,6 +117,7 @@ plugins = [
   'PurestConsole2Buss',
   'PurestConsole2Channel',
   'PurestConsole3Buss',
+  'PurestConsole3Channel',
   'PurestDrive',
   'PurestGain',
   'Recurve',
