@@ -120,6 +120,7 @@ plugins = [
   'PurestConsole3Channel',
   'PurestDrive',
   'PurestGain',
+  'RawGlitters',
   'Recurve',
   'ResEQ',
   'ResEQ2',
