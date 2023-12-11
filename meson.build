@@ -121,6 +121,7 @@ plugins = [
   'PurestDrive',
   'PurestGain',
   'RawGlitters',
+  'RawTimbers',
   'Recurve',
   'ResEQ',
   'ResEQ2',

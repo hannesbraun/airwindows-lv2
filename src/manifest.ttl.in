@@ -516,6 +516,11 @@
 	lv2:binary <RawGlitters@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <RawGlitters.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/rawtimbers>
+	a lv2:Plugin ;
+	lv2:binary <RawTimbers@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <RawTimbers.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/recurve>
 	a lv2:Plugin ;
 	lv2:binary <Recurve@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
