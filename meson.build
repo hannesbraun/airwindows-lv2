@@ -92,6 +92,7 @@ plugins = [
   'Infrasonic',
   'Interstage',
   'IronOxideClassic2',
+  'kPlateA',
   'LeadAmp',
   'LeftoMono',
   'LilAmp',
