@@ -20,41 +20,41 @@ typedef enum {
 	WETNESS = 8
 } PortIndex;
 
-const int earlyA = 103;
-const int earlyB = 709;
-const int earlyC = 151;
-const int earlyD = 263;
-const int earlyE = 1433;
-const int earlyF = 593;
-const int earlyG = 1361;
-const int earlyH = 31;
-const int earlyI = 691;
-const int predelay = 24010; // 79 ms, 750 seat theater. Scarcity, 1 in 60270
-const int delayA = 619;
-const int delayB = 181;
-const int delayC = 101;
-const int delayD = 677;
-const int delayE = 401;
-const int delayF = 151;
-const int delayG = 409;
-const int delayH = 31;
-const int delayI = 641;
-const int delayJ = 661;
-const int delayK = 11;
-const int delayL = 691;
-const int delayM = 719;
-const int delayN = 17;
-const int delayO = 61;
-const int delayP = 743;
-const int delayQ = 89;
-const int delayR = 659;
-const int delayS = 5;
-const int delayT = 547;
-const int delayU = 769;
-const int delayV = 421;
-const int delayW = 47;
-const int delayX = 521;
-const int delayY = 163; // 80 ms, 778 seat theater. Scarcity, 1 in 94194
+#define earlyA 103
+#define earlyB 709
+#define earlyC 151
+#define earlyD 263
+#define earlyE 1433
+#define earlyF 593
+#define earlyG 1361
+#define earlyH 31
+#define earlyI 691
+#define predelay 24010 // 79 ms, 750 seat theater. Scarcity, 1 in 60270
+#define delayA 619
+#define delayB 181
+#define delayC 101
+#define delayD 677
+#define delayE 401
+#define delayF 151
+#define delayG 409
+#define delayH 31
+#define delayI 641
+#define delayJ 661
+#define delayK 11
+#define delayL 691
+#define delayM 719
+#define delayN 17
+#define delayO 61
+#define delayP 743
+#define delayQ 89
+#define delayR 659
+#define delayS 5
+#define delayT 547
+#define delayU 769
+#define delayV 421
+#define delayW 47
+#define delayX 521
+#define delayY 163 // 80 ms, 778 seat theater. Scarcity, 1 in 94194
 
 enum {
 	fix_freq,
@@ -78,7 +78,7 @@ typedef struct {
 	const float* inputPad;
 	const float* damping;
 	const float* lowCut;
-	const float* predelay;
+	const float* predelayS;
 	const float* wetness;
 
 	double iirAL;
@@ -326,7 +326,7 @@ static void connect_port(LV2_Handle instance, uint32_t port, void* data)
 			kPlateD->lowCut = (const float*) data;
 			break;
 		case PREDELAY:
-			kPlateD->predelay = (const float*) data;
+			kPlateD->predelayS = (const float*) data;
 			break;
 		case WETNESS:
 			kPlateD->wetness = (const float*) data;
@@ -653,7 +653,7 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	regen = (regen * 0.0001) + 0.00024;
 	double iirAmount = ((*kPlateD->lowCut / 3.0) * 0.3) + 0.04;
 	iirAmount = (iirAmount * 1000.0) / downRate;
-	double earlyVolume = *kPlateD->predelay; // predelay to a half-second
+	double earlyVolume = *kPlateD->predelayS; // predelay to a half-second
 	int adjPredelay = (downRate * earlyVolume);
 	double wet = *kPlateD->wetness * 2.0;
 	double dry = 2.0 - wet;
