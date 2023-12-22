@@ -93,6 +93,7 @@ plugins = [
   'Interstage',
   'IronOxideClassic2',
   'kPlateA',
+  'kPlateB',
   'LeadAmp',
   'LeftoMono',
   'LilAmp',
