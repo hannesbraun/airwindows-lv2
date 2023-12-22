@@ -94,6 +94,7 @@ plugins = [
   'IronOxideClassic2',
   'kPlateA',
   'kPlateB',
+  'kPlateC',
   'LeadAmp',
   'LeftoMono',
   'LilAmp',
