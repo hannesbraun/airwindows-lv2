@@ -95,6 +95,7 @@ plugins = [
   'kPlateA',
   'kPlateB',
   'kPlateC',
+  'kPlateD',
   'LeadAmp',
   'LeftoMono',
   'LilAmp',
