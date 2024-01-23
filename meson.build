@@ -130,6 +130,7 @@ plugins = [
   'Recurve',
   'ResEQ',
   'ResEQ2',
+  'Reverb',
   'RightoMono',
   'SampleDelay',
   'SideDull',
