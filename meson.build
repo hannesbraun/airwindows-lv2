@@ -134,6 +134,7 @@ plugins = [
   'Reverb',
   'RightoMono',
   'SampleDelay',
+  'ShortBuss',
   'SideDull',
   'Sidepass',
   'Sinew',
