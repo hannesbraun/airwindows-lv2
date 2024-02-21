@@ -85,6 +85,7 @@ plugins = [
   'GrindAmp',
   'HermeTrim',
   'HighGlossDither',
+  'Hull2',
   'Hypersonic',
   'Infinity',
   'Infinity2',
