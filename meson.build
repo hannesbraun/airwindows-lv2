@@ -159,6 +159,7 @@ plugins = [
   'XLowpass',
   'XNotch',
   'XRegion',
+  'ZOutputStage',
 ]
 
 # Figure out install_dir
