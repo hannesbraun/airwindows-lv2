@@ -216,6 +216,11 @@
 	lv2:binary <ConsoleLABuss@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <ConsoleLABuss.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/consolelachannel>
+	a lv2:Plugin ;
+	lv2:binary <ConsoleLAChannel@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <ConsoleLAChannel.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/creature>
 	a lv2:Plugin ;
 	lv2:binary <Creature@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

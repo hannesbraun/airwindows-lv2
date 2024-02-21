@@ -61,6 +61,7 @@ plugins = [
   'Console8SubIn',
   'Console8SubOut',
   'ConsoleLABuss',
+  'ConsoleLAChannel',
   'Creature',
   'curve',
   'DCVoltage',
