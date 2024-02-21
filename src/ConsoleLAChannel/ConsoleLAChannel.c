@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define M_PI_2 1.57079632679489661923132169163975144
+
 #define CONSOLELACHANNEL_URI "https://hannesbraun.net/ns/lv2/airwindows/consolelachannel"
 
 typedef enum {
