@@ -71,8 +71,8 @@ In case of any questions, problems or bugs, also send a message to the [airwindo
 
 This project is licensed under the [MIT License](LICENSE).
 
-Copyright (c) 2018-2023 Chris Johnson
+Copyright (c) 2018-2024 Chris Johnson
 
-Copyright (c) 2022-2023 Hannes Braun
+Copyright (c) 2022-2024 Hannes Braun
 
 [airwindows-lv2-devel mailing list]: mailto:~hannes/airwindows-lv2-devel@lists.sr.ht
