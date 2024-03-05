@@ -291,6 +291,11 @@
 	lv2:binary <Facet@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
 	rdfs:seeAlso <Facet.ttl> .
 
+<https://hannesbraun.net/ns/lv2/airwindows/finalclip>
+	a lv2:Plugin ;
+	lv2:binary <FinalClip@CMAKE_SHARED_LIBRARY_SUFFIX@> ;
+	rdfs:seeAlso <FinalClip.ttl> .
+
 <https://hannesbraun.net/ns/lv2/airwindows/fireamp>
 	a lv2:Plugin ;
 	lv2:binary <FireAmp@CMAKE_SHARED_LIBRARY_SUFFIX@> ;

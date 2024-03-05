@@ -76,6 +76,7 @@ plugins = [
   'EverySlew',
   'EveryTrim',
   'Facet',
+  'FinalClip',
   'FireAmp',
   'Flipity',
   'Focus',
