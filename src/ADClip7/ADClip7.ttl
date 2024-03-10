@@ -10,7 +10,7 @@
 	a lv2:Plugin ,
 		doap:Project ;
 	doap:name "ADClip7" ;
-	rdfs:comment "The ultimate Airwindows loudness maximizer/peak control" ;
+	rdfs:comment "The original Airwindows loudness maximizer/peak control" ;
 	doap:license <https://opensource.org/licenses/MIT> ;
 	doap:maintainer [
 		foaf:name "Hannes Braun" ;
@@ -18,7 +18,7 @@
 	] ;
 
 	lv2:minorVersion 2 ;
-	lv2:microVersion 0 ;
+	lv2:microVersion 2 ;
 
 	lv2:optionalFeature lv2:hardRTCapable ;
 	lv2:port [
