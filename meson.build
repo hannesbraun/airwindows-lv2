@@ -21,6 +21,7 @@ plugins = [
   'Acceleration',
   'Acceleration2',
   'ADClip7',
+  'ADClip8',
   'BassAmp',
   'BassDrive',
   'BassKit',
