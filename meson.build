@@ -131,6 +131,7 @@ plugins = [
   'PurestConsole3Buss',
   'PurestConsole3Channel',
   'PurestDrive',
+  'PurestFade',
   'PurestGain',
   'RawGlitters',
   'RawTimbers',
