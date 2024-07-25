@@ -89,18 +89,19 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		// encode/decode courtesy of torridgristle under the MIT license
 		// Inverse Square 1-(1-x)^2 and 1-(1-x)^0.5
+		// Reformulated using 'Herbie' for better accuracy near zero
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
-		else if (inputSampleL > 0.0) inputSampleL = 1.0 - pow(1.0 - inputSampleL, 0.5);
+		else if (inputSampleL > 0.0) inputSampleL = inputSampleL / (1.0 + sqrt(1.0 - inputSampleL));
 
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
-		else if (inputSampleL < 0.0) inputSampleL = -1.0 + pow(1.0 + inputSampleL, 0.5);
+		else if (inputSampleL < 0.0) inputSampleL = inputSampleL / (sqrt((inputSampleL + 1.0)) + 1.0);
 
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
-		else if (inputSampleR > 0.0) inputSampleR = 1.0 - pow(1.0 - inputSampleR, 0.5);
+		else if (inputSampleR > 0.0) inputSampleR = inputSampleR / (1.0 + sqrt(1.0 - inputSampleR));
 
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		else if (inputSampleR < 0.0) inputSampleR = -1.0 + pow(1.0 + inputSampleR, 0.5);
+		else if (inputSampleR < 0.0) inputSampleR = inputSampleR / (sqrt((inputSampleR + 1.0)) + 1.0);
 
 		// begin 32 bit stereo floating point dither
 		int expon;

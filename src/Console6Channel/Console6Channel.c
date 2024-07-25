@@ -19,6 +19,9 @@ typedef struct {
 	float* output[2];
 	const float* inputGain;
 
+	double inTrimA;
+	double inTrimB;
+
 	uint32_t fpdL;
 	uint32_t fpdR;
 } Console6Channel;
@@ -59,6 +62,8 @@ static void connect_port(LV2_Handle instance, uint32_t port, void* data)
 static void activate(LV2_Handle instance)
 {
 	Console6Channel* console6Channel = (Console6Channel*) instance;
+	console6Channel->inTrimA = 1.0;
+	console6Channel->inTrimB = 1.0;
 	console6Channel->fpdL = 1.0;
 	while (console6Channel->fpdL < 16386) console6Channel->fpdL = rand() * UINT32_MAX;
 	console6Channel->fpdR = 1.0;
@@ -74,7 +79,10 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 	float* out1 = console6Channel->output[0];
 	float* out2 = console6Channel->output[1];
 
-	const float gain = *console6Channel->inputGain;
+	uint32_t inFramesToProcess = sampleFrames;
+
+	console6Channel->inTrimA = console6Channel->inTrimB;
+	console6Channel->inTrimB = *console6Channel->inputGain;
 
 	while (sampleFrames-- > 0) {
 		double inputSampleL = *in1;
@@ -82,25 +90,29 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (fabs(inputSampleL) < 1.18e-23) inputSampleL = console6Channel->fpdL * 1.18e-17;
 		if (fabs(inputSampleR) < 1.18e-23) inputSampleR = console6Channel->fpdR * 1.18e-17;
 
-		if (gain != 1.0) {
-			inputSampleL *= gain;
-			inputSampleR *= gain;
+		double temp = (double) sampleFrames / inFramesToProcess;
+		double inTrim = (console6Channel->inTrimA * temp) + (console6Channel->inTrimB * (1.0 - temp));
+
+		if (inTrim != 1.0) {
+			inputSampleL *= inTrim;
+			inputSampleR *= inTrim;
 		}
 
 		// encode/decode courtesy of torridgristle under the MIT license
 		// Inverse Square 1-(1-x)^2 and 1-(1-x)^0.5
+		// Reformulated using 'Herbie' for better accuracy near zero
 
 		if (inputSampleL > 1.0) inputSampleL = 1.0;
-		else if (inputSampleL > 0.0) inputSampleL = 1.0 - pow(1.0 - inputSampleL, 2.0);
+		else if (inputSampleL > 0.0) inputSampleL = inputSampleL * (2.0 - inputSampleL);
 
 		if (inputSampleL < -1.0) inputSampleL = -1.0;
-		else if (inputSampleL < 0.0) inputSampleL = -1.0 + pow(1.0 + inputSampleL, 2.0);
+		else if (inputSampleL < 0.0) inputSampleL = inputSampleL * (inputSampleL + 2.0);
 
 		if (inputSampleR > 1.0) inputSampleR = 1.0;
-		else if (inputSampleR > 0.0) inputSampleR = 1.0 - pow(1.0 - inputSampleR, 2.0);
+		else if (inputSampleR > 0.0) inputSampleR = inputSampleR * (2.0 - inputSampleR);
 
 		if (inputSampleR < -1.0) inputSampleR = -1.0;
-		else if (inputSampleR < 0.0) inputSampleR = -1.0 + pow(1.0 + inputSampleR, 2.0);
+		else if (inputSampleR < 0.0) inputSampleR = inputSampleR * (inputSampleR + 2.0);
 
 		// begin 32 bit stereo floating point dither
 		int expon;
