@@ -1,4 +1,4 @@
-image: ubuntu/next
+image: debian/testing
 packages:
   - clang-format
   - lilv-utils
