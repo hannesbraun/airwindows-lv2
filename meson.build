@@ -8,7 +8,7 @@ project(
     'optimization=3'
   ],
   license : 'MIT',
-  version : '28.0'
+  version : '30.0'
 )
 bundle_name = 'Airwindows.lv2'
 
