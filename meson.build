@@ -66,6 +66,7 @@ plugins = [
   'ConsoleLABuss',
   'ConsoleLAChannel',
   'Creature',
+  'CrunchyGrooveWear',
   'curve',
   'DCVoltage',
   'DeBess',
