@@ -122,6 +122,7 @@ plugins = [
   'PlatinumSlew',
   'PocketVerbs',
   'Point',
+  'Pop',
   'Pop2',
   'PowerSag',
   'PowerSag2',
