@@ -117,6 +117,7 @@ plugins = [
   'MoNoam',
   'MV',
   'Nikola',
+  'Overheads',
   'PitchNasty',
   'PhaseNudge',
   'PlatinumSlew',
