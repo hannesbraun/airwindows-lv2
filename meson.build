@@ -72,6 +72,7 @@ plugins = [
   'DeBess',
   'Desk',
   'Distance2',
+  'Doublelay',
   'Drive',
   'DrumSlam',
   'Dyno',
