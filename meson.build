@@ -94,6 +94,7 @@ plugins = [
   'HermeTrim',
   'HighGlossDither',
   'Hull2',
+  'Hypersoft',
   'Hypersonic',
   'Infinity',
   'Infinity2',
