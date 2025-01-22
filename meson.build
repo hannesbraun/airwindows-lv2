@@ -111,6 +111,7 @@ plugins = [
   'LilAmp',
   'Luxor',
   'Mackity',
+  'Mastering',
   'MatrixVerb',
   'MidAmp',
   'MidSide',
