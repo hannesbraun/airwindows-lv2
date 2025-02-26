@@ -109,6 +109,7 @@ plugins = [
   'LeadAmp',
   'LeftoMono',
   'LilAmp',
+  'LRConvolve',
   'Luxor',
   'Mackity',
   'Mastering',
