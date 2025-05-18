@@ -102,12 +102,18 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 		if (-clamp > sinew) temp = sinewInstance->lastSinewL - sinew;
 		inputSampleL = sinewInstance->lastSinewL = temp;
 
+		if (sinewInstance->lastSinewL > 1.0) sinewInstance->lastSinewL = 1.0;
+		if (sinewInstance->lastSinewL < -1.0) sinewInstance->lastSinewL = -1.0;
+
 		temp = inputSampleR;
 		clamp = inputSampleR - sinewInstance->lastSinewR;
 		sinew = threshSinew * cos(sinewInstance->lastSinewR * sinewInstance->lastSinewR);
 		if (clamp > sinew) temp = sinewInstance->lastSinewR + sinew;
 		if (-clamp > sinew) temp = sinewInstance->lastSinewR - sinew;
 		inputSampleR = sinewInstance->lastSinewR = temp;
+
+		if (sinewInstance->lastSinewR > 1.0) sinewInstance->lastSinewR = 1.0;
+		if (sinewInstance->lastSinewR < -1.0) sinewInstance->lastSinewR = -1.0;
 
 		// begin 32 bit stereo floating point dither
 		int expon;
