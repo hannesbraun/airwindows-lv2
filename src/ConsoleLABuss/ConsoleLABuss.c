@@ -178,20 +178,20 @@ static void run(LV2_Handle instance, uint32_t sampleFrames)
 
 		temp = inputSampleL;
 		double clamp = inputSampleL - consoleLABuss->lastSinewL;
-		if (consoleLABuss->lastSinewL > 1.0) consoleLABuss->lastSinewL = 1.0;
-		if (consoleLABuss->lastSinewL < -1.0) consoleLABuss->lastSinewL = -1.0;
 		double sinew = threshSinew * cos(consoleLABuss->lastSinewL);
 		if (clamp > sinew) temp = consoleLABuss->lastSinewL + sinew;
 		if (-clamp > sinew) temp = consoleLABuss->lastSinewL - sinew;
 		inputSampleL = consoleLABuss->lastSinewL = temp;
+		if (consoleLABuss->lastSinewL > 1.0) consoleLABuss->lastSinewL = 1.0;
+		if (consoleLABuss->lastSinewL < -1.0) consoleLABuss->lastSinewL = -1.0;
 		temp = inputSampleR;
 		clamp = inputSampleR - consoleLABuss->lastSinewR;
-		if (consoleLABuss->lastSinewR > 1.0) consoleLABuss->lastSinewR = 1.0;
-		if (consoleLABuss->lastSinewR < -1.0) consoleLABuss->lastSinewR = -1.0;
 		sinew = threshSinew * cos(consoleLABuss->lastSinewR);
 		if (clamp > sinew) temp = consoleLABuss->lastSinewR + sinew;
 		if (-clamp > sinew) temp = consoleLABuss->lastSinewR - sinew;
 		inputSampleR = consoleLABuss->lastSinewR = temp;
+		if (consoleLABuss->lastSinewR > 1.0) consoleLABuss->lastSinewR = 1.0;
+		if (consoleLABuss->lastSinewR < -1.0) consoleLABuss->lastSinewR = -1.0;
 
 		if (gain < 1.0) {
 			inputSampleL *= gain;
