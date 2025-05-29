@@ -26,6 +26,7 @@ plugins = [
   'Air',
   'Air2',
   'Air3',
+  'Air4',
   'BassAmp',
   'BassDrive',
   'BassKit',
