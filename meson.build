@@ -23,6 +23,7 @@ plugins = [
   'ADClip7',
   'ADClip8',
   'ADT',
+  'Air',
   'Air2',
   'Air3',
   'BassAmp',
