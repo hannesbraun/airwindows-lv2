@@ -144,6 +144,7 @@ plugins = [
   'PurestDrive',
   'PurestFade',
   'PurestGain',
+  'PurestWarm2',
   'RawGlitters',
   'RawTimbers',
   'Recurve',
