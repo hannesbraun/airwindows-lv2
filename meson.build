@@ -74,6 +74,7 @@ plugins = [
   'DCVoltage',
   'DeBess',
   'Desk',
+  'Dirt',
   'Distance2',
   'Doublelay',
   'Drive',
