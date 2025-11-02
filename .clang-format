@@ -1,4 +1,4 @@
-﻿---
+---
 AlignTrailingComments: false
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLoopsOnASingleLine: true
@@ -8,7 +8,7 @@ ColumnLimit: '0'
 ContinuationIndentWidth: '8'
 IndentCaseLabels: true
 IndentWidth: '8'
-Language: Cpp
+Language: C
 PointerAlignment: Left
 SpaceAfterCStyleCast: true
 UseTab: ForContinuationAndIndentation
