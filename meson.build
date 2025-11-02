@@ -180,6 +180,7 @@ plugins = [
   'UltrasonicMed',
   'Verbity',
   'Vibrato',
+  'Wolfbot',
   'XBandpass',
   'XLowpass',
   'XNotch',
