@@ -106,6 +106,7 @@ plugins = [
   'Infrasonic',
   'Interstage',
   'IronOxideClassic2',
+  'kGuitarHall2',
   'kPlateA',
   'kPlateB',
   'kPlateC',
