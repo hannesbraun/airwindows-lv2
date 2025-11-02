@@ -131,6 +131,7 @@ plugins = [
   'PlatinumSlew',
   'PocketVerbs',
   'Point',
+  'PointyGuitar',
   'Pop',
   'Pop2',
   'PowerSag',
