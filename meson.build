@@ -166,6 +166,7 @@ plugins = [
   'Srsly2',
   'StarChild',
   'SubsOnly',
+  'TapeHack',
   'ToTape5',
   'ToTape6',
   'TPDFDither',
