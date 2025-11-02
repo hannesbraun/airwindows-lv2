@@ -137,6 +137,7 @@ plugins = [
   'PowerSag',
   'PowerSag2',
   'Pressure5',
+  'Pressure6',
   'PurestConsoleBuss',
   'PurestConsoleChannel',
   'PurestConsole2Buss',
