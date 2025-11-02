@@ -8,3 +8,5 @@ airwindows-lv2-*-*.tar.gz
 airwindows-lv2-*-*.zip
 /what.txt
 .vscode
+/zig-out
+/.zig-cache
