@@ -1,0 +1,134 @@
+@prefix doap:	<http://usefulinc.com/ns/doap#> .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+@prefix lv2:	<http://lv2plug.in/ns/lv2core#> .
+@prefix pprops:	<http://lv2plug.in/ns/ext/port-props#> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units:	<http://lv2plug.in/ns/extensions/units#> .
+
+<https://hannesbraun.net/ns/lv2/airwindows/ditherbox>
+	a lv2:Plugin ,
+		doap:Project ;
+	doap:name "Ditherbox" ;
+	rdfs:comment "a switchable selection of dithers in 16 and 24 bit, plus monitoring tools" ;
+	doap:license <https://opensource.org/licenses/MIT> ;
+	doap:maintainer [
+		foaf:name "Hannes Braun" ;
+		foaf:homepage <https://hannesbraun.net/>
+	] ;
+
+	lv2:minorVersion 2 ;
+	lv2:microVersion 0 ;
+
+	lv2:optionalFeature lv2:hardRTCapable ;
+	lv2:port [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 0 ;
+		lv2:symbol "inL" ;
+		lv2:name "In L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:InputPort ;
+		lv2:index 1 ;
+		lv2:symbol "inR" ;
+		lv2:name "In R"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 2 ;
+		lv2:symbol "outL" ;
+		lv2:name "Out L"
+	] , [
+		a lv2:AudioPort ,
+			lv2:OutputPort ;
+		lv2:index 3 ;
+		lv2:symbol "outR" ;
+		lv2:name "Out R"
+	] , [
+		a lv2:ControlPort ,
+			lv2:InputPort ;
+		lv2:index 4 ;
+		lv2:symbol "type" ;
+		lv2:name "Type" ;
+		lv2:default 21 ;
+		lv2:minimum 0 ;
+		lv2:maximum 25 ;
+		lv2:scalePoint [
+			rdfs:label "16 Bit Truncation" ;
+			rdf:value 0
+		] , [
+			rdfs:label "16 Bit Flat Dither" ;
+			rdf:value 1
+		] , [
+			rdfs:label "16 Bit TPDF Dither" ;
+			rdf:value 2
+		] , [
+			rdfs:label "16 Bit Paul Dither" ;
+			rdf:value 3
+		] , [
+			rdfs:label "16 Bit DoublePaul Dither" ;
+			rdf:value 4
+		] , [
+			rdfs:label "16 Bit Tape Dither" ;
+			rdf:value 5
+		] , [
+			rdfs:label "16 Bit High Gloss Dither" ;
+			rdf:value 6
+		] , [
+			rdfs:label "16 Bit Vinyl Dither" ;
+			rdf:value 7
+		] , [
+			rdfs:label "16 Bit Spatialize Dither" ;
+			rdf:value 8
+		] , [
+			rdfs:label "16 Bit Naturalize Dither" ;
+			rdf:value 9
+		] , [
+			rdfs:label "16 Bit Not Just Another Dither" ;
+			rdf:value 10
+		] , [
+			rdfs:label "24 Bit Truncation" ;
+			rdf:value 11
+		] , [
+			rdfs:label "24 Bit Flat Dither" ;
+			rdf:value 12
+		] , [
+			rdfs:label "24 Bit TPDF Dither" ;
+			rdf:value 13
+		] , [
+			rdfs:label "24 Bit Paul Dither" ;
+			rdf:value 14
+		] , [
+			rdfs:label "24 Bit DoublePaul Dither" ;
+			rdf:value 15
+		] , [
+			rdfs:label "24 Bit Tape Dither" ;
+			rdf:value 16
+		] , [
+			rdfs:label "24 Bit High Gloss Dither" ;
+			rdf:value 17
+		] , [
+			rdfs:label "24 Bit Vinyl Dither" ;
+			rdf:value 18
+		] , [
+			rdfs:label "24 Bit Spatialize Dither" ;
+			rdf:value 19
+		] , [
+			rdfs:label "24 Bit Naturalize Dither" ;
+			rdf:value 20
+		] , [
+			rdfs:label "24 Bit Not Just Another Dither" ;
+			rdf:value 21
+		] , [
+			rdfs:label "Slew Only Monitoring" ;
+			rdf:value 22
+		] , [
+			rdfs:label "Subs Only Monitoring" ;
+			rdf:value 23
+		] , [
+			rdfs:label "Noise Silhouette Monitoring" ;
+			rdf:value 24
+		] ;
+		lv2:portProperty lv2:enumeration
+	] .

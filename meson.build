@@ -76,6 +76,7 @@ plugins = [
   'Desk',
   'Dirt',
   'Distance2',
+  'Ditherbox',
   'Doublelay',
   'Drive',
   'DrumSlam',
