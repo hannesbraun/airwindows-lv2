@@ -188,6 +188,7 @@ plugins = [
   'XLowpass',
   'XNotch',
   'XRegion',
+  'YBandpass',
   'ZOutputStage',
 ]
 
